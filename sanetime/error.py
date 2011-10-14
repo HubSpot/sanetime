@@ -1,0 +1,2 @@
+class SaneTimeError(ValueError):
+    pass
