@@ -101,6 +101,13 @@ class SaneTime(object):
     def __ge__(self, other):
         return self.utc_micros >= other.utc_micros
 
+    def __add__(self, extra_micros):
+        if type(extra_micros) not in (type(1),type(1L)):
+            raise SaneTimeError('Can only add microseconds')
+        return SaneTime(self.utc_micros + extra_micros, tz=self.tz)
+    def __sub__(self, extra_micros):
+        return self.__add__(-extra_micros)
+
     def __repr__(self):
         return repr(self.to_datetime())
     def __str__(self):

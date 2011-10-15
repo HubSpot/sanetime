@@ -145,6 +145,16 @@ class SaneTimeTest(unittest2.TestCase):
         self.assertFalse(t2 <= t1)
         self.assertTrue(t1 <= t2)
 
+    def test_arithmetic(self):
+        t1 = SaneTime(2000,1,1,0,0,0,0)
+        t2 = SaneTime(2000,1,1,0,0,0,1)
+
+        self.assertEquals(t2.utc_micros, (t1+1).utc_micros)
+        self.assertEquals(t2.tz, (t1+1).tz)
+
+        self.assertEquals(t1.utc_micros,(t2-1).utc_micros)
+        self.assertEquals(t1.tz, (t2-1).tz)
+
     def test_construction_errors(self):
         with self.assertRaises(SaneTimeError):
             SaneTime(JAN_MICROS, tz='America/New_York', timezone=self.ny)
