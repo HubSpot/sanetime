@@ -175,6 +175,26 @@ class SaneTimeTest(unittest2.TestCase):
         st = SaneTime(JULY_MICROS, tz='America/New_York')
         self.assertEquals(datetime(2000,7,1,tzinfo=self.utc).astimezone(self.ny), st.to_datetime())
 
+    def test_to_naive_datetime(self):
+        st = SaneTime(JAN_MICROS)
+        self.assertEquals(datetime(2000,1,1), st.to_naive_datetime())
+
+        st = SaneTime(JAN_MICROS, tz='America/New_York')
+        self.assertEquals(datetime(1999,12,31,19), st.to_naive_datetime())
+
+        st = SaneTime(JULY_MICROS, tz='America/New_York')
+        self.assertEquals(datetime(2000,6,30,20), st.to_naive_datetime())
+
+    def test_to_naive_utc_datetime(self):
+        st = SaneTime(JAN_MICROS)
+        self.assertEquals(datetime(2000,1,1), st.to_naive_utc_datetime())
+
+        st = SaneTime(JAN_MICROS, tz='America/New_York')
+        self.assertEquals(datetime(2000,1,1), st.to_naive_utc_datetime())
+
+        st = SaneTime(JULY_MICROS, tz='America/New_York')
+        self.assertEquals(datetime(2000,7,1), st.to_naive_utc_datetime())
+
     def test_timezone_switch(self):
         st = SaneTime(JAN_MICROS)
         self.assertInnards(JAN_MICROS, self.ny, st.set_tz('America/New_York'))

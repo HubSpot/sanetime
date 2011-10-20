@@ -4,10 +4,6 @@ from dateutil import parser as crap_parser
 from error import SaneTimeError
 import pytz
 
-#TODO switch internals all over to microseconds since epoch-- and have millis an seconds as derived from that  (and make sure long's can handle that)
-    # this should make things faster and simpler  - you could have the constructor take an s= or ms= or us= for the different constructor possibillities
-    # okay so int is a long and long is an unlimited, so we only need int
-
 
 class SaneTime(object):
     def __init__(self, *args, **kwargs):
@@ -88,6 +84,13 @@ class SaneTime(object):
         dt = dt.replace(microsecond = self.utc_micros%1000**2)
         dt = dt.astimezone(self.timezone)
         return dt
+
+    # naive means no timezone association -- but we'we'll just strip whatever it was
+    def to_naive_datetime(self): 
+        return self.to_datetime().replace(tzinfo=None)
+
+    def to_naive_utc_datetime(self): 
+        return self.new_tz('UTC').to_naive_datetime()
 
     def strftime(self, *args, **kwargs):
         return self.to_datetime().strftime(*args, **kwargs)
