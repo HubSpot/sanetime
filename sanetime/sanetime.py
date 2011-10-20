@@ -36,7 +36,7 @@ class SaneTime(object):
             arg = args[0]
             if type(arg) in (type(1L),type(1),type(1.0)):
                 self.utc_micros = int(arg)
-            elif type(arg) == type('2000-01-01'):
+            elif type(arg) == type('2000-01-01') or type(arg) == type(u'2000-01-01'):
                 arg = crap_parser.parse(arg)
             if type(arg) == type(fucked_datetime(1,1,1)):
                 dt = arg
