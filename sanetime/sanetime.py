@@ -95,6 +95,49 @@ class SaneTime(object):
     def strftime(self, *args, **kwargs):
         return self.to_datetime().strftime(*args, **kwargs)
 
+
+    def ago(self):
+        """
+        Get a datetime object or a int() Epoch timestamp and return a
+        pretty string like 'an hour ago', 'Yesterday', '3 months ago',
+        'just now', etc
+
+        copied from http://stackoverflow.com/questions/1551382/python-user-friendly-time-format
+        and then tweaked
+        """
+        micro_delta = SaneTime().utc_micros - self.utc_micros
+        second_delta = (micro_delta+500000)/1000**2
+        day_delta = (micro_delta+1000**2*60**2*12)/(1000**2*60**2*24)
+
+        if micro_delta < 0:
+            # TODO: implement future times
+            return ''
+
+        if day_delta == 0:
+            if second_delta < 10:
+                return "just now"
+            if second_delta < 30:
+                return "%s seconds ago" % second_delta
+            if second_delta < 90:
+                return "a minute ago"
+            if second_delta < 30*60:
+                return "%s minutes ago" % ((second_delta+30)/60)
+            if second_delta < 90*60:
+                return "an hour ago"
+            return "%s hours ago" % ((second_delta+30*60)/60**2)
+        if day_delta < 2:
+            return "yesterday"
+        if day_delta < 7:
+            return "%s days ago" % day_delta
+        if day_delta < 11:
+            return "a week ago" % day_delta
+        if day_delta < 45:
+            return "%s weeks ago" % ((day_delta+3)/7)
+        if day_delta < 400:
+            return "%s months ago" % ((day_delta+15)/30)
+        return "%s years ago" % ((day_delta+182)/365)
+
+
     def __lt__(self, other):
         return self.utc_micros < other.utc_micros
     def __le__(self, other):
