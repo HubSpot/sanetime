@@ -1,100 +1,118 @@
 import calendar as shit_calendar
 from datetime import datetime as fucked_datetime
 from dateutil import parser as crap_parser
+from dateutil import tz as dumb_tz
 from error import SaneTimeError
 import pytz
 
 
-class SaneTime(object):
+# keeping lowercase so we can mimic datetime as much as is reasonable
+class sanetime(object):
+    """
+    A sane wrapper around the python datetime/time/date/timetuple/pytz/timezone/calendar/utc shitshow
+
+    This takes care of the ridiculous shit so you don't have to.
+
+    All of these times are stored in micros, and are forced to have an associated timezone (though the association isn't necessarily relevant sometimes depending on what you're doing)
+    """
+
     def __init__(self, *args, **kwargs):
-        super(SaneTime,self).__init__()
-        self.utc_micros = None
-        self.tz = None
+        """
+        acceptable unkeyworded inputs:
+          1) an int/long in utc micros
+          2) a datetime
+            NOTE!! a naive datetime is assumed to be in UTC, unless you tell this
+            method otherwise by also passing in a tz paramter.  A timezoned datetime is 
+            preserved with the timezone it has
+          3) a string representation that the crap parser can deal with
+          4) multiple args just as datetime would accept
+
+        acceptable keyworded inputs:
+          1) us = an int/long in utc micros
+          2) ms = an int/long in utc millis
+          3) s = an int/long in utc seconds
+          4) tz = a timezone (either a sanetime timezone object, a pytz timezone object, or a recognizeable timezone string)
+        """
+        super(sanetime,self).__init__()
+        uss = []
         tzs = []
-        args = list(args)
+        naive_dt = None
+
+        if kwargs.get('us'):
+            uss.append(int(kwargs.pop('us')))
+        if kwargs.get('ms'):
+            uss.append(int(kwargs.pop('ms'))*1000)
+        if kwargs.get('s'):
+            uss.append(int(kwargs.pop('s'))*1000**2)
 
         if kwargs.get('tz'):
             tzs.append(kwargs.pop('tz'))
-        if kwargs.get('timezone'):
-            tzs.append(kwargs.pop('timezone').zone)
 
-        if kwargs.get('utc_micros') and len(args)==0:
-            args.insert(0,kwargs.pop('utc_micros'))
-        elif kwargs.get('utc_millis') and len(args)==0:
-            args.insert(0,kwargs.pop('utc_millis')*1000)
-        elif kwargs.get('utc_seconds') and len(args)==0:
-            args.insert(0,kwargs.pop('utc_seconds')*1000**2)
-            
+        args = list(args)
         if len(args)>2 and len(args)<8:
             args = [fucked_datetime(*args)]
-
-        if len(args)==0:
-            dt = pytz.utc.localize(fucked_datetime.utcnow())
-            args = [shit_calendar.timegm(dt.timetuple())*1000**2+dt.microsecond]
-
         if len(args)==1:
-            arg = args[0]
-            if type(arg) in (type(1L),type(1),type(1.0)):
-                self.utc_micros = int(arg)
-            elif type(arg) == type('2000-01-01') or type(arg) == type(u'2000-01-01'):
+            arg = args.pop()
+            if type(arg) in [long,int,float]:
+                uss.append(int(arg))
+            elif type(arg) in [str,unicode]:
                 arg = crap_parser.parse(arg)
-            if type(arg) == type(fucked_datetime(1,1,1)):
-                dt = arg
-                if dt.tzinfo:
-                    if getattr(dt.tzinfo,'zone',None):
-                        tzs.append(dt.tzinfo.zone)
-                    else:
-                        dt = dt.replace(tzinfo=None)
-                if not dt.tzinfo:
-                    dt = pytz.timezone((tzs+['UTC'])[0]).localize(dt)
-                self.__init_from_fucked_datetime(dt)
+                if arg.tzinfo:  # parsed timezones are a special breed of retard
+                    arg = arg.astimezone(pytz.utc).replace(tzinfo=None)
+                    tzs.append('UTC') # don't allow for a tz specificaion on top of a timezoned datetime str  -- that is opening a whole extra can of confusion
+            if type(arg) == fucked_datetime:
+                naive_dt = arg
+                if naive_dt.tzinfo:
+                    tzs.append(naive_dt.tzinfo)
+                    naive_dt = naive_dt.replace(tzinfo=None)
 
+        # now we have enough info to figure out the tz:
+        self.set_tz(tzs and tzs[0] or 'UTC')
 
-        if self.utc_micros is None or len(tzs)>1 or len(kwargs)>0:
-            raise SaneTimeError('Unexpected constructor args')
+        # and now that we've figured out tz, we can fully deconstruct the dt
+        if naive_dt:
+            dt = self.tz.localize(naive_dt).astimezone(pytz.utc)
+            uss.append(shit_calendar.timegm(dt.timetuple())*1000**2+dt.microsecond)
 
-        tzs.append('UTC')
-        self.tz = self.tz or tzs[0]
-        self.timezone = pytz.timezone(self.tz)
+        # if we got nothing yet for micros, then make it now
+        if len(uss)==0:
+            dt = fucked_datetime.utcnow()
+            uss.append(shit_calendar.timegm(dt.timetuple())*1000**2+dt.microsecond)
 
-    def __init_from_fucked_datetime(self, dt):
-        self.tz = dt.tzinfo.zone
-        dt = dt.astimezone(pytz.utc)
-        tt = dt.timetuple()
-        epoch_seconds = shit_calendar.timegm(tt)
-        self.utc_micros = epoch_seconds*1000**2+dt.microsecond
+        self.us = uss[0]
+        
+        if len(tzs)>1 or len(uss)>1 or len(args)>0:
+            raise SaneTimeError('Unexpected constructor arguments')
 
-    def set_timezone(self, timezone):
-        return self.set_tz(timezone.zone)
 
     def set_tz(self, tz):
-        self.timezone = pytz.timezone(tz)
-        self.tz = self.timezone.zone
+        if type(tz) in (str, unicode):
+            tz = pytz.timezone(tz)
+        elif type(tz) == dumb_tz.tzutc:
+            tz = pytz.utc
+        elif type(tz) == dumb_tz.tzoffset:
+            print tz
+        self.tz = tz
         return self
 
-    def new_timezone(self, timezone):
-        return self.new_tz(timezone.zone)
-
-    def new_tz(self, tz):
-        return SaneTime(self.utc_micros, tz=tz)
+    def with_tz(self, tz):
+        return sanetime(self.us, tz=tz)
 
     def to_datetime(self):
-        dt = fucked_datetime.utcfromtimestamp(self.utc_micros/1000**2)
+        dt = fucked_datetime.utcfromtimestamp(self.us/10**6)
         dt = pytz.utc.localize(dt)
-        dt = dt.replace(microsecond = self.utc_micros%1000**2)
-        dt = dt.astimezone(self.timezone)
+        dt = dt.replace(microsecond = self.us%10**6)
+        dt = dt.astimezone(self.tz)
         return dt
 
-    # naive means no timezone association -- but we'we'll just strip whatever it was
     def to_naive_datetime(self): 
         return self.to_datetime().replace(tzinfo=None)
 
     def to_naive_utc_datetime(self): 
-        return self.new_tz('UTC').to_naive_datetime()
+        return self.with_tz(pytz.utc).to_naive_datetime()
 
     def strftime(self, *args, **kwargs):
         return self.to_datetime().strftime(*args, **kwargs)
-
 
     def ago(self):
         """
@@ -105,8 +123,8 @@ class SaneTime(object):
         copied from http://stackoverflow.com/questions/1551382/python-user-friendly-time-format
         and then tweaked
         """
-        micro_delta = SaneTime().utc_micros - self.utc_micros
-        second_delta = (micro_delta+500000)/1000**2
+        micro_delta = sanetime().us - self.us
+        second_delta = (micro_delta+500*1000)/1000**2
         day_delta = (micro_delta+1000**2*60**2*12)/(1000**2*60**2*24)
 
         if micro_delta < 0:
@@ -139,31 +157,31 @@ class SaneTime(object):
 
 
     def __lt__(self, other):
-        return self.utc_micros < other.utc_micros
+        return self.us < other.us
     def __le__(self, other):
-        return self.utc_micros <= other.utc_micros
+        return self.us <= other.us
     def __gt__(self, other):
-        return self.utc_micros > other.utc_micros
+        return self.us > other.us
     def __ge__(self, other):
-        return self.utc_micros >= other.utc_micros
+        return self.us >= other.us
 
-    def __add__(self, extra_micros):
-        if type(extra_micros) not in (type(1),type(1L)):
+    def __add__(self, extra_us):
+        if type(extra_us) not in (int,long,float):
             raise SaneTimeError('Can only add microseconds')
-        return SaneTime(self.utc_micros + extra_micros, tz=self.tz)
-    def __sub__(self, extra_micros):
-        return self.__add__(-extra_micros)
+        return sanetime(self.us + extra_us, tz=self.tz)
+    def __sub__(self, extra_us):
+        return self.__add__(-extra_us)
 
     def __repr__(self):
         return repr(self.to_datetime())
     def __str__(self):
         return str(self.to_datetime())
 
-    def _get_utc_seconds(self):
-        return (self.utc_micros+500000)/1000000
-    def _get_utc_millis(self):
-        return (self.utc_micros+500)/1000
-    utc_seconds = property(_get_utc_seconds)
-    utc_millis = property(_get_utc_millis)
+    def _get_s(self):
+        return (self.us+500*1000)/10**6
+    def _get_ms(self):
+        return (self.us+500)/1000
+    s = property(_get_s)
+    ms = property(_get_ms)
 
 
