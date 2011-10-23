@@ -3,7 +3,7 @@ from distutils.core import setup
 
 setup(
     name='sanetime',
-    version='2.0.0',
+    version='2.0.1',
     description='A Sane date/time/timezone/dateutil/calendar/pytz Wrapping Time Class',
     author='Michael Prior',
     author_email='prior@cracklabs.com',
