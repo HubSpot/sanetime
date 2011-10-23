@@ -88,10 +88,6 @@ class sanetime(object):
     def set_tz(self, tz):
         if type(tz) in (str, unicode):
             tz = pytz.timezone(tz)
-        elif type(tz) == dumb_tz.tzutc:
-            tz = pytz.utc
-        elif type(tz) == dumb_tz.tzoffset:
-            print tz
         self.tz = tz
         return self
 
@@ -177,6 +173,15 @@ class sanetime(object):
     def __str__(self):
         return str(self.to_datetime())
 
+    
+    def _get_tz_name(self):
+        return self.tz.zone
+
+    def _get_tz_abbr(self):
+        return self.tz._tzname
+    tz_name = property(_get_tz_name)
+    tz_abbr = property(_get_tz_abbr)
+    
     def _get_s(self):
         return (self.us+500*1000)/10**6
     def _get_ms(self):

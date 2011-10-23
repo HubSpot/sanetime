@@ -96,6 +96,10 @@ class SaneTimeTest(unittest2.TestCase):
         self.assertEquals(601,st.ms%1000) # remember, it rounds
         self.assertEquals(6,st.s%60) # remember, it rounds
 
+        st = sanetime(2000,1,1,tz='America/New_York')
+        self.assertEquals('EST', st.tz_abbr)
+        self.assertEquals('America/New_York', st.tz_name)
+
     def test_transitives(self):
         st = sanetime()
         st2 = sanetime(st.to_datetime())
