@@ -14,6 +14,17 @@ class sanetime(object):
     This takes care of the ridiculous shit so you don't have to.
 
     All of these times are stored in micros, and are forced to have an associated timezone (though the association isn't necessarily relevant sometimes depending on what you're doing)
+
+    Think of this object as being divided into two layers, a backend and a
+    frontend.  The backend only cares about a moment in time.  It has no
+    concern about where that moment in time was.  Then there is a front-end
+    layer that allows you to paint that time as being in a certain timezone.
+    But all the core funtionality only cares about the moment in time, not the
+    place.  On initialization, we use any hints available to determine what
+    that moment in time is, and we'll keep any determined timezone kicking
+    around, but when you deal with equality, or hashing, or any core
+    functionality-- it will always be against the moment in time, not against
+    where that moment in time occured.
     """
 
     def __init__(self, *args, **kwargs):
@@ -160,6 +171,15 @@ class sanetime(object):
         return self.us > other.us
     def __ge__(self, other):
         return self.us >= other.us
+    def __eq__(self, other):
+        return self.us == other.us
+    def __ne__(self, other):
+        return self.us != other.us
+
+    def __hash__(self):
+        return self.us.__hash__()
+    def __cmp__(self, other):
+        return self.us.__cmp__(other.us)
 
     def __add__(self, extra_us):
         if type(extra_us) not in (int,long,float):
@@ -169,10 +189,20 @@ class sanetime(object):
         return self.__add__(-extra_us)
 
     def __repr__(self):
-        return repr(self.to_datetime())
-    def __str__(self):
+        dt = self.to_naive_datetime()
+        return "%04d-%02d-%02d %02d:%02d:%02d.%06d %s" % (
+                dt.year,
+                dt.month,
+                dt.day,
+                dt.hour,
+                dt.minute,
+                dt.second,
+                dt.microsecond,
+                self.tz_name)
         return str(self.to_datetime())
 
+    def __str__(self):
+        return str(self.us)
     
     def _get_tz_name(self):
         return self.tz.zone

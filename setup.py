@@ -14,7 +14,8 @@ setup(
         'nose',
         'pytz',
         'unittest2',
-        'python-dateutil==1.5'
+        'python-dateutil==1.5',
+        'Django==1.3.1'
     ],
     long_description="""
 

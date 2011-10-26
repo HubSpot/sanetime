@@ -5,7 +5,7 @@ from sanetime import sanetime
 class SaneTimeFormField(forms.DateTimeField):
     pass
 
-class SaneTimeField(models.BigInteger):
+class SaneTimeField(models.BigIntegerField):
 
     description = "A field to hold the micros part of a sanetime.  The timezone is forced to be UTC."
 

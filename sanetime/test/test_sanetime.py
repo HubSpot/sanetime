@@ -149,6 +149,25 @@ class SaneTimeTest(unittest2.TestCase):
         self.assertFalse(t2 <= t1)
         self.assertTrue(t1 <= t2)
 
+    def test_equality(self):
+        t1 = sanetime(2000,1,1,0,0,0,0)
+        t2 = sanetime(1999,12,31,19,0,0,0, tz='America/New_York')
+        t3 = sanetime(2000,1,1,0,0,0,1)
+        self.assertTrue(t1==t2)
+        self.assertTrue(t2==t1)
+        self.assertTrue(t1!=t3)
+        self.assertTrue(t3!=t1)
+
+    def test_hashability(self):
+        t1 = sanetime(2000,1,1,0,0,0,0)
+        t2 = sanetime(1999,12,31,19,0,0,0, tz='America/New_York')
+        t3 = sanetime(2000,1,1,0,0,0,1)
+        s = set([t1,t2,t3])
+        self.assertEquals(2, len(s))
+        self.assertIn(t1, s)
+        self.assertIn(t2, s)
+        self.assertIn(t3, s)
+
     def test_arithmetic(self):
         t1 = sanetime(2000,1,1,0,0,0,0)
         t2 = sanetime(2000,1,1,0,0,0,1)
@@ -158,6 +177,7 @@ class SaneTimeTest(unittest2.TestCase):
 
         self.assertEquals(t1.us,(t2-1).us)
         self.assertEquals(t1.tz, (t2-1).tz)
+
 
     def test_construction_errors(self):
         with self.assertRaises(SaneTimeError):
@@ -211,6 +231,26 @@ class SaneTimeTest(unittest2.TestCase):
         st = sanetime(JULY_MICROS)
         self.assertInnards(JULY_MICROS, self.ny, st.with_tz(self.ny)) # make sure it's returning an obj
         self.assertInnards(JULY_MICROS, self.utc, st) # make sure it doesn't operates on itself
+
+    def test_str(self):
+        st = sanetime(JAN_MICROS)
+        self.assertEquals(str(JAN_MICROS), str(st))
+        st = sanetime(JULY_MICROS)
+        self.assertEquals(str(JULY_MICROS), str(st))
+        st = sanetime(JAN_MICROS, tz='America/New_York')
+        self.assertEquals(JAN_MICROS+HOUR_MICROS*5, str(st))
+        st = sanetime(JULY_MICROS, tz='America/New_York')
+        self.assertEquals(JULY_MICROS+HOUR_MICROS*4, str(st))
+
+    def test_repr(self):
+        st = sanetime(JAN_MICROS)
+        self.assertEquals('2000-01-01 00:00:00.000000 UTC', repr(st))
+        st = sanetime(JULY_MICROS)
+        self.assertEquals('2000-07-01 00:00:00.000000 UTC', repr(st))
+        st = sanetime(JAN_MICROS, tz='America/New_York')
+        self.assertEquals('1999-12-31 19:00:00.000000 America/New_York', repr(st))
+        st = sanetime(JULY_MICROS, tz='America/New_York')  
+        self.assertEquals('2000-06-30 20:00:00.000000 America/New_York', repr(st))
 
 
 if __name__ == '__main__':
