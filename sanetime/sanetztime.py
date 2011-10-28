@@ -1,0 +1,88 @@
+import calendar as shit_calendar
+from datetime import datetime as fucked_datetime
+from dateutil import parser as crap_parser
+from dateutil import tz as dumb_tz
+from error import SaneTimeError
+import pytz
+from sanetime import sanetime
+
+"""
+Sane wrappers around the python's datetime / time / date / timetuple / pytz / timezone / calendar /
+timedelta / utc shitshow.  This takes care of most of the ridiculous shit so you don't have to flush precious
+brain cells down the toilet trying to figure all this out.  You owe me a beer.  At least.
+
+There are two classes that you mind find useful here, and you should understand the difference:
+
+* sanetime:  this class is only concerned with a particular moment in time, NOT where that moment was
+        experienced.
+* sanetztime:  this class is concerned with a particular moment in time AND in what timezone that moment
+        was experienced.
+"""
+
+# keeping lowercase so we can mimic datetime as much as is reasonable
+class sanetztime(sanetime):
+    """
+    sanetztime is concerned with a particular moment in time AND which timezone that moment in time was
+    experienced.  Two sanetztimes are not equal unless they are the same moment in time and they are in the
+    same timezone.  These timezones could have different labels, but if they describe the same timezone, then
+    those two sanetztimes are considered equal.  In most other respects sanetztime is similar to sanetime.
+    """
+    def __init__(self, *args, **kwargs):
+        if len(args)>0:
+            args = list(args)
+            if isinstance(args[0], sanetztime):
+                kwargs['tz'] = args[0].tz
+                args[0] = args[0].us
+            elif isinstance(args[0], sanetime):
+                args[0] = args[0].us
+        super(sanetime,self).__int__(*args, **kwargs)
+        self.tz = self._tz
+
+    def set_tz(self, tz):
+        return self._set_tz(tz)
+
+    def with_tz(self, tz):
+        return sanetztime(self.us, tz=tz)
+
+    def to_datetime(self):
+        return self.to_utc_datetime().astimezone(self.tz)
+
+    def to_naive_datetime(self):
+        return self.to_datetime().replace(tzinfo=None)
+
+    def to_sanetime(self):
+        return sanetime(self.us)
+
+    def strftime(self, *args, **kwargs):
+        return self.to_datetime().strftime(*args, **kwargs)
+
+    def _data(self):
+        return (self.us, self.tz)
+
+    def __eq__(self, other):
+        return self._data() == other._data()
+    def __ne__(self, other):
+        return self._data() != other._data()
+
+    def __hash__(self):
+        return self._data().__hash__()
+
+    def __repr__(self):
+        return '%s %s' % (super(sanetztime,self).__repr__(), self.tz_name)
+
+    def __str__(self):
+        return '%s %s' % (super(sanetztime,self).__str__(), self.tz_name)
+    
+    def _get_tz(self):
+        return self._tz
+    tz = property(_get_tz)
+
+    def _get_tz_name(self):
+        return self.tz.zone
+    tz_name = property(_get_tz_name)
+
+    def _get_tz_abbr(self):
+        return self.tz._tzname
+    tz_abbr = property(_get_tz_abbr)
+    
+
