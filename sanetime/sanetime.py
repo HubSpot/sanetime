@@ -1,49 +1,54 @@
 import calendar as shit_calendar
 from datetime import datetime as fucked_datetime
 from dateutil import parser as crap_parser
-from dateutil import tz as dumb_tz
 from error import SaneTimeError
 import pytz
+import re
+from numbers import Number
 
 """
 Sane wrappers around the python's datetime / time / date / timetuple / pytz / timezone / calendar /
-timedelta / utc shitshow.  This takes care of most of the ridiculous shit so you don't have to flush precious
-brain cells down the toilet trying to figure all this out.  You owe me a beer.  At least.
+timedelta / utc shitshow.  This takes care of most of the ridiculous shit so you don't have to
+flush precious brain cells down the toilet trying to figure all this out.  You owe me a beer.  At
+least.
 
 There are two classes that you mind find useful here, and you should understand the difference:
 
-* sanetime:  this class is only concerned with a particular moment in time, NOT where that moment was
-        experienced.
-* sanetztime:  this class is concerned with a particular moment in time AND in what timezone that moment
+* sanetime:  this class is only concerned with a particular moment in time, NOT where that moment
         was experienced.
+* sanetztime:  this class is concerned with a particular moment in time AND in what timezone that
+        moment was experienced.
 """
 
 class sanetime(object):
     """
-    sanetime is only concerned with a particular moment in time.  It does not concern itself with timezones.
-    It's constructor will do its best to turn timezoned times into a utc time, and operate forever more on
-    this representation.  It stores microseconds since the epoch.  If you need to convert to a timezoned
-    representation there are a few methods to do that.
+    sanetime is only concerned with a particular moment in time.  It does not concern itself with
+    timezones.  Its constructor will do its best to turn timezoned times into a utc time, and
+    operate forever more on this representation.  It stores microseconds since the epoch.  If you
+    need to convert to a timezoned representation there are a few methods to do that.
     
     Why not store in millis or seconds?
-    datetime stores things in micros, and since millis already crosses over the 32bit boundary, we might as
-    well store everything we got in the 64 bit numbers.  This will force 32bit machines to go to long's, so
-    maybe a little reduced performance there, but isn't everything on 64 bit now?  This also avoids the
-    unexpected scenario where two different datetimes would compare as equal when they were converted to
-    sanetimes.  As to why-not-seconds, well that's just lame.  You can easily go to seconds or millis from
-    sanetime by using the .s or .ms properties.
+    datetime stores things in micros, and since millis already crosses over the 32bit boundary, we
+    might as well store everything we got in the 64 bit numbers.  This will force 32bit machines to
+    go to long's, so maybe a little reduced performance there, but isn't everything on 64 bit now?
+    This also avoids the unexpected scenario where two different datetimes would compare as equal
+    when they were converted to sanetimes.  As to why-not-seconds, well that's just lame.  You can
+    easily go to seconds or millis from sanetime by using the .s or .ms properties.
 
-    When you do arithmetic with sanetime you are operating on microseconds.  st + 1 creates a new sanetime
-    that is 1 microsecond in the future from the st sanetime.
+    When you do arithmetic with sanetime you are operating on microseconds.  st + 1 creates a new
+    sanetime that is 1 microsecond in the future from the st sanetime.
 
-    When you do comparisons, all comparisons are happening at the microsecond level.  You are comparing
-    microseconds in time.
+    When you do comparisons, all comparisons are happening at the microsecond level.  You are
+    comparing microseconds in time.
 
-    On initialization, we use any hints available to determine what that moment in time is, including
-    timezone information.  You can include tz as a hint to declare what timezone a time is in, but that
-    information will not be kept around- it is only used to convert the given time into utc, and then it is
-    purposefully dropped.  If you need to maintain a relationship to the timezones then look at sanetztime.
+    On initialization, we use any hints available to determine what that moment in time is,
+    including timezone information.  You can include tz as a hint to declare what timezone a time
+    is in, but that information will not be kept around- it is only used to convert the given time
+    into utc, and then it is purposefully dropped.  If you need to maintain a relationship to the
+    timezones then look at sanetztime.
     """
+
+    STR_NATIVE_FORMAT = re.compile(r'^(\d+)([um]?s)$')
 
     def __init__(self, *args, **kwargs):
         """
@@ -54,6 +59,7 @@ class sanetime(object):
             method otherwise by also passing in a tz paramter.  A timezoned datetime is 
             preserved with the timezone it has
           3) a string representation that the crap parser can deal with
+          4) a string representation of the form /d+us or /d+ms or /d+s
           4) multiple args just as datetime would accept
 
         acceptable keyworded inputs:
@@ -67,6 +73,29 @@ class sanetime(object):
         tzs = []
         naive_dt = None
 
+        args = list(args)
+        if len(args)>2 and len(args)<8:
+            args = [fucked_datetime(*args)]
+        if len(args)==1:
+            arg = args.pop()
+            if type(arg) in [long,int,float,sanetime]:
+                uss.append(int(arg))
+            elif isinstance(arg, basestring):
+                arg = arg.strip()
+                native_format_match = self.__class__.STR_NATIVE_FORMAT.match(arg)
+                if native_format_match:
+                    kwargs[native_format_match.group(2)] = native_format_match.group(1)
+                else:
+                    arg = crap_parser.parse(arg)
+                    if arg.tzinfo:  # parsed timezones are a special breed of retard
+                        arg = arg.astimezone(pytz.utc).replace(tzinfo=None)
+                        tzs.append('UTC') # don't allow for a tz specificaion on top of a timezoned datetime str  -- that is opening a whole extra can of confusion -- so force the timezone here so that another tz specification will cause an error
+            if type(arg) == fucked_datetime:
+                naive_dt = arg
+                if naive_dt.tzinfo:
+                    tzs.append(naive_dt.tzinfo)
+                    naive_dt = naive_dt.replace(tzinfo=None)
+
         if kwargs.get('us'):
             uss.append(int(kwargs.pop('us')))
         if kwargs.get('ms'):
@@ -77,26 +106,6 @@ class sanetime(object):
         if kwargs.get('tz'):
             tzs.append(kwargs.pop('tz'))
 
-        args = list(args)
-        if len(args)>2 and len(args)<8:
-            args = [fucked_datetime(*args)]
-        if len(args)==1:
-            arg = args.pop()
-            if type(arg) in [long,int,float,sanetime]:
-                uss.append(int(arg))
-            elif isinstance(arg, basestring):
-                if r'^\d+us$':
-                    uss.append(int(arg[0:-2])
-                else:
-                    arg = crap_parser.parse(arg)
-                    if arg.tzinfo:  # parsed timezones are a special breed of retard
-                        arg = arg.astimezone(pytz.utc).replace(tzinfo=None)
-                        tzs.append('UTC') # don't allow for a tz specificaion on top of a timezoned datetime str  -- that is opening a whole extra can of confusion
-            if type(arg) == fucked_datetime:
-                naive_dt = arg
-                if naive_dt.tzinfo:
-                    tzs.append(naive_dt.tzinfo)
-                    naive_dt = naive_dt.replace(tzinfo=None)
 
         # now we have enough info to figure out the tz:
         self._set_tz(tzs and tzs[0] or 'UTC')
@@ -115,7 +124,6 @@ class sanetime(object):
         
         if len(tzs)>1 or len(uss)>1 or len(args)>0:
             raise SaneTimeError('Unexpected constructor arguments')
-
 
     def to_datetime(self):
         return self.to_utc_datetime()
@@ -136,25 +144,38 @@ class sanetime(object):
         return self.to_datetime().strftime(*args, **kwargs)
 
     def __lt__(self, other):
+        if not isinstance(other, sanetime):
+            other = sanetime(other)
         return self.us < other.us
     def __le__(self, other):
+        if not isinstance(other, sanetime):
+            other = sanetime(other)
         return self.us <= other.us
     def __gt__(self, other):
+        if not isinstance(other, sanetime):
+            other = sanetime(other)
         return self.us > other.us
     def __ge__(self, other):
+        if not isinstance(other, sanetime):
+            other = sanetime(other)
         return self.us >= other.us
     def __eq__(self, other):
-        return self.us == other.us
+        if not isinstance(other, sanetime):
+            other = sanetime(other)
+        return self.us == int(other)
+
     def __ne__(self, other):
+        if not isinstance(other, sanetime):
+            other = sanetime(other)
         return self.us != other.us
 
     def __hash__(self):
         return self.us.__hash__()
 
     def __add__(self, extra_us):
-        if type(extra_us) not in (int,long,float):
-            raise SaneTimeError('Can only add microseconds')
-        return self.__class__(self.us + extra_us, tz=self.tz)
+        if not isinstance(extra_us, Number):
+            raise SaneTimeError('Can only add/sub microseconds (expecting a number)')
+        return self.__class__(self.us + int(extra_us))
     def __sub__(self, extra_us):
         return self.__add__(-extra_us)
     def __int__(self):
@@ -162,9 +183,9 @@ class sanetime(object):
     def __long__(self):
         return long(self.us)
 
-    def __repr__(self):
-        dt = self.to_naive_utc_datetime()
-        return "%04d-%02d-%02d %02d:%02d:%02d.%06d UTC" % (
+    def __repr_naive__(self):
+        dt = self.to_naive_datetime()
+        return "%04d-%02d-%02d %02d:%02d:%02d.%06d" % (
                 dt.year,
                 dt.month,
                 dt.day,
@@ -173,6 +194,9 @@ class sanetime(object):
                 dt.second,
                 dt.microsecond)
         return str(self.to_datetime())
+
+    def __repr__(self):
+        return self.__repr_naive__() + ' UTC'
 
     def __str__(self):
         return '%sus' % self.us
@@ -184,6 +208,12 @@ class sanetime(object):
     def _get_ms(self):
         return (self.us+500)/1000
     ms = property(_get_ms)
+
+    def _set_tz(self, tz):
+        if type(tz) in (str, unicode):
+            tz = pytz.timezone(tz)
+        self._tz = tz
+        return self
 
 
 
