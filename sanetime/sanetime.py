@@ -175,7 +175,7 @@ class sanetime(object):
     def __add__(self, extra_us):
         if not isinstance(extra_us, Number):
             raise SaneTimeError('Can only add/sub microseconds (expecting a number)')
-        return self.__class__(self.us + int(extra_us))
+        return sanetime(self.us + int(extra_us))
     def __sub__(self, extra_us):
         return self.__add__(-extra_us)
     def __int__(self):

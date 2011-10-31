@@ -1,5 +1,7 @@
 import re
 from sanetime import sanetime
+from error import SaneTimeError
+from numbers import Number
 
 
 """
@@ -72,6 +74,11 @@ class sanetztime(sanetime):
 
     def __hash__(self):
         return self._data().__hash__()
+
+    def __add__(self, extra_us):
+        if not isinstance(extra_us, Number):
+            raise SaneTimeError('Can only add/sub microseconds (expecting a number)')
+        return sanetztime(self.us + int(extra_us), tz = self.tz)
 
     def __repr__(self):
         return '%s %s' % (self.__repr_naive__(), self.tz_name)
