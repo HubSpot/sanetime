@@ -1,4 +1,4 @@
-sanetime and sanetztime
+sanetime & sanetztime
 =======================
 
 Sane wrappers around the python's datetime / time / date / timetuple / pytz / timezone / calendar /
@@ -12,4 +12,8 @@ There are two classes that you may find useful here, and you should understand t
         was experienced.
 * sanetztime:  this class is concerned with a particular moment in time AND in what timezone that
         moment was experienced.
+
+
+main source and docs:
+https://github.com/prior/sanetime
 
