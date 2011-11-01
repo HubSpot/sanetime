@@ -172,12 +172,14 @@ class sanetime(object):
     def __hash__(self):
         return self.us.__hash__()
 
-    def __add__(self, extra_us):
-        if not isinstance(extra_us, Number):
+    def __add__(self, operand):
+        if not isinstance(operand, Number):
             raise SaneTimeError('Can only add/sub microseconds (expecting a number)')
-        return sanetime(self.us + int(extra_us))
-    def __sub__(self, extra_us):
-        return self.__add__(-extra_us)
+        return sanetime(self.us + int(operand))
+    def __sub__(self, operand):
+        if isinstance(operand, sanetime):
+            operand = operand.us
+        return self.__add__(-operand)
     def __int__(self):
         return self.us
     def __long__(self):

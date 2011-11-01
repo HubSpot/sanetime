@@ -3,12 +3,12 @@ from distutils.core import setup
 
 setup(
     name='sanetime',
-    version='3.0.1',
+    version='3.0.2',
     description='A drop-in replacement for datetime that bring sanity and ease-of-use to the date/time/timezone/dateutil/calendar/pytz/timetuple/parsing insane shitshow.',
     author='Michael Prior',
     author_email='prior@cracklabs.com',
     url='https://github.com/prior/sanetime',
-    download_url='https://github.com/prior/sanetime/tarball/v3.0.1',
+    download_url='https://github.com/prior/sanetime/tarball/v3.0.2',
     packages=['sanetime'],
     install_requires=[
         'nose',

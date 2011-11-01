@@ -171,6 +171,9 @@ class SaneTimeTest(unittest2.TestCase):
         self.assertEquals(t2.us, (t1+1).us)
         self.assertEquals(t1.us,(t2-1).us)
 
+        self.assertEquals(1, t2 - t1)
+        self.assertEquals(-1, t1 - t2)
+
 
     def test_construction_errors(self):
         with self.assertRaises(SaneTimeError):
