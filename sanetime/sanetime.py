@@ -178,7 +178,7 @@ class sanetime(object):
         return sanetime(self.us + int(operand))
     def __sub__(self, operand):
         if isinstance(operand, sanetime):
-            operand = operand.us
+            return self.us - operand.us
         return self.__add__(-operand)
     def __int__(self):
         return self.us
