@@ -211,13 +211,27 @@ class sanetime(object):
         return (self.us+500)/1000
     ms = property(_get_ms)
 
+    def _get_dt(self):
+        return self.to_datetime()
+    dt = property(_get_dt)
+
+    def _get_ndt(self):
+        return self.to_naive_datetime()
+    ndt = property(_get_ndt)
+
+    def _get_utc_dt(self):
+        return self.to_utc_datetime()
+    utc_dt = property(_get_utc_dt)
+
+    def _get_utc_ndt(self):
+        return self.to_naive_utc_datetime()
+    utc_ndt = property(_get_utc_ndt)
+
     def _set_tz(self, tz):
         if type(tz) in (str, unicode):
             tz = pytz.timezone(tz)
         self._tz = tz
         return self
-
-
 
     def ago(self):
         """
