@@ -126,19 +126,21 @@ class sanetime(object):
             raise SaneTimeError('Unexpected constructor arguments')
 
     def to_datetime(self):
-        return self.to_utc_datetime()
-
-    def to_utc_datetime(self): 
-        dt = fucked_datetime.utcfromtimestamp(self.us/10**6)
-        dt = pytz.utc.localize(dt)
-        dt = dt.replace(microsecond = self.us%10**6)
-        return dt
+        return self.to_timezoned_datetime(pytz.utc)
 
     def to_naive_datetime(self): 
         return self.to_datetime().replace(tzinfo=None)
 
-    def to_naive_utc_datetime(self): 
-        return self.to_utc_datetime().replace(tzinfo=None)
+    def to_timezoned_datetime(self, tz):
+        if isinstance(tz, basestring):
+            tz = pytz.timezone(tz)
+        dt = fucked_datetime.utcfromtimestamp(self.us/10**6)
+        dt = tz.localize(dt)
+        dt = dt.replace(microsecond = self.us%10**6)
+        return dt
+
+    def to_timezoned_naive_datetime(self, tz):
+        return self.to_timezoned_datetime(tz).replace(tzinfo=None)
 
     def strftime(self, *args, **kwargs):
         return self.to_datetime().strftime(*args, **kwargs)
@@ -220,15 +222,23 @@ class sanetime(object):
     ndt = property(_get_ndt)
 
     def _get_utc_dt(self):
-        return self.to_utc_datetime()
+        return self.to_timezoned_datetime(pytz.utc)
     utc_dt = property(_get_utc_dt)
 
     def _get_utc_ndt(self):
-        return self.to_naive_utc_datetime()
+        return self.to_timezoned_naive_datetime(pytz.utc)
     utc_ndt = property(_get_utc_ndt)
+    
+    def _get_ny_dt(self):
+        return self.to_timezoned_datetime('America/New_York')
+    ny_dt = property(_get_ny_dt)
+
+    def _get_ny_ndt(self):
+        return self.to_timezoned_naive_datetime('America/New_York')
+    ny_ndt = property(_get_ny_ndt)
 
     def _set_tz(self, tz):
-        if type(tz) in (str, unicode):
+        if isinstance(tz, basestring):
             tz = pytz.timezone(tz)
         self._tz = tz
         return self

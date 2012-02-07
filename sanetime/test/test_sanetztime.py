@@ -119,6 +119,30 @@ class SaneTzTimeTest(unittest2.TestCase):
         self.assertEquals('EST', st.tz_abbr)
         self.assertEquals('America/New_York', st.tz_name)
 
+        st = sanetztime(JAN_MICROS)
+        self.assertEquals(st.to_datetime(), st.dt)
+        self.assertEquals(st.to_naive_datetime(), st.ndt)
+        self.assertEquals(st.to_timezoned_datetime('UTC'), st.utc_dt)
+        self.assertEquals(st.to_timezoned_naive_datetime('UTC'), st.utc_ndt)
+        self.assertEquals(st.to_timezoned_datetime('America/New_York'), st.ny_dt)
+        self.assertEquals(st.to_timezoned_naive_datetime('America/New_York'), st.ny_ndt)
+
+        st = sanetztime(JAN_MICROS, tz='America/New_York')
+        self.assertEquals(st.to_datetime(), st.dt)
+        self.assertEquals(st.to_naive_datetime(), st.ndt)
+        self.assertEquals(st.to_timezoned_datetime('UTC'), st.utc_dt)
+        self.assertEquals(st.to_timezoned_naive_datetime('UTC'), st.utc_ndt)
+        self.assertEquals(st.to_timezoned_datetime('America/New_York'), st.ny_dt)
+        self.assertEquals(st.to_timezoned_naive_datetime('America/New_York'), st.ny_ndt)
+
+        st = sanetztime(JUL_MICROS, tz='America/New_York')
+        self.assertEquals(st.to_datetime(), st.dt)
+        self.assertEquals(st.to_naive_datetime(), st.ndt)
+        self.assertEquals(st.to_timezoned_datetime('UTC'), st.utc_dt)
+        self.assertEquals(st.to_timezoned_naive_datetime('UTC'), st.utc_ndt)
+        self.assertEquals(st.to_timezoned_datetime('America/New_York'), st.ny_dt)
+        self.assertEquals(st.to_timezoned_naive_datetime('America/New_York'), st.ny_ndt)
+
     def test_transitives(self):
         st = sanetztime()
         st2 = sanetztime(st.to_datetime())
@@ -205,13 +229,16 @@ class SaneTzTimeTest(unittest2.TestCase):
 
     def test_to_utc_datetime(self):
         st = sanetztime(JAN_MICROS)
-        self.assertEquals(self.utc.localize(datetime(2000,1,1)), st.to_utc_datetime())
+        self.assertEquals(self.utc.localize(datetime(2000,1,1)), st.to_timezoned_datetime('UTC'))
+        self.assertEquals(self.utc.localize(datetime(2000,1,1)), st.to_timezoned_datetime(self.utc))
 
         st = sanetztime(JAN_MICROS, tz='America/New_York')
-        self.assertEquals(self.utc.localize(datetime(2000,1,1)), st.to_utc_datetime())
+        self.assertEquals(self.utc.localize(datetime(2000,1,1)), st.to_timezoned_datetime('UTC'))
+        self.assertEquals(self.utc.localize(datetime(2000,1,1)), st.to_timezoned_datetime(self.utc))
 
         st = sanetztime(JUL_MICROS, tz='America/New_York')
-        self.assertEquals(self.utc.localize(datetime(2000,7,1)), st.to_utc_datetime())
+        self.assertEquals(self.utc.localize(datetime(2000,7,1)), st.to_timezoned_datetime('UTC'))
+        self.assertEquals(self.utc.localize(datetime(2000,7,1)), st.to_timezoned_datetime(self.utc))
 
     def test_to_naive_datetime(self):
         st = sanetztime(JAN_MICROS)
@@ -225,13 +252,16 @@ class SaneTzTimeTest(unittest2.TestCase):
 
     def test_to_naive_utc_datetime(self):
         st = sanetztime(JAN_MICROS)
-        self.assertEquals(datetime(2000,1,1), st.to_naive_utc_datetime())
+        self.assertEquals(datetime(2000,1,1), st.to_timezoned_naive_datetime('UTC'))
+        self.assertEquals(datetime(2000,1,1), st.to_timezoned_naive_datetime(self.utc))
 
         st = sanetztime(JAN_MICROS, tz='America/New_York')
-        self.assertEquals(datetime(2000,1,1), st.to_naive_utc_datetime())
+        self.assertEquals(datetime(2000,1,1), st.to_timezoned_naive_datetime('UTC'))
+        self.assertEquals(datetime(2000,1,1), st.to_timezoned_naive_datetime(self.utc))
 
         st = sanetztime(JUL_MICROS, tz='America/New_York')
-        self.assertEquals(datetime(2000,7,1), st.to_naive_utc_datetime())
+        self.assertEquals(datetime(2000,7,1), st.to_timezoned_naive_datetime('UTC'))
+        self.assertEquals(datetime(2000,7,1), st.to_timezoned_naive_datetime(self.utc))
 
     def test_timezone_switch(self):
         st = sanetztime(JAN_MICROS)
