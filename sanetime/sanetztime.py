@@ -53,7 +53,7 @@ class sanetztime(sanetime):
         return sanetztime(self.us, tz=tz)
 
     def to_datetime(self):
-        return self.utc_dt.astimezone(self.tz)
+        return self.to_utc_datetime().astimezone(self.tz)
 
     def to_naive_datetime(self):
         return self.to_datetime().replace(tzinfo=None)

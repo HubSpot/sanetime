@@ -125,19 +125,25 @@ class sanetime(object):
         if len(tzs)>1 or len(uss)>1 or len(args)>0:
             raise SaneTimeError('Unexpected constructor arguments')
 
-    def to_datetime(self):
-        return self.to_timezoned_datetime(pytz.utc)
+    def to_utc_datetime(self):
+        dt = fucked_datetime.utcfromtimestamp(self.us/10**6)
+        dt = pytz.utc.localize(dt)
+        dt = dt.replace(microsecond = self.us%10**6)
+        return dt
+
+    def to_utc_naive_datetime(self):
+        return self.to_utc_datetime().replace(tzinfo=None)
+
+    def to_datetime(self): 
+        return self.to_utc_datetime()
 
     def to_naive_datetime(self): 
-        return self.to_datetime().replace(tzinfo=None)
+        return self.to_utc_naive_datetime()
 
     def to_timezoned_datetime(self, tz):
         if isinstance(tz, basestring):
             tz = pytz.timezone(tz)
-        dt = fucked_datetime.utcfromtimestamp(self.us/10**6)
-        dt = tz.localize(dt)
-        dt = dt.replace(microsecond = self.us%10**6)
-        return dt
+        return self.to_utc_datetime().astimezone(tz)
 
     def to_timezoned_naive_datetime(self, tz):
         return self.to_timezoned_datetime(tz).replace(tzinfo=None)
@@ -205,37 +211,29 @@ class sanetime(object):
     def __str__(self):
         return '%sus' % self.us
     
-    def _get_s(self):
-        return (self.us+500*1000)/10**6
-    s = property(_get_s)
+    @property
+    def s(self): return (self.us+500*1000)/10**6
 
-    def _get_ms(self):
-        return (self.us+500)/1000
-    ms = property(_get_ms)
+    @property
+    def ms(self): return (self.us+500)/1000
 
-    def _get_dt(self):
-        return self.to_datetime()
-    dt = property(_get_dt)
+    @property
+    def dt(self): return self.to_datetime()
 
-    def _get_ndt(self):
-        return self.to_naive_datetime()
-    ndt = property(_get_ndt)
+    @property
+    def ndt(self): return self.to_naive_datetime()
 
-    def _get_utc_dt(self):
-        return self.to_timezoned_datetime(pytz.utc)
-    utc_dt = property(_get_utc_dt)
+    @property
+    def utc_dt(self): return self.to_utc_datetime()
 
-    def _get_utc_ndt(self):
-        return self.to_timezoned_naive_datetime(pytz.utc)
-    utc_ndt = property(_get_utc_ndt)
+    @property
+    def utc_ndt(self): return self.to_utc_naive_datetime()
     
-    def _get_ny_dt(self):
-        return self.to_timezoned_datetime('America/New_York')
-    ny_dt = property(_get_ny_dt)
+    @property
+    def ny_dt(self): return self.to_timezoned_datetime('America/New_York')
 
-    def _get_ny_ndt(self):
-        return self.to_timezoned_naive_datetime('America/New_York')
-    ny_ndt = property(_get_ny_ndt)
+    @property
+    def ny_ndt(self): return self.to_timezoned_naive_datetime('America/New_York')
 
     def _set_tz(self, tz):
         if isinstance(tz, basestring):

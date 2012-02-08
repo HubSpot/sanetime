@@ -219,14 +219,17 @@ class SaneTimeTest(unittest2.TestCase):
         st = sanetime(JAN_MICROS)
         self.assertEquals(pytz.utc.localize(datetime(2000,1,1)), st.to_timezoned_datetime('UTC'))
         self.assertEquals(pytz.utc.localize(datetime(2000,1,1)), st.to_timezoned_datetime(pytz.utc))
+        self.assertEquals(pytz.utc.localize(datetime(2000,1,1)).astimezone(self.ny), st.to_timezoned_datetime('America/New_York'))
 
         st = sanetime(JAN_MICROS, tz='America/New_York')
         self.assertEquals(pytz.utc.localize(datetime(2000,1,1)), st.to_timezoned_datetime('UTC'))
         self.assertEquals(pytz.utc.localize(datetime(2000,1,1)), st.to_timezoned_datetime(pytz.utc))
+        self.assertEquals(pytz.utc.localize(datetime(2000,1,1)).astimezone(self.ny), st.to_timezoned_datetime('America/New_York'))
 
         st = sanetime(JUL_MICROS, tz='America/New_York')
         self.assertEquals(pytz.utc.localize(datetime(2000,7,1)), st.to_timezoned_datetime('UTC'))
         self.assertEquals(pytz.utc.localize(datetime(2000,7,1)), st.to_timezoned_datetime(pytz.utc))
+        self.assertEquals(pytz.utc.localize(datetime(2000,7,1)).astimezone(self.ny), st.to_timezoned_datetime('America/New_York'))
 
     def test_to_naive_datetime(self):
         st = sanetime(JAN_MICROS)
