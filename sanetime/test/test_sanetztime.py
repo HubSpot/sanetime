@@ -1,4 +1,4 @@
-import unittest2
+import unittest
 from sanetime import sanetztime
 from sanetime.error import SaneTimeError
 from datetime import datetime
@@ -13,7 +13,7 @@ HOUR_MICROS = 60**2*1000**2
 NY_JAN_MICROS = JAN_MICROS + HOUR_MICROS * 5
 NY_JUL_MICROS = JUL_MICROS + HOUR_MICROS * 4
 
-class SaneTzTimeTest(unittest2.TestCase):
+class SaneTzTimeTest(unittest.TestCase):
     """ A class that wraps all the date time timezone python insanity, so you don't have to know about that shitshow """
 
     def setUp(self):

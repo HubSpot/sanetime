@@ -1,6 +1,5 @@
-# tested against python 2.6
+# tested against python 2.7
 nose==1.1.2
-pytz==2011k
-unittest2==0.5.1
-python-dateutil==1.5
-
+pytz==2012b
+python-dateutil==1.5  #2.0 is for pyton3
+sphinx==1.1.3

@@ -1,4 +1,4 @@
-import unittest2
+import unittest
 from sanetime import sanetime
 from sanetime.error import SaneTimeError
 from datetime import datetime
@@ -13,7 +13,7 @@ HOUR_MICROS = 60**2*1000**2
 NY_JAN_MICROS = JAN_MICROS + HOUR_MICROS * 5
 NY_JUL_MICROS = JUL_MICROS + HOUR_MICROS * 4
 
-class SaneTimeTest(unittest2.TestCase):
+class SaneTimeTest(unittest.TestCase):
 
     def assertSaneTimeEquals(self, st1, st2):
         self.assertInnards(st1.us, st1.tz, st2)
