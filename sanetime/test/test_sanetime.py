@@ -183,6 +183,21 @@ class SaneTimeTest(unittest.TestCase):
         self.assertTrue(t1!=t3)
         self.assertTrue(t3!=t1)
 
+        self.assertFalse(t1!=t2)
+        self.assertFalse(t2!=t1)
+        self.assertFalse(t1==t3)
+        self.assertFalse(t3==t1)
+
+        self.assertTrue(t1!=None)
+        self.assertFalse(t1==None)
+        self.assertTrue(None!=t1)
+        self.assertFalse(None==t1)
+
+        self.assertTrue(t1==t1.us)
+        self.assertTrue(t1=='2000-01-01')
+        self.assertFalse(t1=='2000-01-02')
+
+
     def test_hashability(self):
         t1 = sanetime(2000,1,1,0,0,0,0)
         t2 = sanetime(1999,12,31,19,0,0,0, tz='America/New_York')

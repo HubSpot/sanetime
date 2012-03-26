@@ -61,16 +61,21 @@ class SaneTzTime(SaneTime):
     def strftime(self, *args, **kwargs):
         return self.to_datetime().strftime(*args, **kwargs)
 
+    @property
     def _data(self):
         return (self.us, self.tz)
 
+    # more stringent equality check for sanetztime -- must have same timezone as well
     def __eq__(self, other):
-        return self._data() == other._data()
-    def __ne__(self, other):
-        return self._data() != other._data()
+        if not isinstance(other, SaneTzTime):
+            try:
+                other = SaneTzTime(other)
+            except:
+                return False
+        return self._data == other._data
 
     def __hash__(self):
-        return self._data().__hash__()
+        return self._data.__hash__()
 
     def __add__(self, extra_us):
         if not isinstance(extra_us, Number):

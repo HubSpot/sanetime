@@ -44,6 +44,17 @@ class SaneTzTimeTest(unittest.TestCase):
                 else:
                     self.assertNotEquals(items[i],items[j])
 
+        self.assertTrue(st1!=None)
+        self.assertFalse(st1==None)
+        self.assertTrue(None!=st1)
+        self.assertFalse(None==st1)
+
+        self.assertTrue(st1>=st1.us)
+        self.assertTrue(st1<=st1.us)
+        self.assertTrue(st1==st1.us)
+
+
+
     def test_from_micros(self):
         self.assertInnards(JAN_MICROS, self.utc, sanetztime(JAN_MICROS))
         self.assertInnards(JAN_MICROS, self.utc, sanetztime(JAN_MICROS, tz='UTC'))

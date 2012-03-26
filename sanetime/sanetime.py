@@ -159,27 +159,21 @@ class SaneTime(object):
         if not isinstance(other, SaneTime):
             other = SaneTime(other)
         return self.us < other.us
-    def __le__(self, other):
-        if not isinstance(other, SaneTime):
-            other = SaneTime(other)
-        return self.us <= other.us
     def __gt__(self, other):
         if not isinstance(other, SaneTime):
             other = SaneTime(other)
         return self.us > other.us
-    def __ge__(self, other):
-        if not isinstance(other, SaneTime):
-            other = SaneTime(other)
-        return self.us >= other.us
     def __eq__(self, other):
         if not isinstance(other, SaneTime):
-            other = SaneTime(other)
-        return self.us == int(other)
+            try:
+                other = SaneTime(other)
+            except:
+                return False
+        return self.us == other.us
 
-    def __ne__(self, other):
-        if not isinstance(other, SaneTime):
-            other = SaneTime(other)
-        return self.us != other.us
+    def __le__(self, other): return not self.__gt__(other)
+    def __ge__(self, other): return not self.__lt__(other)
+    def __ne__(self, other): return not self.__eq__(other)
 
     def __hash__(self):
         return self.us.__hash__()
