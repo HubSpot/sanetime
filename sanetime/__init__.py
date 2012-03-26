@@ -1,4 +1,5 @@
-from sanetime import sanetime
-from sanetztime import sanetztime
+from .sanetime import sanetime,nsanetime,SaneTime
+from .sanetztime import sanetztime,nsanetztime,SaneTzTime
+
 
         

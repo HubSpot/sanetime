@@ -1,5 +1,5 @@
 import re
-from sanetime import sanetime
+from sanetime import SaneTime
 from error import SaneTimeError
 from numbers import Number
 
@@ -19,7 +19,7 @@ There are two classes that you mind find useful here, and you should understand 
 """
 
 # keeping lowercase so we can mimic datetime as much as is reasonable
-class sanetztime(sanetime):
+class SaneTzTime(SaneTime):
     """
     sanetztime is concerned with a particular moment in time AND which timezone that moment in time
     was experienced.  Two sanetztimes are not equal unless they are the same moment in time and
@@ -35,7 +35,7 @@ class sanetztime(sanetime):
     def __init__(self, *args, **kwargs):
         if len(args)>0:
             args = list(args)
-            if isinstance(args[0], sanetztime):
+            if isinstance(args[0], SaneTzTime):
                 kwargs['tz'] = args[0].tz
                 args[0] = args[0].us
             elif isinstance(args[0], basestring):
@@ -43,23 +43,20 @@ class sanetztime(sanetime):
                     parts = args[0].split(' ')
                     kwargs['tz'] = parts[1]
                     args[0] = parts[0]
-        super(sanetztime,self).__init__(*args, **kwargs)
+        super(SaneTzTime,self).__init__(*args, **kwargs)
         self.tz = self.to_datetime().tzinfo
 
     def set_tz(self, tz):
-        return super(sanetztime,self)._set_tz(tz)
+        return super(SaneTzTime,self)._set_tz(tz)
 
     def with_tz(self, tz):
-        return sanetztime(self.us, tz=tz)
+        return SaneTzTime(self.us, tz=tz)
 
     def to_datetime(self):
         return self.to_utc_datetime().astimezone(self.tz)
 
     def to_naive_datetime(self):
         return self.to_datetime().replace(tzinfo=None)
-
-    def to_sanetime(self):
-        return sanetime(self.us)
 
     def strftime(self, *args, **kwargs):
         return self.to_datetime().strftime(*args, **kwargs)
@@ -78,13 +75,13 @@ class sanetztime(sanetime):
     def __add__(self, extra_us):
         if not isinstance(extra_us, Number):
             raise SaneTimeError('Can only add/sub microseconds (expecting a number)')
-        return sanetztime(self.us + int(extra_us), tz = self.tz)
+        return SaneTzTime(self.us + int(extra_us), tz = self.tz)
 
     def __repr__(self):
         return '%s %s' % (self.__repr_naive__(), self.tz_name)
 
     def __str__(self):
-        return '%s %s' % (super(sanetztime,self).__str__(), self.tz_name)
+        return '%s %s' % (super(SaneTzTime,self).__str__(), self.tz_name)
     
     def _get_tz(self):
         return self._tz
@@ -99,3 +96,11 @@ class sanetztime(sanetime):
     tz_abbr = property(_get_tz_abbr)
     
 
+#primary gateways
+
+def sanetztime(*args, **kwargs): 
+    return SaneTzTime(*args, **kwargs)
+
+def nsanetztime(*args, **kwargs): 
+    if not args or args[0] is None: return None
+    return SaneTzTime(*args, **kwargs)

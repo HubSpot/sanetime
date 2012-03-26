@@ -20,7 +20,7 @@ There are two classes that you mind find useful here, and you should understand 
         moment was experienced.
 """
 
-class sanetime(object):
+class SaneTime(object):
     """
     sanetime is only concerned with a particular moment in time.  It does not concern itself with
     timezones.  Its constructor will do its best to turn timezoned times into a utc time, and
@@ -68,7 +68,7 @@ class sanetime(object):
           3) s = an int/long in utc seconds
           4) tz = a timezone (either a pytz timezone object, a recognizeable pytz timezone string, or a dateutil tz object)
         """
-        super(sanetime,self).__init__()
+        super(SaneTime,self).__init__()
         uss = []
         tzs = []
         naive_dt = None
@@ -77,8 +77,9 @@ class sanetime(object):
         if len(args)>2 and len(args)<8:
             args = [fucked_datetime(*args)]
         if len(args)==1:
+            from .sanetztime import SaneTzTime
             arg = args.pop()
-            if type(arg) in [long,int,float,sanetime]:
+            if type(arg) in [long,int,float,SaneTime,SaneTzTime]:
                 uss.append(int(arg))
             elif isinstance(arg, basestring):
                 arg = arg.strip()
@@ -148,33 +149,36 @@ class sanetime(object):
     def to_timezoned_naive_datetime(self, tz):
         return self.to_timezoned_datetime(tz).replace(tzinfo=None)
 
+    def to_sanetime(self):
+        return sanetime(self.us)
+
     def strftime(self, *args, **kwargs):
         return self.to_datetime().strftime(*args, **kwargs)
 
     def __lt__(self, other):
-        if not isinstance(other, sanetime):
-            other = sanetime(other)
+        if not isinstance(other, SaneTime):
+            other = SaneTime(other)
         return self.us < other.us
     def __le__(self, other):
-        if not isinstance(other, sanetime):
-            other = sanetime(other)
+        if not isinstance(other, SaneTime):
+            other = SaneTime(other)
         return self.us <= other.us
     def __gt__(self, other):
-        if not isinstance(other, sanetime):
-            other = sanetime(other)
+        if not isinstance(other, SaneTime):
+            other = SaneTime(other)
         return self.us > other.us
     def __ge__(self, other):
-        if not isinstance(other, sanetime):
-            other = sanetime(other)
+        if not isinstance(other, SaneTime):
+            other = SaneTime(other)
         return self.us >= other.us
     def __eq__(self, other):
-        if not isinstance(other, sanetime):
-            other = sanetime(other)
+        if not isinstance(other, SaneTime):
+            other = SaneTime(other)
         return self.us == int(other)
 
     def __ne__(self, other):
-        if not isinstance(other, sanetime):
-            other = sanetime(other)
+        if not isinstance(other, SaneTime):
+            other = SaneTime(other)
         return self.us != other.us
 
     def __hash__(self):
@@ -183,9 +187,9 @@ class sanetime(object):
     def __add__(self, operand):
         if not isinstance(operand, Number):
             raise SaneTimeError('Can only add/sub microseconds (expecting a number)')
-        return sanetime(self.us + int(operand))
+        return SaneTime(self.us + int(operand))
     def __sub__(self, operand):
-        if isinstance(operand, sanetime):
+        if isinstance(operand, SaneTime):
             return self.us - operand.us
         return self.__add__(-operand)
     def __int__(self):
@@ -235,6 +239,9 @@ class sanetime(object):
     @property
     def ny_ndt(self): return self.to_timezoned_naive_datetime('America/New_York')
 
+    @property
+    def st(self): return self.to_sanetime()
+
     def _set_tz(self, tz):
         if isinstance(tz, basestring):
             tz = pytz.timezone(tz)
@@ -250,7 +257,7 @@ class sanetime(object):
         copied from http://stackoverflow.com/questions/1551382/python-user-friendly-time-format
         and then tweaked
         """
-        micro_delta = sanetime().us - self.us
+        micro_delta = SaneTime().us - self.us
         second_delta = (micro_delta+500*1000)/1000**2
         day_delta = (micro_delta+1000**2*60**2*12)/(1000**2*60**2*24)
 
@@ -283,3 +290,12 @@ class sanetime(object):
         return "%s years ago" % ((day_delta+182)/365)
 
 
+
+#primary gateways
+
+def sanetime(*args, **kwargs): 
+    return SaneTime(*args, **kwargs)
+
+def nsanetime(*args, **kwargs): 
+    if not args or args[0] is None: return None
+    return SaneTime(*args, **kwargs)

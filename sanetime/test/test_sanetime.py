@@ -1,5 +1,5 @@
 import unittest
-from sanetime import sanetime
+from sanetime import sanetime,sanetztime
 from sanetime.error import SaneTimeError
 from datetime import datetime
 import pytz
@@ -80,6 +80,11 @@ class SaneTimeTest(unittest.TestCase):
         self.assertEquals(JAN_MICROS, sanetime(datetime(2000,1,1, tzinfo=self.utc)))
         self.assertEquals(NY_JAN_MICROS, sanetime(self.ny.localize(datetime(2000,1,1))))
         self.assertEquals(NY_JUL_MICROS, sanetime(self.ny.localize(datetime(2000,7,1))))
+
+    def test_from_sanetimes(self):
+        now = sanetime()
+        nowtz = sanetztime(now.us, tz='America/New_York')
+        self.assertEquals(now, sanetime(nowtz))
 
     def test_now(self):
         past = pytz.utc.localize(datetime.utcnow())

@@ -12,6 +12,22 @@ Contents:
    :maxdepth: 2
 
 
+sanetime
+========
+
+::
+from sanetime import sanetime
+
+now = sanetime()
+then = sanetime('2011-01-01')
+when = sanetime(2830490423482934)
+
+then.s
+then.ms
+then.us
+
+
+
 
 Indices and tables
 ==================
