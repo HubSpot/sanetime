@@ -103,8 +103,8 @@ class SaneTzTime(SaneTime):
 
 #primary gateways
 
-def sanetztime(*args, **kwargs): 
-    return SaneTzTime(*args, **kwargs)
+sanetztime = SaneTzTime
+tztime = SaneTzTime
 
 def nsanetztime(*args, **kwargs): 
     if not args or args[0] is None: return None

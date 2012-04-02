@@ -2,9 +2,9 @@ import calendar as shit_calendar
 from datetime import datetime as fucked_datetime
 from dateutil import parser as crap_parser
 from error import SaneTimeError
+from .sanedelta import SaneDelta
 import pytz
 import re
-from numbers import Number
 
 """
 Sane wrappers around the python's datetime / time / date / timetuple / pytz / timezone / calendar /
@@ -178,14 +178,14 @@ class SaneTime(object):
     def __hash__(self):
         return self.us.__hash__()
 
-    def __add__(self, operand):
-        if not isinstance(operand, Number):
-            raise SaneTimeError('Can only add/sub microseconds (expecting a number)')
-        return SaneTime(self.us + int(operand))
+    def __add__(self, operand): return SaneTime(self.us + int(operand))
     def __sub__(self, operand):
         if isinstance(operand, SaneTime):
-            return self.us - operand.us
-        return self.__add__(-operand)
+            print self.us
+            print operand.us
+            print self.us - operand.us
+            return SaneDelta(self.us - operand.us)
+        return self.__add__(-int(operand))
     def __int__(self):
         return self.us
     def __long__(self):
@@ -208,6 +208,9 @@ class SaneTime(object):
 
     def __str__(self):
         return '%sus' % self.us
+
+    @property
+    def ny_str(self): return self.ny_ndt.strftime('%I:%M:%S%p %m/%d/%Y')
     
     @property
     def s(self): return (self.us+500*1000)/10**6
@@ -287,9 +290,12 @@ class SaneTime(object):
 
 #primary gateways
 
-def sanetime(*args, **kwargs): 
-    return SaneTime(*args, **kwargs)
+sanetime = SaneTime
+time = SaneTime
 
 def nsanetime(*args, **kwargs): 
-    if not args or args[0] is None: return None
+    if args:
+        if args[0] is None: return None
+    else:
+        if None in kwargs.values(): return None
     return SaneTime(*args, **kwargs)
