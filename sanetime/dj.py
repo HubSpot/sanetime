@@ -43,6 +43,6 @@ class SaneTimeField(models.BigIntegerField):
 
 
 from south.modelsinspector import add_introspection_rules
-add_introspection_rules([], ["^djextras\.fields\.sanetime_field\.SaneTimeField"])
+add_introspection_rules([], ["^sanetime\.dj\.SaneTimeField"])
     
 
