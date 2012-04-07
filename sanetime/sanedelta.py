@@ -31,17 +31,17 @@ class SaneDelta(object):
 
     # rounded amounts
     @property
-    def ms(self): return self.us + HALF_MILLI_MICROS / MILLI_MICROS
+    def ms(self): return (self.us + HALF_MILLI_MICROS) / MILLI_MICROS
     @property
-    def s(self): return self.us + HALF_SECOND_MICROS / SECOND_MICROS
+    def s(self): return (self.us + HALF_SECOND_MICROS) / SECOND_MICROS
     @property
-    def m(self): return self.us + HALF_MINUTE_MICROS / MINUTE_MICROS
+    def m(self): return (self.us + HALF_MINUTE_MICROS) / MINUTE_MICROS
     @property
-    def h(self): return self.us + HALF_HOUR_MICROS / HOUR_MICROS
+    def h(self): return (self.us + HALF_HOUR_MICROS) / HOUR_MICROS
     @property
-    def d(self): return self.us + HALF_DAY_MICROS / DAY_MICROS
+    def d(self): return (self.us + HALF_DAY_MICROS) / DAY_MICROS
     @property
-    def w(self): return self.us + HALF_WEEK_MICROS / WEEK_MICROS
+    def w(self): return (self.us + HALF_WEEK_MICROS) / WEEK_MICROS
 
     # aliases
     @property
@@ -54,8 +54,6 @@ class SaneDelta(object):
     hours = h
     days = d
     weeks = w
-
-
 
     # unrounded amounts
     @property
@@ -84,6 +82,34 @@ class SaneDelta(object):
     _days = _d
     _weeks = _w
 
+    # float amounts
+    @property
+    def fus(self): return float(self.us)
+    @property
+    def fms(self): return float(self.us) / MILLI_MICROS
+    @property
+    def fs(self): return float(self.us) / SECOND_MICROS
+    @property
+    def fm(self): return float(self.us)/ MINUTE_MICROS
+    @property
+    def fh(self): return float(self.us) / HOUR_MICROS
+    @property
+    def fd(self): return float(self.us) / DAY_MICROS
+    @property
+    def fw(self): return float(self.us) / WEEK_MICROS
+
+    # aliases
+    f_micros = fus
+    f_microseconds = f_micros
+    f_millis = fms
+    f_milliseconds = fms
+    f_seconds = fs
+    f_minutes = fm
+    f_hours = fh
+    f_days = fd
+    f_weeks = fw
+
+
     def __lt__(self, other): return self.us < int(other)
     def __le__(self, other): return self.us <= int(other)
     def __gt__(self, other): return self.us > int(other)
@@ -98,8 +124,8 @@ class SaneDelta(object):
 
     def __add__(self, operand): return SaneDelta(us = self.us + int(operand))
     def __sub__(self, operand): return SaneDelta(us = self.us - int(operand))
-    def __mult__(self, operand): return SaneDelta(us = self.us * operand)
-    def __div__(self, operand): return SaneDelta(us = self.us / operand)
+    def __mul__(self, operand): return SaneDelta(us = self.us * int(operand))
+    def __div__(self, operand): return SaneDelta(us = self.us / int(operand))
 
     @property
     def _parts(self):
