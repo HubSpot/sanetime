@@ -181,9 +181,6 @@ class SaneTime(object):
     def __add__(self, operand): return SaneTime(self.us + int(operand))
     def __sub__(self, operand):
         if isinstance(operand, SaneTime):
-            print self.us
-            print operand.us
-            print self.us - operand.us
             return SaneDelta(self.us - operand.us)
         return self.__add__(-int(operand))
     def __int__(self):
