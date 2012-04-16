@@ -1,0 +1,213 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>sanetime &mdash; sanetime 3.5.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/jinja.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '3.5.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="sanetime 3.5.0 documentation" href="#" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="#">sanetime 3.5.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="sanetime">
+<h1>sanetime<a class="headerlink" href="#sanetime" title="Permalink to this headline">¶</a></h1>
+<p><strong>simple, intuitive datetime manipulation</strong></p>
+<p>If you&#8217;ve ever used python&#8217;s datetime, date, time, calendar, timedelta, timetuple, pytz, and dateutil modules and thought: &#8220;Wow &#8211; I love how explicit I&#8217;m being right now&#8221;, then this library is not for you.</p>
+<p>If, on the other hand, you like preserving your braincells for more important things, then you have found what you&#8217;re looking for.</p>
+<p>sanetime was written to DRY up all the common date/time manipulations we do constantly in our code while presenting the most intuitive client possible:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">time</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">9420488202</span><span class="p">)</span><span class="o">-</span><span class="n">delta</span><span class="p">(</span><span class="n">d</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">ms</span>
+<span class="go">48238492992932</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="o">-</span><span class="p">(</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">time</span><span class="p">())</span><span class="o">.</span><span class="n">us</span>
+<span class="go">84</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">(</span><span class="s">&#39;2011-01-01&#39;</span><span class="p">,</span><span class="n">tz</span><span class="o">=</span><span class="s">&#39;America/New_York&#39;</span><span class="p">)</span><span class="o">.</span>
+<span class="go">23208402093</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">time</span><span class="p">(</span><span class="s">&#39;2011-01-01&#39;</span><span class="p">,</span><span class="n">tz</span><span class="o">=</span><span class="s">&#39;America/New_York&#39;</span><span class="p">)</span> <span class="o">-</span> <span class="n">time</span><span class="p">(</span><span class="s">&#39;2011-01-01&#39;</span><span class="p">,</span><span class="n">tz</span><span class="o">=</span><span class="s">&#39;America/Phoenix&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">h</span>
+<span class="go">2</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="p">(</span><span class="s">&#39;2011-01-01&#39;</span><span class="p">,</span><span class="n">tz</span><span class="o">=</span><span class="s">&#39;America/New_York&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">delta</span><span class="p">(</span><span class="n">h</span><span class="o">=</span><span class="mi">12</span><span class="p">))</span><span class="o">.</span><span class="n">with_tz</span><span class="p">(</span><span class="s">&#39;America/Phoenix&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="the-basics">
+<h1>The Basics<a class="headerlink" href="#the-basics" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="time">
+<h2>time<a class="headerlink" href="#time" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">time</span></tt> represents only a moment in time.</p>
+</div>
+<div class="section" id="timetz">
+<h2>timetz<a class="headerlink" href="#timetz" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">timetz</span></tt> represents a moment in time and where that time is experienced (i.e. the timezone)</p>
+</div>
+<div class="section" id="delta">
+<h2>delta<a class="headerlink" href="#delta" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">delta</span></tt> is an amount of time.</p>
+</div>
+</div>
+<div class="section" id="requests-http-for-humans">
+<h1>Requests: HTTP for Humans<a class="headerlink" href="#requests-http-for-humans" title="Permalink to this headline">¶</a></h1>
+<p>Release v3.5. (<em class="xref std std-ref">Installation</em>)</p>
+<p>Requests is an <em class="xref std std-ref">ISC Licensed</em> HTTP library, written in Python, for human beings.</p>
+<p>Python&#8217;s standard <strong>urllib2</strong> module provides most of
+the HTTP capabilities you need, but the API is thoroughly <strong>broken</strong>.
+It was built for a different time —&nbsp;and a different web. It requires an <em>enormous</em> amount of work (even method overrides) to perform the simplest of tasks.</p>
+<p>Things shouldn’t be this way. Not in Python.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;https://api.github.com&#39;</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;user&#39;</span><span class="p">,</span> <span class="s">&#39;pass&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span>
+<span class="go">204</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s">&#39;content-type&#39;</span><span class="p">]</span>
+<span class="go">&#39;application/json&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">text</span>
+<span class="gp">...</span>
+</pre></div>
+</div>
+<p>See <a class="reference external" href="https://gist.github.com/973705">the same code, without Requests</a>.</p>
+<p>Requests takes all of the work out of Python HTTP/1.1 —&nbsp;making your integration with web services seamless. There&#8217;s no need to manually add query strings to your URLs, or to form-encode your POST data. Keep-alive and HTTP connection pooling are 100%  automatic, powered by <a class="reference external" href="https://github.com/shazow/urllib3">urllib3</a>, which is embedded within Requests.</p>
+<div class="section" id="testimonials">
+<h2>Testimonials<a class="headerlink" href="#testimonials" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="http://heroku.com">Heroku</a>, <a class="reference external" href="https://www.paypal.com/">PayPal</a>,
+<a class="reference external" href="https://www.transifex.net/">Transifex</a>,
+<a class="reference external" href="http://www.native-instruments.com/">Native Instruments</a>, <a class="reference external" href="http://www.washingtonpost.com/">The Washington Post</a>,
+<a class="reference external" href="http://twitter.com">Twitter, Inc</a>,
+<a class="reference external" href="http://readability.com">Readability</a>, and
+Federal US Institutions
+use Requests internally. It has been installed over 100,000 times from PyPI.</p>
+<dl class="docutils">
+<dt><strong>Armin Ronacher</strong></dt>
+<dd>Requests is the perfect example how beautiful an API can be with the
+right level of abstraction.</dd>
+<dt><strong>Matt DeBoard</strong></dt>
+<dd>I&#8217;m going to get &#64;kennethreitz&#8217;s Python requests module tattooed
+on my body, somehow. The whole thing.</dd>
+<dt><strong>Daniel Greenfeld</strong></dt>
+<dd>Nuked a 1200 LOC spaghetti code library with 10 lines of code thanks to
+&#64;kennethreitz&#8217;s request library. Today has been AWESOME.</dd>
+<dt><strong>Kenny Meyers</strong></dt>
+<dd>Python HTTP: When in doubt, or when not in doubt, use Requests. Beautiful,
+simple, Pythonic.</dd>
+</dl>
+</div>
+<div class="section" id="feature-support">
+<h2>Feature Support<a class="headerlink" href="#feature-support" title="Permalink to this headline">¶</a></h2>
+<p>Requests is ready for today&#8217;s web.</p>
+<ul class="simple">
+<li>International Domains and URLs</li>
+<li>Keep-Alive &amp; Connection Pooling</li>
+<li>Sessions with Cookie Persistence</li>
+<li>Browser-style SSL Verification</li>
+<li>Basic/Digest Authentication</li>
+<li>Elegant Key/Value Cookies</li>
+<li>Automatic Decompression</li>
+<li>Unicode Response Bodies</li>
+<li>Multipart File Uploads</li>
+<li>Connection Timeouts</li>
+<li><tt class="docutils literal"><span class="pre">.netrc</span></tt> support</li>
+</ul>
+<p>Contents:</p>
+<div class="toctree-wrapper compound">
+<ul class="simple">
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><em>Index</em></a></li>
+<li><a class="reference internal" href="py-modindex.html"><em>Module Index</em></a></li>
+<li><a class="reference internal" href="search.html"><em>Search Page</em></a></li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">sanetime</a></li>
+<li><a class="reference internal" href="#the-basics">The Basics</a><ul>
+<li><a class="reference internal" href="#time">time</a></li>
+<li><a class="reference internal" href="#timetz">timetz</a></li>
+<li><a class="reference internal" href="#delta">delta</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#requests-http-for-humans">Requests: HTTP for Humans</a><ul>
+<li><a class="reference internal" href="#testimonials">Testimonials</a></li>
+<li><a class="reference internal" href="#feature-support">Feature Support</a><ul>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2012, prior.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+    </div>
+  </body>
+</html>

@@ -1,23 +1,8 @@
 sanetime
 ========
 
-**simple, intuitive date/time manipulation**
+**simple, intuitive datetime manipulation**
 
-::
-
-    >>> time('2011-01-01','America/New_York').ms
-    23208402093
-
-    >>> (time('2012-04-15 12:30')-delta(h=30)).ms
-    48238492992932
-
-    >>> -(time()-time()).us
-    84
-
-    >>> (time('2011-01-01',tz='America/New_York') - time('2011-01-01',tz='America/Phoenix')).h
-    2
-
-    >>> str(time('2011-01-01',tz='America/New_York') + delta(h=12)).with_tz('America/Phoenix'))
 
 If you've ever used python's datetime, date, time, calendar, timedelta, timetuple, pytz, and dateutil modules and thought: "Wow -- I love how explicit I'm being right now", then this library is not for you.
 
@@ -25,14 +10,21 @@ If, on the other hand, you like preserving your braincells for more important th
 
 sanetime was written to DRY up all the common date/time manipulations we do constantly in our code while presenting the most intuitive client possible:
 
+::
 
+    >>> (time(s=9420488202)-delta(d=1)).ms
+    48238492992932
+    
+    >>> -(time()-time()).us
+    84
 
-FAQ
-===
-Why is everything stored internally as microseconds?
+    >>> time('2011-01-01',tz='America/New_York').
+    23208402093
 
-Python's datetime gives us access to microseconds, and since milliseconds would already have us cross the 32bit integer boundary, we might as well capture everything we can and take on microseconds as well.  There are plenty of helpers on the time, tztime, and delta classes so you never have to see/manipulate the huge microsecond numbers yourself.
+    >>> (time('2011-01-01',tz='America/New_York') - time('2011-01-01',tz='America/Phoenix')).h
+    2
 
+    >>> str(time('2011-01-01',tz='America/New_York') + delta(h=12)).with_tz('America/Phoenix'))
 
 
 
@@ -42,40 +34,16 @@ The Basics
 
 time
 ----
-``time`` represents only a moment in time, internally stored as microseconds since epoch.
+``time`` represents only a moment in time.
 
 timetz
 ------
-``timetz`` represents a moment in time and where that time is experienced (i.e. the timezone), internally stored as microseconds since epoch and timezone.
+``timetz`` represents a moment in time and where that time is experienced (i.e. the timezone)
 
 delta
 -----
-``delta`` is an amount of time, internally stored as microseconds.
+``delta`` is an amount of time.
 
-
-
-Confusion
-=========
-Though sanetime avoids a menagerie of confusion you'd encounter without it, it does introduce one unavoidable? point of confusion.  delta's can never change based on context -- that means a delta(d=1) is always 24 hours.  So you have to be careful around daylight savings time jumps.   Whenever you use something like this: delta(d=1), you should be thinking 24 hours.  For example:
-
-
-
-::
-
-    >>> time('2011-01-01','America/New_York').ms
-    23208402093
-
-    >>> tztime('2012-04-15 12:30','America/New_York')-delta(d=1)
-
-    48238492992932
-
-    >>> -(time()-time()).us
-    84
-
-    >>> (time('2011-01-01',tz='America/New_York') - time('2011-01-01',tz='America/Phoenix')).h
-    2
-
-    >>> str(time('2011-01-01',tz='America/New_York') + delta(h=12)).with_tz('America/Phoenix'))
 
 
 

@@ -1,5 +1,5 @@
 import unittest
-from sanetime import sanetime,sanetztime
+from sanetime import sanetime,sanetztime,time
 from sanetime.error import SaneTimeError
 from datetime import datetime
 import pytz
@@ -22,6 +22,33 @@ class SaneTimeTest(unittest.TestCase):
         self.utc = pytz.utc
         self.ny = pytz.timezone('America/New_York')
         self.ac = pytz.timezone('Africa/Cairo')
+
+    def test_now_construction(self):
+        self.assertTrue(time('2012-04-10') < time() < time('3000-01-01'))
+        self.assertTrue(time() < time() < time())
+
+    def test_string_construction(self):
+        self.assertTrue(JAN_MICROS, time('2000-01-01').us)
+        self.assertTrue(JAN_MICROS, time('2000-01-01 00:00:00').us)
+        self.assertTrue(JAN_MICROS, time('2000-01-01T00:00Z').us)
+        self.assertTrue(JAN_MICROS, time('2000-01-01 00:00:00+00:00').us)
+        self.assertTrue(JAN_MICROS, time('Sunday, January 1st 2000, at 12:00am').us)
+
+    def test_construction_with_timezone(self):
+        self.assertTrue(JAN_MICROS, time('2000-01-01','UTC'))
+        self.assertTrue(JAN_MICROS, time(JAN_MICROS,'America/New_York'))
+        self.assertTrue(JAN_MICROS, time('1999-12-31 7:00pm','America/New_York'))
+        self.assertTrue(NY_JAN_MICROS, time('2000-01-01','America/New_York'))
+        self.assertTrue(NY_JAN_MICROS, time('2000-01-01 00:00 EST'))
+        self.assertTrue(NY_JAN_MICROS, time('2000-01-01 00:00 EST','Africa/Cairo'))
+
+        #self.assertTrue(JUL_MICROS, time('2000-07-01').us)
+
+        #< time() < time('3000-01-01'))
+        #self.assertTrue(time() < time() < time())
+
+
+
 
     def test_micro_equality(self):
         st1 = sanetime(JAN_MICROS)

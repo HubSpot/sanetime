@@ -1,2 +1,2 @@
-class SaneTimeError(ValueError):
+class Error(ValueError):
     pass
