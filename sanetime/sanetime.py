@@ -296,3 +296,5 @@ def nsanetime(*args, **kwargs):
     else:
         if None in kwargs.values(): return None
     return SaneTime(*args, **kwargs)
+
+ntime = nsanetime

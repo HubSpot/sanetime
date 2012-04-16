@@ -189,3 +189,4 @@ def nsanedelta(*args, **kwargs):
     else:
         if None in kwargs.values(): return None
     return SaneDelta(*args, **kwargs)
+ndelta = nsanedelta

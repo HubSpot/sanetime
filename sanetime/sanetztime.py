@@ -109,3 +109,4 @@ tztime = SaneTzTime
 def nsanetztime(*args, **kwargs): 
     if not args or args[0] is None: return None
     return SaneTzTime(*args, **kwargs)
+ntztime = nsanetztime
