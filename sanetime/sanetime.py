@@ -87,9 +87,13 @@ class SaneTime(object):
                 if native_format_match:
                     kwargs[native_format_match.group(2)] = native_format_match.group(1)
                 else:
+                    utc = arg.endswith('Z') or arg.endswith('+00:00')
                     arg = crap_parser.parse(arg)
                     if arg.tzinfo:  # parsed timezones are a special breed of retard
-                        arg = arg.astimezone(pytz.utc).replace(tzinfo=None)
+                        if utc:  # put this in place to guard against wierd gunicorn issue -- gunicorn will attempt to force local timezone when there's an explicit UTC timezone associated! not sure where that's coming from.
+                            arg = arg.replace(tzinfo=None)
+                        else:
+                            arg = arg.astimezone(pytz.utc).replace(tzinfo=None)
                         tzs.append('UTC') # don't allow for a tz specificaion on top of a timezoned datetime str  -- that is opening a whole extra can of confusion -- so force the timezone here so that another tz specification will cause an error
             if type(arg) == fucked_datetime:
                 naive_dt = arg
