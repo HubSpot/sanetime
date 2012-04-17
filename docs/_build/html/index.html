@@ -44,18 +44,15 @@
             
   <div class="section" id="sanetime">
 <h1>sanetime<a class="headerlink" href="#sanetime" title="Permalink to this headline">¶</a></h1>
-<p><strong>simple, intuitive datetime manipulation</strong></p>
-<p>If you&#8217;ve ever used python&#8217;s datetime, date, time, calendar, timedelta, timetuple, pytz, and dateutil modules and thought: &#8220;Wow &#8211; I love how explicit I&#8217;m being right now&#8221;, then this library is not for you.</p>
-<p>If, on the other hand, you like preserving your braincells for more important things, then you have found what you&#8217;re looking for.</p>
-<p>sanetime was written to DRY up all the common date/time manipulations we do constantly in our code while presenting the most intuitive client possible:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">time</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">9420488202</span><span class="p">)</span><span class="o">-</span><span class="n">delta</span><span class="p">(</span><span class="n">d</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">ms</span>
+<p><strong>simple, intuitive date/time manipulation</strong></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">(</span><span class="s">&#39;2011-01-01&#39;</span><span class="p">,</span><span class="s">&#39;America/New_York&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">ms</span>
+<span class="go">23208402093</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">time</span><span class="p">(</span><span class="s">&#39;2012-04-15 12:30&#39;</span><span class="p">)</span><span class="o">-</span><span class="n">delta</span><span class="p">(</span><span class="n">h</span><span class="o">=</span><span class="mi">30</span><span class="p">))</span><span class="o">.</span><span class="n">ms</span>
 <span class="go">48238492992932</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="o">-</span><span class="p">(</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">time</span><span class="p">())</span><span class="o">.</span><span class="n">us</span>
 <span class="go">84</span>
-
-<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">(</span><span class="s">&#39;2011-01-01&#39;</span><span class="p">,</span><span class="n">tz</span><span class="o">=</span><span class="s">&#39;America/New_York&#39;</span><span class="p">)</span><span class="o">.</span>
-<span class="go">23208402093</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">time</span><span class="p">(</span><span class="s">&#39;2011-01-01&#39;</span><span class="p">,</span><span class="n">tz</span><span class="o">=</span><span class="s">&#39;America/New_York&#39;</span><span class="p">)</span> <span class="o">-</span> <span class="n">time</span><span class="p">(</span><span class="s">&#39;2011-01-01&#39;</span><span class="p">,</span><span class="n">tz</span><span class="o">=</span><span class="s">&#39;America/Phoenix&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">h</span>
 <span class="go">2</span>
@@ -63,20 +60,48 @@
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="p">(</span><span class="s">&#39;2011-01-01&#39;</span><span class="p">,</span><span class="n">tz</span><span class="o">=</span><span class="s">&#39;America/New_York&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">delta</span><span class="p">(</span><span class="n">h</span><span class="o">=</span><span class="mi">12</span><span class="p">))</span><span class="o">.</span><span class="n">with_tz</span><span class="p">(</span><span class="s">&#39;America/Phoenix&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
+<p>If you&#8217;ve ever used python&#8217;s datetime, date, time, calendar, timedelta, timetuple, pytz, and dateutil modules and thought: &#8220;Wow &#8211; I love how explicit I&#8217;m being right now&#8221;, then this library is not for you.</p>
+<p>If, on the other hand, you like preserving your braincells for more important things, then you have found what you&#8217;re looking for.</p>
+<p>sanetime was written to DRY up all the common date/time manipulations we do constantly in our code while presenting the most intuitive client possible:</p>
+</div>
+<div class="section" id="faq">
+<h1>FAQ<a class="headerlink" href="#faq" title="Permalink to this headline">¶</a></h1>
+<p>Why is everything stored internally as microseconds?</p>
+<p>Python&#8217;s datetime gives us access to microseconds, and since milliseconds would already have us cross the 32bit integer boundary, we might as well capture everything we can and take on microseconds as well.  There are plenty of helpers on the time, tztime, and delta classes so you never have to see/manipulate the huge microsecond numbers yourself.</p>
 </div>
 <div class="section" id="the-basics">
 <h1>The Basics<a class="headerlink" href="#the-basics" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="time">
 <h2>time<a class="headerlink" href="#time" title="Permalink to this headline">¶</a></h2>
-<p><tt class="docutils literal"><span class="pre">time</span></tt> represents only a moment in time.</p>
+<p><tt class="docutils literal"><span class="pre">time</span></tt> represents only a moment in time, internally stored as microseconds since epoch.</p>
 </div>
 <div class="section" id="timetz">
 <h2>timetz<a class="headerlink" href="#timetz" title="Permalink to this headline">¶</a></h2>
-<p><tt class="docutils literal"><span class="pre">timetz</span></tt> represents a moment in time and where that time is experienced (i.e. the timezone)</p>
+<p><tt class="docutils literal"><span class="pre">timetz</span></tt> represents a moment in time and where that time is experienced (i.e. the timezone), internally stored as microseconds since epoch and timezone.</p>
 </div>
 <div class="section" id="delta">
 <h2>delta<a class="headerlink" href="#delta" title="Permalink to this headline">¶</a></h2>
-<p><tt class="docutils literal"><span class="pre">delta</span></tt> is an amount of time.</p>
+<p><tt class="docutils literal"><span class="pre">delta</span></tt> is an amount of time, internally stored as microseconds.</p>
+</div>
+</div>
+<div class="section" id="confusion">
+<h1>Confusion<a class="headerlink" href="#confusion" title="Permalink to this headline">¶</a></h1>
+<p>Though sanetime avoids a menagerie of confusion you&#8217;d encounter without it, it does introduce one unavoidable? point of confusion.  delta&#8217;s can never change based on context &#8211; that means a delta(d=1) is always 24 hours.  So you have to be careful around daylight savings time jumps.   Whenever you use something like this: delta(d=1), you should be thinking 24 hours.  For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">(</span><span class="s">&#39;2011-01-01&#39;</span><span class="p">,</span><span class="s">&#39;America/New_York&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">ms</span>
+<span class="go">23208402093</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tztime</span><span class="p">(</span><span class="s">&#39;2012-04-15 12:30&#39;</span><span class="p">,</span><span class="s">&#39;America/New_York&#39;</span><span class="p">)</span><span class="o">-</span><span class="n">delta</span><span class="p">(</span><span class="n">d</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="go">48238492992932</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="o">-</span><span class="p">(</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">time</span><span class="p">())</span><span class="o">.</span><span class="n">us</span>
+<span class="go">84</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">time</span><span class="p">(</span><span class="s">&#39;2011-01-01&#39;</span><span class="p">,</span><span class="n">tz</span><span class="o">=</span><span class="s">&#39;America/New_York&#39;</span><span class="p">)</span> <span class="o">-</span> <span class="n">time</span><span class="p">(</span><span class="s">&#39;2011-01-01&#39;</span><span class="p">,</span><span class="n">tz</span><span class="o">=</span><span class="s">&#39;America/Phoenix&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">h</span>
+<span class="go">2</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="p">(</span><span class="s">&#39;2011-01-01&#39;</span><span class="p">,</span><span class="n">tz</span><span class="o">=</span><span class="s">&#39;America/New_York&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">delta</span><span class="p">(</span><span class="n">h</span><span class="o">=</span><span class="mi">12</span><span class="p">))</span><span class="o">.</span><span class="n">with_tz</span><span class="p">(</span><span class="s">&#39;America/Phoenix&#39;</span><span class="p">))</span>
+</pre></div>
 </div>
 </div>
 <div class="section" id="requests-http-for-humans">
@@ -163,12 +188,14 @@ simple, Pythonic.</dd>
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">sanetime</a></li>
+<li><a class="reference internal" href="#faq">FAQ</a></li>
 <li><a class="reference internal" href="#the-basics">The Basics</a><ul>
 <li><a class="reference internal" href="#time">time</a></li>
 <li><a class="reference internal" href="#timetz">timetz</a></li>
 <li><a class="reference internal" href="#delta">delta</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#confusion">Confusion</a></li>
 <li><a class="reference internal" href="#requests-http-for-humans">Requests: HTTP for Humans</a><ul>
 <li><a class="reference internal" href="#testimonials">Testimonials</a></li>
 <li><a class="reference internal" href="#feature-support">Feature Support</a><ul>

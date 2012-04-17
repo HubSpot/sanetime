@@ -29,7 +29,7 @@ TRANSLATIONS = (
         (('ms','millis','milliseconds'),MILLI_MICROS),
         (('us','micros','microseconds'),1) )
 TRANSLATION_HASH = dict((alt,v) for k,v in TRANSLATIONS for alt in k)
-SPECIAL_DESIGNATIONS = set('y','years','m','months','w','weeks','d','days')
+SPECIAL_DESIGNATIONS = set(['y','years','m','months','w','weeks','d','days'])
 
 class SaneDelta(object):
     def __init__(self, *args, **kwargs):
