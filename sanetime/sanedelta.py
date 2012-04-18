@@ -157,27 +157,63 @@ class SaneDelta(object):
     def __mul__(self, operand): return SaneDelta(us = self.us * int(operand))
     def __div__(self, operand): return SaneDelta(us = self.us / int(operand))
 
+
+    # positional amounts
     @property
-    def _parts(self):
-        days = self._d
-        hours = self._h - self._d*24
-        minutes = self._m - self._h*60
-        seconds = self._s - self._m*60
-        millis = self._ms - self._s*10**3
-        micros = self._us - self._s*10**6
+    def pus(self): return self.us % SECOND_MICROS
+    @property
+    def pms(self): return self.us % SECOND_MICROS / MILLI_MICROS
+    @property
+    def ps(self): return self.us % MINUTE_MICROS / SECOND_MICROS
+    @property
+    def pm(self): return self.us % HOUR_MICROS / MINUTE_MICROS
+    @property
+    def ph(self): return self.us % DAY_MICROS / HOUR_MICROS
+
+    @property
+    def prus(self): return self.us % SECOND_MICROS
+    @property
+    def prms(self): return (self.us % SECOND_MICROS + HALF_MILLI_MICROS) / MILLI_MICROS
+    @property
+    def prs(self): return (self.us % MINUTE_MICROS + HALF_SECOND_MICROS) / SECOND_MICROS
+    @property
+    def prm(self): return (self.us % HOUR_MICROS + HALF_MINUTE_MICROS) / MINUTE_MICROS
+    @property
+    def prh(self): return (self.us % DAY_MICROS + HALF_HOUR_MICROS) / HOUR_MICROS
+
+    #TODO: test this sucker
+    def construct_str(self, relative_resolution=None, absolute_resolution='us', separator=' '):
         parts = []
-        if days: parts.append("%sd"%days)
-        if hours: parts.append("%sh"%hours)
-        if minutes: parts.append("%sm"%minutes)
-        if seconds: parts.append("%ss"%seconds)
-        if micros%1000: parts.append("%sus"%micros)
-        elif millis: parts.append("%sms"%millis)
-        return parts
+        relative_resolution = relative_resolution or 6
+        if absolute_resolution == 'd' or len(parts)==relative_resolution-1 and self._d:
+            parts.append("%sd"%self.d)
+        else:
+            if self._d: parts.append("%sd"%self._d)
+            if absolute_resolution == 'h' or len(parts)==relative_resolution-1 and (self.ph or len(parts)):
+                parts.append("%sh"%self.prh)
+            else:
+                if self.ph or len(parts): parts.append("%sh"%self.ph)
+                if absolute_resolution == 'm' or len(parts)==relative_resolution-1 and (self.pm or len(parts)):
+                    parts.append("%sm"%self.prm)
+                else:
+                    if self.pm or len(parts): parts.append("%sm"%self.pm)
+                    if absolute_resolution == 's' or len(parts)==relative_resolution-1 and (self.ps or len(parts)):
+                        parts.append("%ss"%self.prs)
+                    else:
+                        if self.ps or len(parts): parts.append("%s"%self.ps)
+                        if absolute_resolution == 'ms' or len(parts)==relative_resolution-1 and (self.pms or len(parts)):
+                            parts[-1] = "%s.%ss" % (parts[-1],self.pms)
+                        else:
+                            parts[-1] = "%s.%ss" % (parts[-1],self.pus)
+        return separator.join(parts)
 
     def __repr__(self): return 'SaneDelta(us=%s)'%self.us
     def __str__(self): return unicode(self).encode('utf-8')
-    def __unicode__(self): return ' '.join(self._parts)
-    def abbr(self,limit=2): return ''.join(self._parts[:limit])
+    def __unicode__(self): return self.construct_str()
+
+    @property
+    def abbr(self): return self.construct_str(relative_resolution=2, absolute_resolution='s', separator='')
+
 
 
 sanedelta = SaneDelta
