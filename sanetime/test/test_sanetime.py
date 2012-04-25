@@ -294,6 +294,12 @@ class SaneTimeTest(unittest.TestCase):
         st = sanetime(JUL_MICROS, tz='America/New_York')  
         self.assertEquals('2000-07-01 00:00:00.000000 UTC', repr(st))
 
+    def test_constr4(self):
+        s = 'Sat Jan 1, 2000 00:00:00 GMT'
+        st = sanetime(s,'Europe/London')
+        self.assertEquals(JAN_MICROS, st.us)
+
+
 
 if __name__ == '__main__':
     unittest2.main()
