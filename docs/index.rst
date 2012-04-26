@@ -5,19 +5,22 @@ sanetime
 
 ::
 
+    >>> from sanetime import time,tztime,delta
+
     >>> time('2011-01-01','America/New_York').ms
     23208402093
 
-    >>> (time('2012-04-15 12:30')-delta(h=30)).ms
-    48238492992932
+    >>> time(ms=3928840234342).strftime("sjdlkjs")
+    lkfjsld lskdjf
+
+    >>> tztime(ms=3928840234342,'Europe/London').datetime
+    lkfjsld lskdjf
 
     >>> -(time()-time()).us
     84
 
-    >>> (time('2011-01-01',tz='America/New_York') - time('2011-01-01',tz='America/Phoenix')).h
+    >>> (time(s=2039420392) - time(s=239402342)).h
     2
-
-    >>> str(time('2011-01-01',tz='America/New_York') + delta(h=12)).with_tz('America/Phoenix'))
 
 If you've ever used python's datetime, date, time, calendar, timedelta, timetuple, pytz, and dateutil modules and thought: "Wow -- I love how explicit I'm being right now", then this library is not for you.
 
