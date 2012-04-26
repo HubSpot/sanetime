@@ -1,7 +1,7 @@
 sanetime
 ========
 
-**simple, intuitive date/time manipulation**
+**simple, intuitive, powerful date/time manipulation**
 
 ::
 
@@ -13,7 +13,7 @@ sanetime
     >>> time(ms=3928840234342).strftime("sjdlkjs")
     lkfjsld lskdjf
 
-    >>> tztime(ms=3928840234342,'Europe/London').datetime
+    >>> tztime(s=3928840234342,'Europe/London').datetime
     lkfjsld lskdjf
 
     >>> -(time()-time()).us
@@ -26,7 +26,11 @@ If you've ever used python's datetime, date, time, calendar, timedelta, timetupl
 
 If, on the other hand, you like preserving your braincells for more important things, then you have found what you're looking for.
 
-sanetime was written to DRY up all the common date/time manipulations we do constantly in our code while presenting the most intuitive client possible:
+sanetime was written to DRY up all the common date/time manipulations we do constantly in our code while presenting the most simple and intuitive client possible.
+
+
+okay...
+----------
 
 
 
