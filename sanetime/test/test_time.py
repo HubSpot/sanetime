@@ -47,7 +47,10 @@ class SaneTimeTest(unittest.TestCase):
         #< time() < time('3000-01-01'))
         #self.assertTrue(time() < time() < time())
 
-
+    def test_gunicorn_strange_parsing(self):
+        self.assertTrue(JAN_MICROS, time('2000-01-01 00:00:00Z'))
+        self.assertTrue(JAN_MICROS, time('2000-01-01 00:00:00+00:00'))
+        self.assertTrue(JAN_MICROS+HOUR_MICROS, time('2000-01-01 00:00:00+01:00'))
 
 
     def test_micro_equality(self):

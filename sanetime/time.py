@@ -109,10 +109,13 @@ class SaneTime(object):
                 uss.append(int(arg))
             elif isinstance(arg, basestring):
                 arg = arg.strip()
+                utc = arg.endswith('Z') or arg.endswith('+00:00')
                 arg = crap_parser.parse(arg)
                 if arg.tzinfo:  # parsed timezones are a special breed of retard
-                    naive_dt = arg.astimezone(pytz.utc).replace(tzinfo=None)
-                    tzs.append('UTC') # don't allow for a tz specificaion on top of a timezoned datetime str  -- that is opening a whole extra can of confusion -- so force the timezone here so that another tz specification will cause an error
+                    if utc:  # put this in place to guard against wierd gunicorn issue -- gunicorn will attempt to force local timezone when there's an explicit UTC timezone associated! not sure where that's coming from.
+                        arg = arg.replace(tzinfo=None)
+                    else:
+                        arg = arg.astimezone(pytz.utc).replace(tzinfo=None)
             elif type(arg) == fucked_datetime:
                 naive_dt = arg
                 if naive_dt.tzinfo:
@@ -167,47 +170,40 @@ class SaneTime(object):
     def __repr__(self):
         return u"SaneTime(%s)" % self.us
     def __str__(self): return unicode(self).encode('utf-8')
-    def __unicode__(self):
-        dt = self.datetime
+    def __unicode__(self): return self.to_timezoned_unicode(self, 'UTC')
+
+    def to_timezoned_unicode(self, tz):
+        dt = self.to_timezoned_datetime(tz)
         micros = u".%06d"%dt.microsecond if dt.microsecond else ''
         time = u" %02d:%02d:%02d%s"%(dt.hour,dt.minute,dt.second,micros) if dt.microsecond or dt.second or dt.minute or dt.hour else ''
-        return u"%04d-%02d-%02d%s UTC" % (dt.year, dt.month, dt.day, time)
+        return u"%04d-%02d-%02d%s %s" % (dt.year, dt.month, dt.day, time, dt.tzinfo.zone)
+
 
     @property
     def ny_str(self): return self.ny_ndt.strftime('%I:%M:%S%p %m/%d/%Y')
     
     @property
     def s(self): return (self._us+500*1000)/10**6
-
     @property
     def ms(self): return (self._us+500)/1000
 
     @property
     def dt(self): return self.to_datetime()
-
     @property
     def ndt(self): return self.to_naive_datetime()
 
     @property
     def utc_dt(self): return self.to_utc_datetime()
-
     @property
     def utc_ndt(self): return self.to_utc_naive_datetime()
     
     @property
     def ny_dt(self): return self.to_timezoned_datetime('America/New_York')
-
     @property
     def ny_ndt(self): return self.to_timezoned_naive_datetime('America/New_York')
 
 
-
-
-#primary gateways
-
-sanetime = SaneTime
-time = SaneTime
-
+# null passthru utility
 def nsanetime(*args, **kwargs): 
     if args:
         if args[0] is None: return None
@@ -215,4 +211,6 @@ def nsanetime(*args, **kwargs):
         if None in [v for k,v in kwargs.iteritems() if k!='tz']: return None
     return SaneTime(*args, **kwargs)
 
+#primary aliases
+time = sanetime = SaneTime
 ntime = nsanetime

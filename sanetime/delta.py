@@ -224,8 +224,6 @@ class SaneDelta(object):
         #return "%s years ago" % ((day_delta+182)/365)
 
 
-sanedelta = SaneDelta
-delta = SaneDelta
 
 def nsanedelta(*args, **kwargs): 
     if args:
@@ -234,4 +232,6 @@ def nsanedelta(*args, **kwargs):
         if set(kwargs.values()) == set([None]): return None
     return SaneDelta(*args, **kwargs)
 
+#aliases:
+delta = sanedelta = SaneDelta
 ndelta = nsanedelta
