@@ -1,17 +1,23 @@
 import unittest
-from sanetime import sanetime,sanetztime,time
-from sanetime.error import SaneTimeError
+from .. import time
+from ..error import Error
 from datetime import datetime
 import pytz
 
 # IMPORTANT -- note to self -- you CANNOT use tzinfo on datetime-- ever! -- just pytz.timezone.localize everything to be safe
 
-JAN_MICROS = 946684800*1000**2
-JUL_MICROS = 962409600*1000**2
+JAN_MICROS = 1325394000*1000**2
+JAN_MILLIS = JAN_MICROS/1000
+JAN_SECS = JAN_MILLIS/1000
+JUL_MICROS = 1341115200*1000**2
 HOUR_MICROS = 60**2*1000**2
 
 NY_JAN_MICROS = JAN_MICROS + HOUR_MICROS * 5
 NY_JUL_MICROS = JUL_MICROS + HOUR_MICROS * 4
+
+TZ_UTC = pytz.utc
+TZ_NY = pytz.timezone('America/New_York')
+TZ_AC = pytz.timezone('Africa/Cairo')
 
 class SaneTimeTest(unittest.TestCase):
 
@@ -19,174 +25,126 @@ class SaneTimeTest(unittest.TestCase):
         self.assertInnards(st1.us, st1.tz, st2)
 
     def setUp(self):
-        self.utc = pytz.utc
-        self.ny = pytz.timezone('America/New_York')
-        self.ac = pytz.timezone('Africa/Cairo')
+        pass
+
+
+    def test_microsecond_construction(self):
+        self.assertEquals((JAN_MICROS,TZ_UTC), time(JAN_MICROS)._tuple)
+        for kwarg in ('us','micros','microseconds','epoch_micros','epoch_microseconds'):
+            self.assertEquals((JAN_MICROS,TZ_UTC), time(**{kwarg:JAN_MICROS})._tuple)
+        for kwarg in ('ms','millis','milliseconds','epoch_millis','epoch_milliseconds'):
+            self.assertEquals((JAN_MICROS,TZ_UTC), time(**{kwarg:JAN_MILLIS})._tuple)
+        for kwarg in ('s','secs','seconds','epoch_secs','epoch_seconds'):
+            self.assertEquals((JAN_MICROS,TZ_UTC), time(**{kwarg:JAN_SECS})._tuple)
+
+    def test_timezone_construction(self):
+        self.assertEquals((JAN_MICROS,TZ_NY), time(JAN_MICROS,'America/New_York')._tuple)
+        self.assertEquals((JAN_MICROS,TZ_NY), time(JAN_MICROS,TZ_NY)._tuple)
+        self.assertEquals((JAN_MICROS,TZ_NY), time(JAN_MICROS,tz=TZ_NY)._tuple)
+        self.assertEquals((JAN_MICROS,TZ_NY), time(s=JAN_SECS,timezone='America/New_York')._tuple)
+        self.assertEquals(TZ_UTC, time(tz=TZ_UTC).tz)
+        self.assertEquals(TZ_UTC, time(tz='America/New_York').tz)
+
+        # nomal string
+        self.assertEquals((JAN_MICROS,TZ_UTC), time('2012-01-01 00:00:00')._tuple)
+        self.assertEquals((JAN_MICROS,TZ_UTC), time('2012-01-01 00:00:00','UTC')._tuple)
+        self.assertEquals((NY_JAN_MICROS,TZ_UTC), time('2012-01-01 00:00:00','America/New_York')._tuple)
+
+        # Z terminus
+        self.assertEquals((JAN_MICROS,TZ_UTC), time('2012-01-01T00:00:00Z')._tuple)
+        self.assertEquals((JAN_MICROS,TZ_UTC), time('2012-01-01T00:00:00Z','UTC')._tuple)
+        with self.assertRaises: time('2012-01-01T00:00:00Z','America/New_York') # conflicting timezones
+
+        # offset terminus
+        self.assertEquals((NY_JAN_MICROS,TZ_UTC), time('2012-01-01 00:00:00+05:00')._tuple)
+        with self.assertRaises(Error): time('2012-01-01 00:00:00+05:00','UTC') # conflicting timezones
+        self.assertEquals((NY_JAN_MICROS,TZ_NY), time('2012-01-01 00:00:00+05:00','America/New_York')._tuple)
+
+        # tz abbr -- parse can't handle these, so we have to rely on timezones entirely
+        self.assertEquals((JAN_MICROS,TZ_UTC), time('2012-01-01 00:00:00 EST')._tuple)
+        self.assertEquals((JAN_MICROS,TZ_UTC), time('2012-01-01 00:00:00 EST','UTC')._tuple)
+        self.assertEquals((NY_JAN_MICROS,TZ_NY), time('2012-01-01 00:00:00 EST','America/New_York')._tuple)
+        self.assertEquals((JAN_MICROS,TZ_UTC), time('2012-01-01 00:00:00 MST')._tuple)
+        self.assertEquals((JAN_MICROS,TZ_UTC), time('2012-01-01 00:00:00 MST','UTC')._tuple)
+        self.assertEquals((NY_JAN_MICROS,TZ_NY), time('2012-01-01 00:00:00 MST','America/New_York')._tuple)
+
 
     def test_now_construction(self):
-        self.assertTrue(time('2012-04-10') < time() < time('3000-01-01'))
-        self.assertTrue(time() < time() < time())
+        self.assertTrue(time('2012-04-28') < time() < time('2038-01-01'))  # i'm assuming this library will no longer be needed after 2038 cuz we'll have flying cars by then, finally!
+        self.assertTrue(time() < time(tz=TZ_UTC) < time(tz=TZ_NY) < time(tz=TZ_UTC) < time())
 
-    def test_string_construction(self):
-        self.assertTrue(JAN_MICROS, time('2000-01-01').us)
-        self.assertTrue(JAN_MICROS, time('2000-01-01 00:00:00').us)
-        self.assertTrue(JAN_MICROS, time('2000-01-01T00:00Z').us)
-        self.assertTrue(JAN_MICROS, time('2000-01-01 00:00:00+00:00').us)
-        self.assertTrue(JAN_MICROS, time('Sunday, January 1st 2000, at 12:00am').us)
+    def test_string_parsing(self):
+        self.assertEquals((JAN_MICROS,TZ_UTC), time('2012-01-01')._tuple)
+        self.assertEquals((JAN_MICROS,TZ_UTC), time('2012-01-01 00:00:00')._tuple)
+        self.assertEquals((JAN_MICROS,TZ_UTC), time('2012-01-01T00:00Z')._tuple)
+        self.assertEquals((JAN_MICROS,TZ_UTC), time('2012-01-01 00:00:00+00:00')._tuple)
+        self.assertEquals((JAN_MICROS+HOUR_MICROS,TZ_UTC), time('2012-01-01 00:00:00+01:00')._tuple)
+        self.assertEquals((JAN_MICROS,TZ_UTC), time('Sunday, January 1st 2012, at 12:00am')._tuple)
 
-    def test_construction_with_timezone(self):
-        self.assertTrue(JAN_MICROS, time('2000-01-01','UTC'))
-        self.assertTrue(JAN_MICROS, time(JAN_MICROS,'America/New_York'))
-        self.assertTrue(JAN_MICROS, time('1999-12-31 7:00pm','America/New_York'))
-        self.assertTrue(NY_JAN_MICROS, time('2000-01-01','America/New_York'))
-        self.assertTrue(NY_JAN_MICROS, time('2000-01-01 00:00 EST'))
-        self.assertTrue(NY_JAN_MICROS, time('2000-01-01 00:00 EST','Africa/Cairo'))
+    def test_bad_construction(self):
+        with self.assertRaises(Error): self.assertTrue(JAN_MICROS, time(unknown=None))
 
-        #self.assertTrue(JUL_MICROS, time('2000-07-01').us)
+    def test_datetime_construction(self):
+        self.assertEquals((JAN_MICROS,TZ_UTC), time(datetime(2012,1,1))._tuple)
+        self.assertEquals((JAN_MICROS+10**6*60**2,TZ_UTC), time(datetime(2012,1,1,1))._tuple)
+        self.assertEquals((JAN_MICROS+10**6*60,TZ_UTC), time(datetime(2012,1,1,0,1))._tuple)
+        self.assertEquals((JAN_MICROS+10**6,TZ_UTC), time(datetime(2012,1,1,0,0,1))._tuple)
+        self.assertEquals((JAN_MICROS+1,TZ_UTC), time(datetime(2012,1,1,0,0,0,1))._tuple)
+        self.assertEquals((JAN_MICROS,TZ_UTC), time(datetime(2012,1,1,0,0,0,0,None))._tuple)
+        self.assertEquals((JAN_MICROS,TZ_NY), time(datetime(2012,1,1,0,0,0,0,'America/New_York'))._tuple)
+        self.assertEquals((JAN_MICROS,TZ_UTC), time(datetime(2012,1,1,0,0,0,0,TZ_UTC))._tuple)
 
-        #< time() < time('3000-01-01'))
-        #self.assertTrue(time() < time() < time())
+        # mimic datetime constructor as well
+        self.assertEquals((JAN_MICROS,TZ_UTC), time(2012,1,1)._tuple)
+        self.assertEquals((JAN_MICROS+10**6*60**2,TZ_UTC), time(2012,1,1,1)._tuple)
+        self.assertEquals((JAN_MICROS+10**6*60,TZ_UTC), time(2012,1,1,0,1)._tuple)
+        self.assertEquals((JAN_MICROS+10**6,TZ_UTC), time(2012,1,1,0,0,1)._tuple)
+        self.assertEquals((JAN_MICROS+1,TZ_UTC), time(2012,1,1,0,0,0,1)._tuple)
+        self.assertEquals((JAN_MICROS,TZ_UTC), time(2012,1,1,0,0,0,0,None)._tuple)
+        self.assertEquals((JAN_MICROS,TZ_NY), time(2012,1,1,0,0,0,0,'America/New_York')._tuple)
+        self.assertEquals((JAN_MICROS,TZ_UTC), time(2012,1,1,0,0,0,0,TZ_UTC)._tuple)
 
-    def test_gunicorn_strange_parsing(self):
-        self.assertTrue(JAN_MICROS, time('2000-01-01 00:00:00Z'))
-        self.assertTrue(JAN_MICROS, time('2000-01-01 00:00:00+00:00'))
-        self.assertTrue(JAN_MICROS+HOUR_MICROS, time('2000-01-01 00:00:00+01:00'))
+    def test_copy_construction(self):
+        self.assertEquals((JAN_MICROS,TZ_UTC), time(time(JAN_MICROS,TZ_UTC))._tuple)
+        self.assertEquals((JAN_MICROS,TZ_NY), time(time(JAN_MICROS,TZ_NY))._tuple)
 
+    def test_clone(self):
+        self.assertEquals((JAN_MICROS,TZ_UTC), time(JAN_MICROS,TZ_UTC).clone()._tuple)
+        self.assertEquals((JAN_MICROS,TZ_NY), time(JAN_MICROS,TZ_NY).clone()._tuple)
 
-    def test_micro_equality(self):
-        st1 = sanetime(JAN_MICROS)
-        st2 = sanetime(JAN_MICROS)
-        st3 = sanetime(JAN_MICROS+1)
-        self.assertEquals(st1, st2)
-        self.assertEquals(st1, st2.us)
-        self.assertEquals(st1.us, st2.us)
-        self.assertEquals(st1.us, st2)
-        self.assertNotEquals(st1, st3)
-        self.assertNotEquals(st1, st3.us)
-        self.assertNotEquals(st1.us, st3.us)
-        self.assertNotEquals(st1.us, st3)
+    def test_casting(self):
+        self.assertEquals(JAN_MICROS, int(time(JAN_MICROS)))
+        self.assertEquals(JAN_MICROS, long(time(JAN_MICROS)))
+        self.assertEquals('2012-01-01', str(time(JAN_MICROS)))
+        self.assertEquals('2012-01-01', unicode(time(JAN_MICROS)))
+        self.assertEquals('2012-01-01 00:00:01', unicode(time(JAN_MICROS+10**6)))
+        self.assertEquals('2012-01-01 00:00:00.000001', unicode(time(JAN_MICROS+1)))
+        self.assertEquals(JAN_MICROS, id(time(JAN_MICROS)))
 
-    def test_from_datetime_string(self):
-        self.assertEquals(JAN_MICROS, sanetime('2000-01-01 00:00:00'))
-        self.assertEquals(JAN_MICROS+1, sanetime('2000-01-01 00:00:00.000001'))
-        self.assertEquals(JAN_MICROS, sanetime('2000-01-01'))
-        self.assertEquals(JUL_MICROS, sanetime('July 1st, 2000'))
+    def test_equality(self):
+        t1 = time(JAN_MICROS, tz='UTC')
+        t2 = time(JAN_MICROS, tz='America/New_York')
+        t3 = time(JAN_MICROS+1)
+        self.assertTrue(t1==t2)
+        self.assertTrue(t2==t1)
+        self.assertTrue(t1!=t3)
+        self.assertTrue(t3!=t1)
 
-        self.assertEquals(JAN_MICROS, sanetime('2000-01-01', tz='UTC'))
-        self.assertEquals(JAN_MICROS, sanetime('2000-01-01', tz=self.utc))
+        self.assertFalse(t1!=t2)
+        self.assertFalse(t2!=t1)
+        self.assertFalse(t1==t3)
+        self.assertFalse(t3==t1)
 
-        self.assertEquals(NY_JAN_MICROS, sanetime('2000-01-01 00:00:00', tz='America/New_York'))
-        self.assertEquals(NY_JAN_MICROS, sanetime('2000-01-01 00:00:00', tz=self.ny))
+        self.assertTrue(t1!=None)
+        self.assertFalse(t1==None)
+        self.assertTrue(None!=t1)
+        self.assertFalse(None==t1)
 
-        self.assertEquals(NY_JUL_MICROS, sanetime('2000-07-01', tz='America/New_York'))
-        self.assertEquals(NY_JUL_MICROS+1000, sanetime('2000-07-01 00:00:00.001', tz=self.ny))
-
-    def test_from_datetime_params(self):
-        and_one_hour = JAN_MICROS+60**2*1000**2
-        and_one_minute = and_one_hour+60*1000**2
-        and_one_second = and_one_minute+1000**2
-        and_one_micro = and_one_second+1
-
-        self.assertEquals(JAN_MICROS, sanetime(2000,1,1))
-        self.assertEquals(and_one_hour, sanetime(2000,1,1,1))
-        self.assertEquals(and_one_minute, sanetime(2000,1,1,1,1))
-        self.assertEquals(and_one_second, sanetime(2000,1,1,1,1,1))
-        self.assertEquals(and_one_micro, sanetime(2000,1,1,1,1,1,1))
-        self.assertEquals(JUL_MICROS, sanetime(2000,7,1))
-        with self.assertRaises(SaneTimeError):
-            sanetime(2000,1)
-
-        self.assertEquals(JAN_MICROS, sanetime(2000,1,1,0,0,0,0,tz='UTC'))
-        self.assertEquals(JAN_MICROS, sanetime(2000,1,1,0,0,0,0,tz=self.utc))
-
-        self.assertEquals(NY_JAN_MICROS, sanetime(2000,1,1,0,0,0,0,tz='America/New_York'))
-        self.assertEquals(NY_JAN_MICROS, sanetime(2000,1,1,0,0,0,0,tz=self.ny))
-
-        self.assertEquals(NY_JUL_MICROS, sanetime(2000,7,1, tz='America/New_York'))
-        self.assertEquals(NY_JUL_MICROS, sanetime(2000,7,1, tz=self.ny))
-
-    def test_from_datetime(self):
-        self.assertEquals(JAN_MICROS, sanetime(datetime(2000,1,1)))
-        self.assertEquals(JAN_MICROS, sanetime(datetime(2000,1,1, tzinfo=self.utc)))
-        self.assertEquals(NY_JAN_MICROS, sanetime(self.ny.localize(datetime(2000,1,1))))
-        self.assertEquals(NY_JUL_MICROS, sanetime(self.ny.localize(datetime(2000,7,1))))
-
-    def test_from_sanetimes(self):
-        now = sanetime()
-        nowtz = sanetztime(now.us, tz='America/New_York')
-        self.assertEquals(now, sanetime(nowtz))
-
-    def test_now(self):
-        past = pytz.utc.localize(datetime.utcnow())
-        st = sanetime()
-        future = pytz.utc.localize(datetime.utcnow())
-        self.assertTrue(st.to_datetime() > past)
-        self.assertTrue(st.to_datetime() < future)
-
-        past = self.utc.localize(datetime.utcnow()).astimezone(self.ny)
-        st = sanetime(tz='America/New_York')
-        future = self.utc.localize(datetime.utcnow()).astimezone(self.ny)
-        self.assertTrue(st.to_datetime() > past)
-        self.assertTrue(st.to_datetime() < future)
-
-    def test_properties(self):
-        st = sanetime(2000,1,2,3,4,5,600700)
-        self.assertEquals(700,st.us%1000)
-        self.assertEquals(601,st.ms%1000) # remember, it rounds
-        self.assertEquals(6,st.s%60) # remember, it rounds
-
-        st = sanetime(JAN_MICROS)
-        self.assertEquals(st.to_datetime(), st.dt)
-        self.assertEquals(st.to_naive_datetime(), st.ndt)
-        self.assertEquals(st.to_timezoned_datetime('UTC'), st.utc_dt)
-        self.assertEquals(st.to_timezoned_naive_datetime('UTC'), st.utc_ndt)
-        self.assertEquals(st.to_timezoned_datetime('America/New_York'), st.ny_dt)
-        self.assertEquals(st.to_timezoned_naive_datetime('America/New_York'), st.ny_ndt)
-
-        st = sanetime(JAN_MICROS, tz='America/New_York')
-        self.assertEquals(st.to_datetime(), st.dt)
-        self.assertEquals(st.to_naive_datetime(), st.ndt)
-        self.assertEquals(st.to_timezoned_datetime('UTC'), st.utc_dt)
-        self.assertEquals(st.to_timezoned_naive_datetime('UTC'), st.utc_ndt)
-        self.assertEquals(st.to_timezoned_datetime('America/New_York'), st.ny_dt)
-        self.assertEquals(st.to_timezoned_naive_datetime('America/New_York'), st.ny_ndt)
-
-        st = sanetime(JUL_MICROS, tz='America/New_York')
-        self.assertEquals(st.to_datetime(), st.dt)
-        self.assertEquals(st.to_naive_datetime(), st.ndt)
-        self.assertEquals(st.to_timezoned_datetime('UTC'), st.utc_dt)
-        self.assertEquals(st.to_timezoned_naive_datetime('UTC'), st.utc_ndt)
-        self.assertEquals(st.to_timezoned_datetime('America/New_York'), st.ny_dt)
-        self.assertEquals(st.to_timezoned_naive_datetime('America/New_York'), st.ny_ndt)
-
-    def test_transitives(self):
-        st = sanetime()
-        st2 = sanetime(st.to_datetime())
-        self.assertEquals(st,st2)
-
-        st = sanetime(tz='America/New_York')
-        st2 = sanetime(st.to_datetime())
-        self.assertEquals(st,st2)
-
-        st = sanetime()
-        st2 = sanetime(str(st))
-        self.assertEquals(st,st2)
-
-        st = sanetime(tz='America/New_York')
-        st2 = sanetime(str(st))
-        self.assertEquals(st, st2)
-
-        st = sanetime()
-        st2 = sanetime(st.us)
-        self.assertEquals(st, st2)
-
-        st = sanetime(tz='America/New_York')
-        st2 = sanetime(st.us, tz='America/New_York')
-        self.assertEquals(st, st2)
+        self.assertTrue(t1==t1.us)
 
     def test_comparisons(self):
-        t1 = sanetime(2000,1,1,0,0,0,0)
-        t2 = sanetime(2000,1,1,0,0,0,1)
+        t1 = time(JAN_MICROS)
+        t2 = time(JAN_MICROS+1)
 
         self.assertFalse(t1 > t1)
         self.assertTrue(t2 > t1)
@@ -204,34 +162,17 @@ class SaneTimeTest(unittest.TestCase):
         self.assertFalse(t2 <= t1)
         self.assertTrue(t1 <= t2)
 
-    def test_equality(self):
-        t1 = sanetime(2000,1,1,0,0,0,0)
-        t2 = sanetime(1999,12,31,19,0,0,0, tz='America/New_York')
-        t3 = sanetime(2000,1,1,0,0,0,1)
-        self.assertTrue(t1==t2)
-        self.assertTrue(t2==t1)
-        self.assertTrue(t1!=t3)
-        self.assertTrue(t3!=t1)
-
-        self.assertFalse(t1!=t2)
-        self.assertFalse(t2!=t1)
-        self.assertFalse(t1==t3)
-        self.assertFalse(t3==t1)
-
-        self.assertTrue(t1!=None)
-        self.assertFalse(t1==None)
-        self.assertTrue(None!=t1)
-        self.assertFalse(None==t1)
-
-        self.assertTrue(t1==t1.us)
-        self.assertTrue(t1=='2000-01-01')
-        self.assertFalse(t1=='2000-01-02')
-
+    def test_transitives(self):
+        st = time(tz='America/New_York')
+        self.assertEquals(st._tuple, time(st.datetime)._tuple)
+        self.assertEquals(st.us, time(int(st)).us)
+        self.assertEquals(st._tuple, time(str(st))._tuple)
+        self.assertEquals(st._tuple, time(st)._tuple)
 
     def test_hashability(self):
-        t1 = sanetime(2000,1,1,0,0,0,0)
-        t2 = sanetime(1999,12,31,19,0,0,0, tz='America/New_York')
-        t3 = sanetime(2000,1,1,0,0,0,1)
+        t1 = time(JAN_MICROS, tz='UTC')
+        t2 = time(JAN_MICROS, tz='America/New_York')
+        t3 = time(JAN_MICROS+1)
         s = set([t1,t2,t3])
         self.assertEquals(2, len(s))
         self.assertIn(t1, s)
@@ -239,8 +180,8 @@ class SaneTimeTest(unittest.TestCase):
         self.assertIn(t3, s)
 
     def test_arithmetic(self):
-        t1 = sanetime(2000,1,1,0,0,0,0)
-        t2 = sanetime(2000,1,1,0,0,0,1)
+        t1 = time(JAN_MICROS)
+        t2 = time(JAN_MICROS+1)
 
         self.assertEquals(t2.us, (t1+1).us)
         self.assertEquals(t1.us,(t2-1).us)
@@ -249,81 +190,25 @@ class SaneTimeTest(unittest.TestCase):
         self.assertEquals(-1, t1 - t2)
 
 
-    def test_construction_errors(self):
-        with self.assertRaises(SaneTimeError):
-            sanetime(datetime(2000,1,1, tzinfo=self.ac), tz='America/New_York')
-        with self.assertRaises(SaneTimeError):
-            sanetime(datetime(2000,1,1, tzinfo=self.ac), tz=self.ny)
+    def test_datetime_properties(self):
+        self.assertEquals(datetime(2012,1,1,tzinfo=TZ_UTC),time(JAN_MICROS,TZ_UTC).datetime)
+        self.assertEquals(datetime(2012,1,1,tzinfo=TZ_NY),time(NY_JAN_MICROS,TZ_NY).datetime)
 
-    def test_to_datetime(self):
-        st = sanetime(JAN_MICROS)
-        self.assertEquals(self.utc.localize(datetime(2000,1,1)), st.to_datetime())
+        self.assertEquals(datetime(2012,1,1),time(JAN_MICROS,TZ_UTC).naive_datetime)
+        self.assertEquals(datetime(2012,1,1),time(NY_JAN_MICROS,TZ_NY).naive_datetime)
 
-        st = sanetime(JAN_MICROS, tz='America/New_York')
-        self.assertEquals(self.utc.localize(datetime(2000,1,1)), st.to_datetime())
+        self.assertEquals(datetime(2012,1,1,tzinfo=TZ_UTC),time(JAN_MICROS,TZ_UTC).utc_datetime)
+        self.assertEquals(datetime(2012,1,1,tzinfo=TZ_UTC),time(NY_JAN_MICROS,TZ_NY).utc_datetime)
 
-        st = sanetime(JUL_MICROS, tz='America/New_York')
-        self.assertEquals(self.utc.localize(datetime(2000,7,1)), st.to_datetime())
+        self.assertEquals(datetime(2012,1,1),time(JAN_MICROS,TZ_UTC).utc_naive_datetime)
+        self.assertEquals(datetime(2012,1,1),time(NY_JAN_MICROS,TZ_NY).utc_naive_datetime)
 
-    def test_to_utc_datetime(self):
-        st = sanetime(JAN_MICROS)
-        self.assertEquals(pytz.utc.localize(datetime(2000,1,1)), st.to_timezoned_datetime('UTC'))
-        self.assertEquals(pytz.utc.localize(datetime(2000,1,1)), st.to_timezoned_datetime(pytz.utc))
-        self.assertEquals(pytz.utc.localize(datetime(2000,1,1)).astimezone(self.ny), st.to_timezoned_datetime('America/New_York'))
+        self.assertEquals(datetime(2012,1,1,tzinfo=TZ_UTC),time(JAN_MICROS,TZ_UTC).ny_datetime)
+        self.assertEquals(datetime(2012,1,1,tzinfo=TZ_UTC),time(NY_JAN_MICROS,TZ_NY).ny_datetime)
 
-        st = sanetime(JAN_MICROS, tz='America/New_York')
-        self.assertEquals(pytz.utc.localize(datetime(2000,1,1)), st.to_timezoned_datetime('UTC'))
-        self.assertEquals(pytz.utc.localize(datetime(2000,1,1)), st.to_timezoned_datetime(pytz.utc))
-        self.assertEquals(pytz.utc.localize(datetime(2000,1,1)).astimezone(self.ny), st.to_timezoned_datetime('America/New_York'))
-
-        st = sanetime(JUL_MICROS, tz='America/New_York')
-        self.assertEquals(pytz.utc.localize(datetime(2000,7,1)), st.to_timezoned_datetime('UTC'))
-        self.assertEquals(pytz.utc.localize(datetime(2000,7,1)), st.to_timezoned_datetime(pytz.utc))
-        self.assertEquals(pytz.utc.localize(datetime(2000,7,1)).astimezone(self.ny), st.to_timezoned_datetime('America/New_York'))
-
-    def test_to_naive_datetime(self):
-        st = sanetime(JAN_MICROS)
-        self.assertEquals(datetime(2000,1,1), st.to_naive_datetime())
-
-        st = sanetime(JAN_MICROS, tz='America/New_York')
-        self.assertEquals(datetime(2000,1,1), st.to_naive_datetime())
-
-        st = sanetime(JUL_MICROS, tz='America/New_York')
-        self.assertEquals(datetime(2000,7,1), st.to_naive_datetime())
-
-    def test_to_naive_utc_datetime(self):
-        st = sanetime(JAN_MICROS)
-        self.assertEquals(datetime(2000,1,1), st.to_timezoned_naive_datetime('UTC'))
-        self.assertEquals(datetime(2000,1,1), st.to_timezoned_naive_datetime(pytz.utc))
-
-        st = sanetime(JAN_MICROS, tz='America/New_York')
-        self.assertEquals(datetime(2000,1,1), st.to_timezoned_naive_datetime('UTC'))
-        self.assertEquals(datetime(2000,1,1), st.to_timezoned_naive_datetime(pytz.utc))
-
-        st = sanetime(JUL_MICROS, tz='America/New_York')
-        self.assertEquals(datetime(2000,7,1), st.to_timezoned_naive_datetime('UTC'))
-        self.assertEquals(datetime(2000,7,1), st.to_timezoned_naive_datetime(pytz.utc))
-
-    def test_str(self):
-        st = sanetime(JAN_MICROS)
-        self.assertEquals('%sus'%JAN_MICROS, str(st))
-        st = sanetime(JUL_MICROS)
-        self.assertEquals('%sus'%JUL_MICROS, str(st))
-        st = sanetime(JAN_MICROS, tz='America/New_York')
-        self.assertEquals('%sus'%JAN_MICROS, str(st))
-        st = sanetime(JUL_MICROS, tz='America/New_York')
-        self.assertEquals('%sus'%JUL_MICROS, str(st))
-
-    def test_repr(self):
-        st = sanetime(JAN_MICROS)
-        self.assertEquals('2000-01-01 00:00:00.000000 UTC', repr(st))
-        st = sanetime(JUL_MICROS)
-        self.assertEquals('2000-07-01 00:00:00.000000 UTC', repr(st))
-        st = sanetime(JAN_MICROS, tz='America/New_York')
-        self.assertEquals('2000-01-01 00:00:00.000000 UTC', repr(st))
-        st = sanetime(JUL_MICROS, tz='America/New_York')  
-        self.assertEquals('2000-07-01 00:00:00.000000 UTC', repr(st))
+        self.assertEquals(datetime(2012,1,1),time(NY_JAN_MICROS,TZ_UTC).ny_naive_datetime)
+        self.assertEquals(datetime(2012,1,1),time(NY_JAN_MICROS,TZ_NY).ny_naive_datetime)
 
 
-if __name__ == '__main__':
-    unittest2.main()
+
+

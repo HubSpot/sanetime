@@ -1,2 +1,3 @@
-class Error(ValueError):
-    pass
+class Error(ValueError): pass
+
+class TimeConstructionError(Error): pass

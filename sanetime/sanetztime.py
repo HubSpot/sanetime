@@ -31,8 +31,13 @@ class SaneTzTime(SaneTime):
             args, kwargs = [args[0]._us, args[0]._tz], {}
         super(SaneTzTime,self).__init__(*args, **kwargs)
 
-    def to_datetime(self):
-        return self.to_utc_datetime().astimezone(self.tz)
+    @property
+    def datetime(self): return self.to_timezoned_datetime(self.tz)
+    dt = datetime
+
+    @property
+    def naive_datetime(self): return self.to_timezoned_naive_datetime(self.tz)
+    ndt = naive_datetime
 
     @property
     def _tuple(self): return (self.us, self.tz)

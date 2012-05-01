@@ -1,6 +1,6 @@
-from .time import SaneTime,sanetime,time,nsanetime,ntime
-from .tztime import SaneTzTime,sanetztime,tztime,nsanetztime,ntztime
-from .delta import SaneDelta,sanedelta,delat,nsanedelta,ndelta
+from .sanetime import SaneTime,sanetime,time,nsanetime,ntime
+from .sanetztime import SaneTzTime,sanetztime,tztime,nsanetztime,ntztime
+from .sanedelta import SaneDelta,sanedelta,delta,nsanedelta,ndelta
 
 
         

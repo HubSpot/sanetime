@@ -1,32 +1,131 @@
 sanetime
 ========
 
-**simple, intuitive, powerful date/time manipulation**
+**a sane date/time python library**
 
 ::
 
-    >>> from sanetime import time,tztime,delta
+    >>> from sanetime import time
+    >>> time('2011-01-01 23:00','America/New_York').ms
+    1335758969218
+    >>> str(time(1335752844194691))  # human readable str
+    '2012-04-30 02:27:24.194691 UTC'
+    >>> time(s=1335758200,tz='Europe/London').datetime
+    datetime.datetime(2012, 4, 30, 4, 56, 40, tzinfo=<DstTzInfo 'Europe/London' BST+1:00:00 DST>)
+    >>> time().ms  # epoch millis at this moment
+    2909423432
+    >>> -(time()-time()).us
+    84
+    >>> (time(s=2039420392) - time(s=239402342)).rounded_hours
+    2
 
-    >>> time('2011-01-01','America/New_York').ms
-    23208402093
 
-    >>> time(ms=3928840234342).strftime("sjdlkjs")
-    lkfjsld lskdjf
+**sanetime** was written to DRY up all the common date/time manipulations we do constantly in our code while offering the most simple and intuitive client possible.
+We've all learned that the only sane way to store and manipulate times is using epoch time. (You have, haven't you?)
+Unfortunately, manipulating epoch time and timezones with the standard python toolset can be kill-me-now frustrating.
+**sanetime** tries to bring a little more sanity to manipulation of timezones, epoch time, time deltas, and time generally.
 
-    >>> tztime(s=3928840234342,'Europe/London').datetime
-    lkfjsld lskdjf
+API Documentation
+-----------------
+
+If you are looking for information on a specific function, class or method,
+this part of the documentation is for you.
+
+.. toctree::
+   :maxdepth: 2
+
+   api
+
+
+who?
+----
+If you've ever used python's datetime, date, time, calendar, timedelta, timetuple, pytz, and dateutil modules and thought: "Wow -- I love how explicit I'm being right now", then this library is not for you.
+
+If, on the other hand, you'd rather not have to remember how to be so explicit, then you have found what you're looking for.  You also owe me a beer :)
+
+
+time
+====
+The ``time`` class represents a moment in time, internally stored as microseconds since epoch.  
+A ``time`` object can also store the timezone that moment was experienced (UTC by default), however the timezone will never be considered during hashing, comparison or equality checks.  
+A moment in time experienced in America/New_York is equal to the same moment in time experienced in Europe/Dublin.
+
+
+construction
+------------
+from epoch time
+::
+
+    >>> from sanetime import time
+    >>> t = time()
+    >>> time(t.us) == time(us=t.us) == time(micros=t.us) == time(microseconds=t.us)
+    True
+    >>> time(ms=1) == time(millis=1) == time(milliseconds=1)
+    True
+    >>> time(s=1) == time(secs=1) == time(seconds=1)
+    True
+
+
+from string
+::
+
+    >>> # 
+    >>> time
+
+    >>> str(time(2**50))
+    '2011-01-01 23:00','America/New_York').ms
+    1335758969218
+
+    >>> str(time(1335752844194691))  # human readable str
+    '2012-04-30 02:27:24.194691 UTC'
+    
+    >>> time(s=1335758200,tz='Europe/London').datetime
+    datetime.datetime(2012, 4, 30, 4, 56, 40, tzinfo=<DstTzInfo 'Europe/London' BST+1:00:00 DST>)
+    
+    >>> time().ms  # epoch millis at this moment
+    2909423432
 
     >>> -(time()-time()).us
     84
 
-    >>> (time(s=2039420392) - time(s=239402342)).h
+    >>> (time(s=2039420392) - time(s=239402342)).rounded_hours
     2
 
-If you've ever used python's datetime, date, time, calendar, timedelta, timetuple, pytz, and dateutil modules and thought: "Wow -- I love how explicit I'm being right now", then this library is not for you.
 
-If, on the other hand, you like preserving your braincells for more important things, then you have found what you're looking for.
+properties
+----------
 
-sanetime was written to DRY up all the common date/time manipulations we do constantly in our code while presenting the most simple and intuitive client possible.
+methods
+-------
+
+
+tztime
+======
+``tztime`` represents a moment in time and where that time was experienced (i.e. the timezone), internally stored as microseconds since epoch and timezone.
+
+delta
+=====
+``delta`` is an amount of time, internally stored as microseconds.
+
+
+
+
+
+time
+----
+
+If you're looking to get a better handle on what it can do, just read through the examples
+
+
+
+principles
+==========
+* intuitive: easy to remember methods, with many reasonable aliases - be as verbose (and communicative) or as terse (and efficient) as you want to be.  for example  t = time();  t.ms == t.millis == t.milliseconds
+* simple: eas
+
+
+
+
 
 
 okay...
@@ -57,7 +156,6 @@ timetz
 
 delta
 -----
-``delta`` is an amount of time, internally stored as microseconds.
 
 
 
@@ -160,13 +258,6 @@ Requests is ready for today's web.
 - ``.netrc`` support
 
 
-Contents:
-
-.. toctree::
-   :maxdepth: 2
-
-   pitch
-   tutorial
 
 
 
