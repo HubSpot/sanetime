@@ -1,6 +1,5 @@
 from sanetime import SaneTime
 
-
 """
 Sane wrappers around the python's datetime / time / date / timetuple / pytz / timezone / calendar /
 timedelta / utc shitshow.  This takes care of most of the ridiculous shit so you don't have to
@@ -26,38 +25,14 @@ class SaneTzTime(SaneTime):
     In most other respects sanetztime is just like sanetime.
     """
 
-    def __init__(self, *args, **kwargs):
-        if len(args)==1 and len(kwargs)==0 and isinstance(args[0], SaneTzTime):
-            args, kwargs = [args[0]._us, args[0]._tz], {}
-        super(SaneTzTime,self).__init__(*args, **kwargs)
-
-    @property
-    def datetime(self): return self.to_timezoned_datetime(self.tz)
-    dt = datetime
-
-    @property
-    def naive_datetime(self): return self.to_timezoned_naive_datetime(self.tz)
-    ndt = naive_datetime
-
-    @property
-    def _tuple(self): return (self.us, self.tz)
-
-    def __add__(self, operand): return SaneTzTime(self._us + int(operand), tz=self.tz)
-    def __cmp__(self, other): return cmp(self._tuple,SaneTzTime(other)._tuple)
+    def __cmp__(self, other): 
+        if not hasattr(other, '_tuple'): other = SaneTzTime(other)
+        return cmp(self._tuple, other._tuple)
     def __hash__(self): return self._tuple.__hash__()
-
-    def __repr__(self): return 'SaneTzTime(%s,%s)' % (self.us, self.tz_name)
-    def __unicode__(self): return u'%s %s' % (super(SaneTzTime,self).__str__(), self.tz_name)
-    
-    @property
-    def tz(self): return self._tz
-    @property
-    def tz_name(self): return self.tz.zone
-    @property
-    def tz_abbr(self): return self.tz._tzname
+    def __repr__(self): return u"SaneTzTime(%s,%s)" % (self.us,repr(self.tz))
 
     @property
-    def time(self): return SaneTime(self._us)
+    def time(self): return SaneTime(self.us,self.tz)
     sanetime=time
     
 # null passthrough utility

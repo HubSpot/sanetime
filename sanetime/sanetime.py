@@ -1,7 +1,7 @@
 import calendar as shit_calendar
 from datetime import datetime as fucked_datetime
 from dateutil import parser as crap_parser
-from error import TimeConstructorError
+from .error import TimeConstructionError
 from .sanedelta import SaneDelta
 import pytz
 
@@ -95,6 +95,7 @@ class SaneTime(object):
         uss = set()
         tzs = set()
         naive_dt = None
+        avoid_localize = False
 
         for k,v in kwargs.iteritems():
             if k in ('tz','timezone'):
@@ -102,23 +103,24 @@ class SaneTime(object):
             elif k in MICROS_TRANSLATION_HASH:
                 uss.add(MICROS_TRANSLATION_HASH[k]*v)
             else:
-                raise TimeConstructorError("Unexpected kwarg in SaneTime constructor! (%s = %s)" % (k,v))
+                raise TimeConstructionError("Unexpected kwarg in SaneTime constructor! (%s = %s)" % (k,v))
 
         args = list(args)
-        if len(args)>2 and len(args)<8:
+        if len(args)>2 and len(args)<=8:
             args = [fucked_datetime(*args)]
         if len(args)==2:
             tzs.add(SaneTime.to_timezone(args.pop()))
         if len(args)==1:
+#            import pdb; pdb.set_trace()
             arg = args.pop()
             if hasattr(arg,'__int__'):
                 uss.add(int(arg))
+                if hasattr(arg,'tz'): tzs.add(arg.tz)
             elif isinstance(arg, basestring):
-                arg = arg.strip()
-                if arg.index(' ')>=0:
-                    parts = arg.split(' ')
+                parts = arg.strip().split(' ')
+                if len(parts)>1 and parts[-1].startswith('+'):
                     try:
-                        tzs.add(SaneTime.to_timezone(parts[-1]))
+                        tzs.add(SaneTime.to_timezone(parts[-1][1:]))
                         arg = ' '.join(parts[:-1])
                     except: pass
                 utc = arg.endswith('Z') or arg.endswith('+00:00')  # to deal with strange gunicorn issue -- doesn't want to use UTC time in these cases
@@ -128,41 +130,50 @@ class SaneTime(object):
                         tzs.add(pytz.utc)
                         arg = arg.replace(tzinfo=None)
                     else:
-                        tzs.add(arg.tzinfo)
+                        # can't rely on the dateutil parser for timezone stuff-- so we go back to UTC and force tz to be set in other ways
+                        avoid_localize = True # but we'll still convert back to UTC and allow timezone decoration
                         arg = arg.astimezone(pytz.utc).replace(tzinfo=None)
-            elif type(arg) == fucked_datetime:
+            if type(arg) == fucked_datetime:
                 naive_dt = arg
                 if naive_dt.tzinfo:
-                    tzs.add(naive_dt.tzinfo)
+                    tzs.add(SaneTime.to_timezone(str(naive_dt.tzinfo)))
                     naive_dt = naive_dt.replace(tzinfo=None)
 
         if len(tzs)>1:
-            raise TimeConstructorError("constructor arguments seem to specify more than one different timezone!  I can't possibly resolve that!  (timezones implied = %s)"%(tzs))
+            raise TimeConstructionError("constructor arguments seem to specify more than one different timezone!  I can't possibly resolve that!  (timezones implied = %s)"%(tzs))
 
         # now we have enough info to figure out the tz:
         self.tz = len(tzs) and tzs.pop() or pytz.utc
 
         # and now that we've figured out tz, we can fully deconstruct the dt
         if naive_dt:
-            uss.append(SaneTime.utc_datetime_to_us(self.tz.localize(naive_dt).astimezone(pytz.utc)))
+            if avoid_localize:
+                uss.add(SaneTime.utc_datetime_to_us(naive_dt))
+            else:
+                uss.add(SaneTime.utc_datetime_to_us(self.tz.localize(naive_dt).astimezone(pytz.utc)))
 
         # if we got nothing yet for micros, then make it now
         if len(uss)==0:
             uss.add(SaneTime.utc_datetime_to_us(fucked_datetime.utcnow()))
 
         if len(uss)>1:
-            raise TimeConstructorError("constructor arguments seem to specify more than one different time!  I can't possibly resolve that!  (micro times implied = %s)"%(uss))
+            raise TimeConstructionError("constructor arguments seem to specify more than one different time!  I can't possibly resolve that!  (micro times implied = %s)"%(uss))
 
         self.us = uss.pop()
         
         if len(args)>0:
-            raise TimeConstructorError("Unexpected constructor arguments")
+            raise TimeConstructionError("Unexpected constructor arguments")
 
         
     @property
     def ms(self): return (self.us+500)/1000
+    epoch_milliseconds = epoch_millis = milliseconds = millis = ms
     @property
     def s(self): return (self.us+500*1000)/10**6
+    epoch_seconds = epoch_secs = seconds = secs = s
+    @property
+    def micros(self): return self.us
+    epoch_microseconds = epoch_micros = microseconds = micros
 
     @property
     def tz_name(self): return self.tz.zone
@@ -181,7 +192,7 @@ class SaneTime(object):
 
     def __add__(self, operand): 
         if not hasattr(operand, '__int__'): operand = SaneTime(operand)
-        return SaneTime(self.us + int(operand),tz=self.tz)
+        return self.__class__(self.us + int(operand),tz=self.tz)
     def __sub__(self, operand):
         if not hasattr(operand, '__int__'): operand = SaneTime(operand)
         if isinstance(operand, SaneTime): return SaneDelta(self.us - int(operand))
@@ -191,14 +202,13 @@ class SaneTime(object):
 
     def __repr__(self): return u"SaneTime(%s,%s)" % (self.us,repr(self.tz))
     def __str__(self): return unicode(self).encode('utf-8')
-    def __unicode__(self): return self.to_timezoned_unicode('UTC')
-
-    def to_timezoned_unicode(self, tz):
-        dt = self.to_timezoned_datetime(tz)
+    def __unicode__(self): 
+        dt = self.datetime
         micros = u".%06d"%dt.microsecond if dt.microsecond else ''
         time = u" %02d:%02d:%02d%s"%(dt.hour,dt.minute,dt.second,micros) if dt.microsecond or dt.second or dt.minute or dt.hour else ''
-        return u"%04d-%02d-%02d%s %s" % (dt.year, dt.month, dt.day, time, dt.tzinfo.zone)
+        return u"%04d-%02d-%02d%s +%s" % (dt.year, dt.month, dt.day, time, dt.tzinfo.zone)
 
+    def clone(self): return self.__class__(self.us,self.tz)
 
     @property
     def ny_str(self): return self.ny_ndt.strftime('%I:%M:%S%p %m/%d/%Y')
