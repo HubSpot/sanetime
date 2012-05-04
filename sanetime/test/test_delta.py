@@ -1,6 +1,5 @@
 import unittest
 from .. import time,delta
-from ..sanedelta import MEAN_MONTH_MICROS
 
 class SaneDeltaTest(unittest.TestCase):
     def test_construction(self):

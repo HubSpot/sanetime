@@ -199,20 +199,6 @@ class SaneDelta(object):
     def __unicode__(self): return self.construct_str()
 
 
-    # positional amounts
-    @property
-    def pus(self): return self.us % SECOND_MICROS
-    @property
-    def pms(self): return self.us % SECOND_MICROS / MILLI_MICROS
-    @property
-    def ps(self): return self.us % MINUTE_MICROS / SECOND_MICROS
-    @property
-    def pm(self): return self.us % HOUR_MICROS / MINUTE_MICROS
-    @property
-    def ph(self): return self.us % DAY_MICROS / HOUR_MICROS
-
-    @property
-    def prus(self): return self.us % SECOND_MICROS
     @property
     def abbr(self): return self.construct_str(relative_resolution=2, absolute_resolution='s', separator='')
 
