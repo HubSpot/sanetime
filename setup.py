@@ -12,12 +12,11 @@ setup(
     url='https://github.com/prior/sanetime',
     download_url='https://github.com/prior/sanetime/tarball/v%s'%VERSION,
     license='LICENSE.txt',
-    description='A sane date/time python interface -- better epoch time, timezone, and delta support -- optional django support as well',
+    description='A sane date/time python interface -- better epoch time, timezones, and deltas -- django support as well',
     long_description=open('README.rst').read(),
-    install_requires=[ 
-        'nose==1.1.2', 
-        'pytz>=2012b', 
-        'python-dateutil==1.5' 
+    install_requires=[
+        'pytz>=2010',
+        'python-dateutil>=1.5,<2.0'  # we're not compatible with python 3.0 yet
     ]
 )
 
