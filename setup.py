@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from distutils.core import setup
 
-VERSION = '3.6.0'
+VERSION = '4.0.0'
 
 setup(
     name='sanetime',
@@ -14,9 +14,5 @@ setup(
     download_url='https://github.com/prior/sanetime/tarball/v%s'%VERSION,
     license='LICENSE.txt',
     packages=['sanetime'],
-    install_requires=[
-        'nose==1.1.2',
-        'pytz==2012b',
-        'python-dateutil==1.5'
-    ]
+    install_requires=[ 'nose==1.1.2', 'pytz==2012b', 'python-dateutil==1.5' ]
 )

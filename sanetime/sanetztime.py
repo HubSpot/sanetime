@@ -1,8 +1,4 @@
-import re
 from sanetime import SaneTime
-from error import SaneTimeError
-from numbers import Number
-
 
 """
 Sane wrappers around the python's datetime / time / date / timetuple / pytz / timezone / calendar /
@@ -18,7 +14,6 @@ There are two classes that you mind find useful here, and you should understand 
         moment was experienced.
 """
 
-# keeping lowercase so we can mimic datetime as much as is reasonable
 class SaneTzTime(SaneTime):
     """
     sanetztime is concerned with a particular moment in time AND which timezone that moment in time
@@ -27,83 +22,24 @@ class SaneTzTime(SaneTime):
     appear to have the same definition, but have a different label they are considered different.
     They must have the same structure and the same label.
 
-    In most other respects sanetztime is similar to sanetime.
+    In most other respects sanetztime is just like sanetime.
     """
 
-    STR_NATIVE_TZ_FORMAT = re.compile(r'^(\d+)([um]?s)\s(.*)$')
-
-    def __init__(self, *args, **kwargs):
-        if len(args)>0:
-            args = list(args)
-            if isinstance(args[0], SaneTzTime):
-                kwargs['tz'] = args[0].tz
-                args[0] = args[0].us
-            elif isinstance(args[0], basestring):
-                if self.__class__.STR_NATIVE_TZ_FORMAT.match(args[0]):
-                    parts = args[0].split(' ')
-                    kwargs['tz'] = parts[1]
-                    args[0] = parts[0]
-        super(SaneTzTime,self).__init__(*args, **kwargs)
-        self.tz = self.to_datetime().tzinfo
-
-    def set_tz(self, tz):
-        return super(SaneTzTime,self)._set_tz(tz)
-
-    def with_tz(self, tz):
-        return SaneTzTime(self.us, tz=tz)
-
-    def to_datetime(self):
-        return self.to_utc_datetime().astimezone(self.tz)
-
-    def to_naive_datetime(self):
-        return self.to_datetime().replace(tzinfo=None)
-
-    def strftime(self, *args, **kwargs):
-        return self.to_datetime().strftime(*args, **kwargs)
+    def __cmp__(self, other): 
+        if not hasattr(other, '_tuple'): other = SaneTzTime(other)
+        return cmp(self._tuple, other._tuple)
+    def __hash__(self): return self._tuple.__hash__()
+    def __repr__(self): return u"SaneTzTime(%s,%s)" % (self.us,repr(self.tz))
 
     @property
-    def _data(self):
-        return (self.us, self.tz)
-
-    # more stringent equality check for sanetztime -- must have same timezone as well
-    def __eq__(self, other):
-        if not isinstance(other, SaneTzTime):
-            try:
-                other = SaneTzTime(other)
-            except:
-                return False
-        return self._data == other._data
-
-    def __hash__(self):
-        return self._data.__hash__()
-
-    def __add__(self, operand): return SaneTzTime(self.us + int(operand), tz=self.tz)
-
-    def __repr__(self):
-        return '%s %s' % (self.__repr_naive__(), self.tz_name)
-
-    def __str__(self):
-        return '%s %s' % (super(SaneTzTime,self).__str__(), self.tz_name)
+    def time(self): return SaneTime(self.us,self.tz)
+    sanetime=time
     
-    def _get_tz(self):
-        return self._tz
-    tz = property(_get_tz, set_tz)
-
-    def _get_tz_name(self):
-        return self.tz.zone
-    tz_name = property(_get_tz_name)
-
-    def _get_tz_abbr(self):
-        return self.tz._tzname
-    tz_abbr = property(_get_tz_abbr)
-    
-
-#primary gateways
-
-sanetztime = SaneTzTime
-tztime = SaneTzTime
-
+# null passthrough utility
 def nsanetztime(*args, **kwargs): 
     if not args or args[0] is None: return None
     return SaneTzTime(*args, **kwargs)
+
+#primary aliases
+tztime = sanetztime = SaneTzTime
 ntztime = nsanetztime

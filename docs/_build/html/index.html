@@ -1,0 +1,346 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>sanetime &mdash; sanetime 3.5.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/jinja.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '3.5.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="sanetime 3.5.0 documentation" href="#" />
+    <link rel="next" title="API" href="api.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="api.html" title="API"
+             accesskey="N">next</a> |</li>
+        <li><a href="#">sanetime 3.5.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="sanetime">
+<h1>sanetime<a class="headerlink" href="#sanetime" title="Permalink to this headline">¶</a></h1>
+<p><strong>a sane date/time python library</strong></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sanetime</span> <span class="kn">import</span> <span class="n">time</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">(</span><span class="s">&#39;2011-01-01 23:00&#39;</span><span class="p">,</span><span class="s">&#39;America/New_York&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">ms</span>
+<span class="go">1335758969218</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="p">(</span><span class="mi">1335752844194691</span><span class="p">))</span>  <span class="c"># human readable str</span>
+<span class="go">&#39;2012-04-30 02:27:24.194691 UTC&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">1335758200</span><span class="p">,</span><span class="n">tz</span><span class="o">=</span><span class="s">&#39;Europe/London&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">datetime</span>
+<span class="go">datetime.datetime(2012, 4, 30, 4, 56, 40, tzinfo=&lt;DstTzInfo &#39;Europe/London&#39; BST+1:00:00 DST&gt;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">()</span><span class="o">.</span><span class="n">ms</span>  <span class="c"># epoch millis at this moment</span>
+<span class="go">2909423432</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="o">-</span><span class="p">(</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">time</span><span class="p">())</span><span class="o">.</span><span class="n">us</span>
+<span class="go">84</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">time</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">2039420392</span><span class="p">)</span> <span class="o">-</span> <span class="n">time</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">239402342</span><span class="p">))</span><span class="o">.</span><span class="n">rounded_hours</span>
+<span class="go">2</span>
+</pre></div>
+</div>
+<p><strong>sanetime</strong> was written to DRY up all the common date/time manipulations we do constantly in our code while offering the most simple and intuitive client possible.
+We&#8217;ve all learned that the only sane way to store and manipulate times is using epoch time. (You have, haven&#8217;t you?)
+Unfortunately, manipulating epoch time and timezones with the standard python toolset can be kill-me-now frustrating.
+<strong>sanetime</strong> tries to bring a little more sanity to manipulation of timezones, epoch time, time deltas, and time generally.</p>
+<div class="section" id="api-documentation">
+<h2>API Documentation<a class="headerlink" href="#api-documentation" title="Permalink to this headline">¶</a></h2>
+<p>If you are looking for information on a specific function, class or method,
+this part of the documentation is for you.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="who">
+<h2>who?<a class="headerlink" href="#who" title="Permalink to this headline">¶</a></h2>
+<p>If you&#8217;ve ever used python&#8217;s datetime, date, time, calendar, timedelta, timetuple, pytz, and dateutil modules and thought: &#8220;Wow &#8211; I love how explicit I&#8217;m being right now&#8221;, then this library is not for you.</p>
+<p>If, on the other hand, you&#8217;d rather not have to remember how to be so explicit, then you have found what you&#8217;re looking for.  You also owe me a beer :)</p>
+</div>
+</div>
+<div class="section" id="time">
+<h1>time<a class="headerlink" href="#time" title="Permalink to this headline">¶</a></h1>
+<p>The <tt class="docutils literal"><span class="pre">time</span></tt> class represents a moment in time, internally stored as microseconds since epoch.
+A <tt class="docutils literal"><span class="pre">time</span></tt> object can also store the timezone that moment was experienced (UTC by default), however the timezone will never be considered during hashing, comparison or equality checks.
+A moment in time experienced in America/New_York is equal to the same moment in time experienced in Europe/Dublin.</p>
+<div class="section" id="construction">
+<h2>construction<a class="headerlink" href="#construction" title="Permalink to this headline">¶</a></h2>
+<p>from epoch time</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sanetime</span> <span class="kn">import</span> <span class="n">time</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">us</span><span class="p">)</span> <span class="o">==</span> <span class="n">time</span><span class="p">(</span><span class="n">us</span><span class="o">=</span><span class="n">t</span><span class="o">.</span><span class="n">us</span><span class="p">)</span> <span class="o">==</span> <span class="n">time</span><span class="p">(</span><span class="n">micros</span><span class="o">=</span><span class="n">t</span><span class="o">.</span><span class="n">us</span><span class="p">)</span> <span class="o">==</span> <span class="n">time</span><span class="p">(</span><span class="n">microseconds</span><span class="o">=</span><span class="n">t</span><span class="o">.</span><span class="n">us</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">(</span><span class="n">ms</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">time</span><span class="p">(</span><span class="n">millis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">time</span><span class="p">(</span><span class="n">milliseconds</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">time</span><span class="p">(</span><span class="n">secs</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">time</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>from string</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c">#</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">50</span><span class="p">))</span>
+<span class="go">&#39;2011-01-01 23:00&#39;,&#39;America/New_York&#39;).ms</span>
+<span class="go">1335758969218</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="p">(</span><span class="mi">1335752844194691</span><span class="p">))</span>  <span class="c"># human readable str</span>
+<span class="go">&#39;2012-04-30 02:27:24.194691 UTC&#39;</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">1335758200</span><span class="p">,</span><span class="n">tz</span><span class="o">=</span><span class="s">&#39;Europe/London&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">datetime</span>
+<span class="go">datetime.datetime(2012, 4, 30, 4, 56, 40, tzinfo=&lt;DstTzInfo &#39;Europe/London&#39; BST+1:00:00 DST&gt;)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">()</span><span class="o">.</span><span class="n">ms</span>  <span class="c"># epoch millis at this moment</span>
+<span class="go">2909423432</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="o">-</span><span class="p">(</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">time</span><span class="p">())</span><span class="o">.</span><span class="n">us</span>
+<span class="go">84</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">time</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">2039420392</span><span class="p">)</span> <span class="o">-</span> <span class="n">time</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">239402342</span><span class="p">))</span><span class="o">.</span><span class="n">rounded_hours</span>
+<span class="go">2</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="properties">
+<h2>properties<a class="headerlink" href="#properties" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="methods">
+<h2>methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+<div class="section" id="tztime">
+<h1>tztime<a class="headerlink" href="#tztime" title="Permalink to this headline">¶</a></h1>
+<p><tt class="docutils literal"><span class="pre">tztime</span></tt> represents a moment in time and where that time was experienced (i.e. the timezone), internally stored as microseconds since epoch and timezone.</p>
+</div>
+<div class="section" id="delta">
+<h1>delta<a class="headerlink" href="#delta" title="Permalink to this headline">¶</a></h1>
+<p><tt class="docutils literal"><span class="pre">delta</span></tt> is an amount of time, internally stored as microseconds.</p>
+<div class="section" id="id1">
+<h2>time<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<p>If you&#8217;re looking to get a better handle on what it can do, just read through the examples</p>
+</div>
+</div>
+<div class="section" id="principles">
+<h1>principles<a class="headerlink" href="#principles" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li>intuitive: easy to remember methods, with many reasonable aliases - be as verbose (and communicative) or as terse (and efficient) as you want to be.  for example  t = time();  t.ms == t.millis == t.milliseconds</li>
+<li>simple: eas</li>
+</ul>
+<div class="section" id="okay">
+<h2>okay...<a class="headerlink" href="#okay" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+<div class="section" id="faq">
+<h1>FAQ<a class="headerlink" href="#faq" title="Permalink to this headline">¶</a></h1>
+<p>Why is everything stored internally as microseconds?</p>
+<p>Python&#8217;s datetime gives us access to microseconds, and since milliseconds would already have us cross the 32bit integer boundary, we might as well capture everything we can and take on microseconds as well.  There are plenty of helpers on the time, tztime, and delta classes so you never have to see/manipulate the huge microsecond numbers yourself.</p>
+</div>
+<div class="section" id="the-basics">
+<h1>The Basics<a class="headerlink" href="#the-basics" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="id2">
+<h2>time<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">time</span></tt> represents only a moment in time, internally stored as microseconds since epoch.</p>
+</div>
+<div class="section" id="timetz">
+<h2>timetz<a class="headerlink" href="#timetz" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">timetz</span></tt> represents a moment in time and where that time is experienced (i.e. the timezone), internally stored as microseconds since epoch and timezone.</p>
+</div>
+<div class="section" id="id3">
+<h2>delta<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+<div class="section" id="confusion">
+<h1>Confusion<a class="headerlink" href="#confusion" title="Permalink to this headline">¶</a></h1>
+<p>Though sanetime avoids a menagerie of confusion you&#8217;d encounter without it, it does introduce one unavoidable? point of confusion.  delta&#8217;s can never change based on context &#8211; that means a delta(d=1) is always 24 hours.  So you have to be careful around daylight savings time jumps.   Whenever you use something like this: delta(d=1), you should be thinking 24 hours.  For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">(</span><span class="s">&#39;2011-01-01&#39;</span><span class="p">,</span><span class="s">&#39;America/New_York&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">ms</span>
+<span class="go">23208402093</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tztime</span><span class="p">(</span><span class="s">&#39;2012-04-15 12:30&#39;</span><span class="p">,</span><span class="s">&#39;America/New_York&#39;</span><span class="p">)</span><span class="o">-</span><span class="n">delta</span><span class="p">(</span><span class="n">d</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="go">48238492992932</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="o">-</span><span class="p">(</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">time</span><span class="p">())</span><span class="o">.</span><span class="n">us</span>
+<span class="go">84</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">time</span><span class="p">(</span><span class="s">&#39;2011-01-01&#39;</span><span class="p">,</span><span class="n">tz</span><span class="o">=</span><span class="s">&#39;America/New_York&#39;</span><span class="p">)</span> <span class="o">-</span> <span class="n">time</span><span class="p">(</span><span class="s">&#39;2011-01-01&#39;</span><span class="p">,</span><span class="n">tz</span><span class="o">=</span><span class="s">&#39;America/Phoenix&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">h</span>
+<span class="go">2</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="p">(</span><span class="s">&#39;2011-01-01&#39;</span><span class="p">,</span><span class="n">tz</span><span class="o">=</span><span class="s">&#39;America/New_York&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">delta</span><span class="p">(</span><span class="n">h</span><span class="o">=</span><span class="mi">12</span><span class="p">))</span><span class="o">.</span><span class="n">with_tz</span><span class="p">(</span><span class="s">&#39;America/Phoenix&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="requests-http-for-humans">
+<h1>Requests: HTTP for Humans<a class="headerlink" href="#requests-http-for-humans" title="Permalink to this headline">¶</a></h1>
+<p>Release v3.5. (<em class="xref std std-ref">Installation</em>)</p>
+<p>Requests is an <em class="xref std std-ref">ISC Licensed</em> HTTP library, written in Python, for human beings.</p>
+<p>Python&#8217;s standard <strong>urllib2</strong> module provides most of
+the HTTP capabilities you need, but the API is thoroughly <strong>broken</strong>.
+It was built for a different time —&nbsp;and a different web. It requires an <em>enormous</em> amount of work (even method overrides) to perform the simplest of tasks.</p>
+<p>Things shouldn’t be this way. Not in Python.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;https://api.github.com&#39;</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;user&#39;</span><span class="p">,</span> <span class="s">&#39;pass&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span>
+<span class="go">204</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s">&#39;content-type&#39;</span><span class="p">]</span>
+<span class="go">&#39;application/json&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">text</span>
+<span class="gp">...</span>
+</pre></div>
+</div>
+<p>See <a class="reference external" href="https://gist.github.com/973705">the same code, without Requests</a>.</p>
+<p>Requests takes all of the work out of Python HTTP/1.1 —&nbsp;making your integration with web services seamless. There&#8217;s no need to manually add query strings to your URLs, or to form-encode your POST data. Keep-alive and HTTP connection pooling are 100%  automatic, powered by <a class="reference external" href="https://github.com/shazow/urllib3">urllib3</a>, which is embedded within Requests.</p>
+<div class="section" id="testimonials">
+<h2>Testimonials<a class="headerlink" href="#testimonials" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="http://heroku.com">Heroku</a>, <a class="reference external" href="https://www.paypal.com/">PayPal</a>,
+<a class="reference external" href="https://www.transifex.net/">Transifex</a>,
+<a class="reference external" href="http://www.native-instruments.com/">Native Instruments</a>, <a class="reference external" href="http://www.washingtonpost.com/">The Washington Post</a>,
+<a class="reference external" href="http://twitter.com">Twitter, Inc</a>,
+<a class="reference external" href="http://readability.com">Readability</a>, and
+Federal US Institutions
+use Requests internally. It has been installed over 100,000 times from PyPI.</p>
+<dl class="docutils">
+<dt><strong>Armin Ronacher</strong></dt>
+<dd>Requests is the perfect example how beautiful an API can be with the
+right level of abstraction.</dd>
+<dt><strong>Matt DeBoard</strong></dt>
+<dd>I&#8217;m going to get &#64;kennethreitz&#8217;s Python requests module tattooed
+on my body, somehow. The whole thing.</dd>
+<dt><strong>Daniel Greenfeld</strong></dt>
+<dd>Nuked a 1200 LOC spaghetti code library with 10 lines of code thanks to
+&#64;kennethreitz&#8217;s request library. Today has been AWESOME.</dd>
+<dt><strong>Kenny Meyers</strong></dt>
+<dd>Python HTTP: When in doubt, or when not in doubt, use Requests. Beautiful,
+simple, Pythonic.</dd>
+</dl>
+</div>
+<div class="section" id="feature-support">
+<h2>Feature Support<a class="headerlink" href="#feature-support" title="Permalink to this headline">¶</a></h2>
+<p>Requests is ready for today&#8217;s web.</p>
+<ul class="simple">
+<li>International Domains and URLs</li>
+<li>Keep-Alive &amp; Connection Pooling</li>
+<li>Sessions with Cookie Persistence</li>
+<li>Browser-style SSL Verification</li>
+<li>Basic/Digest Authentication</li>
+<li>Elegant Key/Value Cookies</li>
+<li>Automatic Decompression</li>
+<li>Unicode Response Bodies</li>
+<li>Multipart File Uploads</li>
+<li>Connection Timeouts</li>
+<li><tt class="docutils literal"><span class="pre">.netrc</span></tt> support</li>
+</ul>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><em>Index</em></a></li>
+<li><a class="reference internal" href="py-modindex.html"><em>Module Index</em></a></li>
+<li><a class="reference internal" href="search.html"><em>Search Page</em></a></li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">sanetime</a><ul>
+<li><a class="reference internal" href="#api-documentation">API Documentation</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#who">who?</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#time">time</a><ul>
+<li><a class="reference internal" href="#construction">construction</a></li>
+<li><a class="reference internal" href="#properties">properties</a></li>
+<li><a class="reference internal" href="#methods">methods</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#tztime">tztime</a></li>
+<li><a class="reference internal" href="#delta">delta</a><ul>
+<li><a class="reference internal" href="#id1">time</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#principles">principles</a><ul>
+<li><a class="reference internal" href="#okay">okay...</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#faq">FAQ</a></li>
+<li><a class="reference internal" href="#the-basics">The Basics</a><ul>
+<li><a class="reference internal" href="#id2">time</a></li>
+<li><a class="reference internal" href="#timetz">timetz</a></li>
+<li><a class="reference internal" href="#id3">delta</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#confusion">Confusion</a></li>
+<li><a class="reference internal" href="#requests-http-for-humans">Requests: HTTP for Humans</a><ul>
+<li><a class="reference internal" href="#testimonials">Testimonials</a></li>
+<li><a class="reference internal" href="#feature-support">Feature Support</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="api.html" title="next chapter">API</a></li>
+  </ul></li>
+</ul>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2012, prior.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+    </div>
+  </body>
+</html>
