@@ -200,34 +200,36 @@ class SaneDelta(object):
 
 
     @property
-    def abbr(self): return self.construct_str(relative_resolution=2, absolute_resolution='s', separator='')
+    def abbr(self): return self.construct_str(max_positions=2, final_position='s', separator='', no_zero_positions=True)
 
     #TODO: test this sucker
     #TODO; test negative deltas
-    def construct_str(self, relative_resolution=None, absolute_resolution='us', separator=' '):
+    def construct_str(self, max_positions=None, final_position='us', separator=' ', no_zero_positions=False):
         parts = []
         delta = abs(self)
-        relative_resolution = relative_resolution or 6
-        if absolute_resolution == 'md' or len(parts)==relative_resolution-1 and delta.wmd:
-            parts.append("%sd"%delta.rmd)
+        max_positions = max_positions or 6
+        if final_position == 'md' or len(parts)==max_positions-1 and delta.wmd:
+            parts.append((delta.rmd,"%sd"%delta.rmd))
         else:
-            if delta.wmd: parts.append("%sd"%delta.wmd)
-            if absolute_resolution == 'h' or len(parts)==relative_resolution-1 and (delta.ph or len(parts)):
-                parts.append("%sh"%delta.prh)
+            if delta.wmd: parts.append((delta.wmd,"%sd"%delta.wmd))
+            if final_position == 'h' or len(parts)==max_positions-1 and (delta.ph or len(parts)):
+                parts.append((delta.prh,"%sh"%delta.prh))
             else:
-                if delta.ph or len(parts): parts.append("%sh"%delta.ph)
-                if absolute_resolution == 'm' or len(parts)==relative_resolution-1 and (delta.pm or len(parts)):
-                    parts.append("%sm"%delta.prm)
+                if delta.ph or len(parts): parts.append((delta.ph,"%sh"%delta.ph))
+                if final_position == 'm' or len(parts)==max_positions-1 and (delta.pm or len(parts)):
+                    parts.append((delta.prm,"%sm"%delta.prm))
                 else:
-                    if delta.pm or len(parts): parts.append("%sm"%delta.pm)
-                    if absolute_resolution == 's' or len(parts)==relative_resolution-1 and (delta.ps or len(parts)):
-                        parts.append("%ss"%delta.prs)
+                    if delta.pm or len(parts): parts.append((delta.pm,"%sm"%delta.pm))
+                    if final_position == 's' or len(parts)==max_positions-1 and (delta.ps or len(parts)):
+                        parts.append((delta.prs,"%ss"%delta.prs))
                     else:
-                        if absolute_resolution == 'ms' or len(parts)==relative_resolution-1 and (delta.pms or len(parts)):
-                            parts.append("%s.%03ds" % (delta.ps,delta.prms))
+                        parts.append((delta.ps,'%s'%delta.ps))
+                        if final_position == 'ms' or len(parts)==max_positions and (delta.pms or len(parts)):
+                            parts.append((delta.prms,".%03ds"%delta.prms,True))
                         else:
-                            parts.append("%s.%06ds" % (delta.ps,delta.pus))
-        return "%s%s" % ('' if self>=0 else '-', separator.join(parts))
+                            parts.append((delta.pus,".%06ds"%delta.pus,True))
+        while no_zero_positions and len(parts)>1 and not parts[-1][0]: parts.pop()
+        return ("%s%s%s%s" % ('' if self>=0 else '-', separator.join([p[1] for p in parts[:-1]]), '' if len(parts[-1])==3 else separator, parts[-1][1])).strip()
  
 
 
