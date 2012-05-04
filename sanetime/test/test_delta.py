@@ -1,5 +1,6 @@
 import unittest
-from sanetime import delta
+from .. import time,delta
+from ..sanedelta import MEAN_MONTH_MICROS
 
 class SaneDeltaTest(unittest.TestCase):
     def test_construction(self):
@@ -21,34 +22,45 @@ class SaneDeltaTest(unittest.TestCase):
         self.assertEquals(hash(123), hash(delta(123)))
 
     def test_add(self):
-        self.assertEqual(time(2012,1,1,0,0,0,1),time(2012,1,1,0,0,0) + delta(us=1))
-        self.assertEqual(time(2012,1,1,0,0,0,1000),time(2012,1,1,0,0,0) + delta(ms=1))
-        self.assertEqual(time(2012,1,1,0,0,1),time(2012,1,1,0,0,1) + delta(s=1))
-        self.assertEqual(time(2012,1,1,1),time(2012,1,1) + delta(h=1)
-        self.assertEqual(time(2012,1,1,1),time(2012,1,1) + delta(h=1)
-        self.assertEqual(time(2012,1,1,1),time(2012,1,1) + delta(h=1)
-        self.assertEqual(time(2012,1,1,1),time(2012,1,1) + delta(h=1)
+        self.assertEquals(time(2012,1,1,0,0,0,1), time(2012,1,1)+delta(us=1))
+        self.assertEquals(time(2012,1,1,0,0,0,1000), time(2012,1,1)+delta(ms=1))
+        self.assertEquals(time(2012,1,1,0,0,1), time(2012,1,1)+delta(s=1))
+        self.assertEquals(time(2012,1,1,0,1), time(2012,1,1)+delta(m=1))
+        self.assertEquals(time(2012,1,1,1), time(2012,1,1)+delta(h=1))
+        self.assertEquals(time(2012,1,2), time(2012,1,1)+delta(md=1))
+        self.assertEquals(time(2012,1,8), time(2012,1,1)+delta(mw=1))
+        self.assertEquals(time(2012,1,31,10,30), time(2012,1,1)+delta(mm=1))
+        self.assertEquals(time(2012,12,31,6), time(2012,1,1)+delta(my=1))
+
+    def test_construct_str(self):
+        self.assertEquals('0.000001s', delta(us=1).construct_str())
+        self.assertEquals('0.001000s', delta(ms=1).construct_str())
+        self.assertEquals('0.001s', delta(ms=1).construct_str(relative_resolution=1))
+        self.assertEquals('0.001s', delta(ms=1).construct_str(absolute_resolution='ms'))
+        self.assertEquals('0.001002s', delta(ms=1,us=2).construct_str())
+        self.assertEquals('3.001002s', delta(s=3,ms=1,us=2).construct_str())
+        self.assertEquals('-3.001002s', (-delta(s=3,ms=1,us=2)).construct_str())
+        self.assertEquals('3.001s', delta(s=3,ms=1,us=2).construct_str(absolute_resolution='ms'))
+        self.assertEquals('3.002s', delta(s=3,ms=1,us=500).construct_str(absolute_resolution='ms'))
+        self.assertEquals('3s', delta(s=3,ms=499,us=500).construct_str(absolute_resolution='s'))
+        self.assertEquals('4s', delta(s=3,ms=500).construct_str(absolute_resolution='s'))
+        self.assertEquals('4m 4s', delta(m=4,s=3,ms=500).construct_str(absolute_resolution='s'))
+        self.assertEquals('4m4s', delta(m=4,s=3,ms=500).construct_str(absolute_resolution='s',separator=''))
+        self.assertEquals('4m4s', delta(m=4,s=3,ms=500).construct_str(absolute_resolution='s',relative_resolution=2, separator=''))
+        self.assertEquals('4m', delta(m=4,s=3,ms=500).construct_str(absolute_resolution='s',relative_resolution=1, separator=''))
 
     def test_multiply(self):
         self.assertEquals(delta(15), delta(3) * 5)
 
-    def test_abs(self):
-        self.assertequal(-1, delta(-1))
-        self.assertequal(1, delta(-1).abs)
+    def test_unaries(self):
+        self.assertEquals(-1, delta(-1).us)
+        self.assertEquals(1, abs(delta(1)).us)
+        self.assertEquals(1, abs(delta(-1)).us)
+        self.assertEquals(-1, (-delta(1)).us)
+        self.assertEquals(+1, (+delta(1)).us)
 
-    def test_
 
-    def test_arithmetic(self):
-        
-
-        t1 = time(JAN_MICROS)
-        t2 = time(JAN_MICROS+1)
-
-        self.assertEquals(t2.us, (t1+1).us)
-        self.assertEquals(t1.us,(t2-1).us)
-
-        self.assertEquals(1, t2 - t1)
-        self.assertEquals(-1, t1 - t2)
-
+    def test_date_subtraction(self):
+        self.assertEquals(24*60**2*10**6, time(2012,1,2) - time(2012,1,1))
 
 

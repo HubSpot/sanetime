@@ -4,8 +4,8 @@ MINUTE_MICROS = SECOND_MICROS * 60
 HOUR_MICROS = MINUTE_MICROS * 60
 MEAN_DAY_MICROS = HOUR_MICROS * 24
 MEAN_WEEK_MICROS = MEAN_DAY_MICROS * 7
-MEAN_MONTH_MICROS = (MEAN_DAY_MICROS * 365*4+1)/(12*4)
-MEAN_YEAR_MICROS = (MEAN_DAY_MICROS * 365*4+1)/4
+MEAN_MONTH_MICROS = (MEAN_DAY_MICROS * (365*4+1)) / (12*4)
+MEAN_YEAR_MICROS = (MEAN_DAY_MICROS * (365*4+1)) / 4
 
 HALF_MILLI_MICROS = MILLI_MICROS / 2
 HALF_SECOND_MICROS = SECOND_MICROS / 2
@@ -18,7 +18,7 @@ HALF_MEAN_YEAR_MICROS = MEAN_YEAR_MICROS / 2
 
 TRANSLATIONS = (
         (('my','mean_years'),MEAN_YEAR_MICROS),
-        (('mm','mean_months'),MEAN_WEEK_MICROS),
+        (('mm','mean_months'),MEAN_MONTH_MICROS),
         (('mw','mean_weeks'),MEAN_WEEK_MICROS),
         (('md','mean_days'),MEAN_DAY_MICROS),
         (('h','hours'),HOUR_MICROS),
@@ -31,29 +31,29 @@ TRANSLATION_HASH = dict((alt,v) for k,v in TRANSLATIONS for alt in k)
 class SaneDelta(object):
     def __init__(self, *args, **kwargs):
         if args:
-            self._us = int(args[0])
+            self.us = int(args[0])
         else:
-            self._us = sum(TRANSLATION_HASH[k]*(v or 0) for k,v in kwargs.iteritems())
+            self.us = sum(TRANSLATION_HASH[k]*(v or 0) for k,v in kwargs.iteritems())
 
     # rounded amounts
     @property
-    def rounded_microseconds(self): return self._us
+    def rounded_microseconds(self): return self.us
     @property
-    def rounded_milliseconds(self): return (self._us + HALF_MILLI_MICROS) / MILLI_MICROS
+    def rounded_milliseconds(self): return (self.us + HALF_MILLI_MICROS) / MILLI_MICROS
     @property
-    def rounded_seconds(self): return (self._us + HALF_SECOND_MICROS) / SECOND_MICROS
+    def rounded_seconds(self): return (self.us + HALF_SECOND_MICROS) / SECOND_MICROS
     @property
-    def rounded_minutes(self): return (self._us + HALF_MINUTE_MICROS) / MINUTE_MICROS
+    def rounded_minutes(self): return (self.us + HALF_MINUTE_MICROS) / MINUTE_MICROS
     @property
-    def rounded_hours(self): return (self._us + HALF_HOUR_MICROS) / HOUR_MICROS
+    def rounded_hours(self): return (self.us + HALF_HOUR_MICROS) / HOUR_MICROS
     @property
-    def rounded_mean_days(self): return (self._us + HALF_MEAN_DAY_MICROS) / MEAN_DAY_MICROS
+    def rounded_mean_days(self): return (self.us + HALF_MEAN_DAY_MICROS) / MEAN_DAY_MICROS
     @property
-    def rounded_mean_weeks(self): return (self._us + HALF_MEAN_WEEK_MICROS) / MEAN_WEEK_MICROS
+    def rounded_mean_weeks(self): return (self.us + HALF_MEAN_WEEK_MICROS) / MEAN_WEEK_MICROS
     @property
-    def rounded_mean_months(self): return (self._us + HALF_MEAN_MONTH_MICROS) / MEAN_MONTH_MICROS
+    def rounded_mean_months(self): return (self.us + HALF_MEAN_MONTH_MICROS) / MEAN_MONTH_MICROS
     @property
-    def rounded_mean_years(self): return (self._us + HALF_MEAN_YEAR_MICROS) / MEAN_YEAR_MICROS
+    def rounded_mean_years(self): return (self.us + HALF_MEAN_YEAR_MICROS) / MEAN_YEAR_MICROS
 
     # aliases
     rus = rounded_micros = rounded_microseconds
@@ -67,7 +67,7 @@ class SaneDelta(object):
     rmy = rounded_mean_years
 
     #rounded amounts are default aliases
-    us = micros = microseconds = rus
+    micros = microseconds = rus
     ms = millis = milliseconds = rms
     s = secs = seconds = rs
     m = mins = minutes = rm
@@ -79,23 +79,23 @@ class SaneDelta(object):
 
     # unrounded amounts
     @property
-    def whole_microseconds(self): return self._us
+    def whole_microseconds(self): return self.us
     @property
-    def whole_milliseconds(self): return self._us / MILLI_MICROS
+    def whole_milliseconds(self): return self.us / MILLI_MICROS
     @property
-    def whole_seconds(self): return self._us / SECOND_MICROS
+    def whole_seconds(self): return self.us / SECOND_MICROS
     @property
-    def whole_minutes(self): return self._us / MINUTE_MICROS
+    def whole_minutes(self): return self.us / MINUTE_MICROS
     @property
-    def whole_hours(self): return self._us / HOUR_MICROS
+    def whole_hours(self): return self.us / HOUR_MICROS
     @property
-    def whole_mean_days(self): return self._us / MEAN_DAY_MICROS
+    def whole_mean_days(self): return self.us / MEAN_DAY_MICROS
     @property
-    def whole_mean_weeks(self): return self._us / MEAN_WEEK_MICROS
+    def whole_mean_weeks(self): return self.us / MEAN_WEEK_MICROS
     @property
-    def whole_mean_months(self): return self._us / MEAN_MONTH_MICROS
+    def whole_mean_months(self): return self.us / MEAN_MONTH_MICROS
     @property
-    def whole_mean_years(self): return self._us / MEAN_YEAR_MICROS
+    def whole_mean_years(self): return self.us / MEAN_YEAR_MICROS
 
     # aliases
     wus = whole_micros = whole_microseconds
@@ -168,7 +168,7 @@ class SaneDelta(object):
     @property
     def positional_rounded_minutes(self): return (self.us % HOUR_MICROS + HALF_MINUTE_MICROS) / MINUTE_MICROS
     @property
-    def positional_rounded_hours(self): return (self.us % DAY_MICROS + HALF_HOUR_MICROS) / HOUR_MICROS
+    def positional_rounded_hours(self): return (self.us % MEAN_DAY_MICROS + HALF_HOUR_MICROS) / HOUR_MICROS
 
     #aliases
     prus = positional_rounded_micros = positional_rounded_microseconds
@@ -177,6 +177,7 @@ class SaneDelta(object):
     prm = positional_rounded_mins = positional_rounded_minutes
     prh = positional_rounded_hours
 
+    def clone(self): return SaneDelta(self.us)
 
     def __cmp__(self, other): return cmp(self.us, int(other))
     def __hash__(self): return hash(self.us)
@@ -188,7 +189,10 @@ class SaneDelta(object):
     def __sub__(self, operand): return SaneDelta(self.us - int(operand))
     def __mul__(self, operand): return SaneDelta(self.us * int(operand))
     def __div__(self, operand): return SaneDelta(self.us / int(operand))
-    def abs(self): return SaneDelta(self.us if self.us>=0 else -self.us)
+
+    def __neg__(self): return SaneDelta(-self.us)
+    def __pos__(self): return SaneDelta(+self.us)
+    def __abs__(self): return SaneDelta(abs(self.us))
 
     def __repr__(self): return 'SaneDelta(%s)'%self.us
     def __str__(self): return unicode(self).encode('utf-8')
@@ -201,31 +205,29 @@ class SaneDelta(object):
     #TODO; test negative deltas
     def construct_str(self, relative_resolution=None, absolute_resolution='us', separator=' '):
         parts = []
+        delta = abs(self)
         relative_resolution = relative_resolution or 6
-        if absolute_resolution == 'd' or len(parts)==relative_resolution-1 and self._d:
-            parts.append("%sd"%self.d)
+        if absolute_resolution == 'md' or len(parts)==relative_resolution-1 and delta.wmd:
+            parts.append("%sd"%delta.rmd)
         else:
-            if self._d: parts.append("%sd"%self._d)
-            if absolute_resolution == 'h' or len(parts)==relative_resolution-1 and (self.ph or len(parts)):
-                parts.append("%sh"%self.prh)
+            if delta.wmd: parts.append("%sd"%delta.wmd)
+            if absolute_resolution == 'h' or len(parts)==relative_resolution-1 and (delta.ph or len(parts)):
+                parts.append("%sh"%delta.prh)
             else:
-                if self.ph or len(parts): parts.append("%sh"%self.ph)
-                if absolute_resolution == 'm' or len(parts)==relative_resolution-1 and (self.pm or len(parts)):
-                    parts.append("%sm"%self.prm)
+                if delta.ph or len(parts): parts.append("%sh"%delta.ph)
+                if absolute_resolution == 'm' or len(parts)==relative_resolution-1 and (delta.pm or len(parts)):
+                    parts.append("%sm"%delta.prm)
                 else:
-                    if self.pm or len(parts): parts.append("%sm"%self.pm)
-                    if absolute_resolution == 's' or len(parts)==relative_resolution-1 and (self.ps or len(parts)):
-                        parts.append("%ss"%self.prs)
+                    if delta.pm or len(parts): parts.append("%sm"%delta.pm)
+                    if absolute_resolution == 's' or len(parts)==relative_resolution-1 and (delta.ps or len(parts)):
+                        parts.append("%ss"%delta.prs)
                     else:
-                        if self.ps or len(parts): parts.append("%s"%self.ps)
-                        if absolute_resolution == 'ms' or len(parts)==relative_resolution-1 and (self.pms or len(parts)):
-                            parts[-1] = "%s.%ss" % (parts[-1],self.pms)
+                        if absolute_resolution == 'ms' or len(parts)==relative_resolution-1 and (delta.pms or len(parts)):
+                            parts.append("%s.%03ds" % (delta.ps,delta.prms))
                         else:
-                            parts[-1] = "%s.%ss" % (parts[-1],self.pus)
-        return separator.join(parts)
+                            parts.append("%s.%06ds" % (delta.ps,delta.pus))
+        return "%s%s" % ('' if self>=0 else '-', separator.join(parts))
  
-
-
 
 
 #TODO: implement
