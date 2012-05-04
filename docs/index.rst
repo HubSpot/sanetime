@@ -1,7 +1,7 @@
 sanetime
 ========
 
-**a sane date/time python library**
+**a sane date/time python interface**
 
 ::
 
