@@ -1,4 +1,4 @@
-from .constants import MILLI_MICROS,SECOND_MICROS,MINUTE_MICROS,HALF_MILLI_MICROS,HALF_SECOND_MICROS,HALF_MINUTE_MICROS
+from .constants import MILLI_MICROS,SECOND_MICROS,MINUTE_MICROS
 import calendar as shit_calendar
 from datetime import datetime as fucked_datetime
 from dateutil import parser as crap_parser
@@ -140,14 +140,14 @@ class SaneTime(object):
             raise TimeConstructionError("Unexpected constructor arguments")
 
         
-    @property  # rounded
-    def ms(self): return (self.us+HALF_MILLI_MICROS)/MILLI_MICROS 
+    @property
+    def ms(self): return self.us/MILLI_MICROS 
     epoch_milliseconds = epoch_millis = milliseconds = millis = ms
-    @property  # rounded
-    def s(self): return (self.us+HALF_SECOND_MICROS)/SECOND_MICROS
+    @property
+    def s(self): return self.us/SECOND_MICROS
     epoch_seconds = epoch_secs = seconds = secs = s
-    @property  # rounded
-    def m(self): return (self.us+HALF_MINUTE_MICROS)/MINUTE_MICROS
+    @property
+    def m(self): return self.us/MINUTE_MICROS
     epoch_minutes = epoch_mins = minutes = mins = m
     @property
     def micros(self): return self.us

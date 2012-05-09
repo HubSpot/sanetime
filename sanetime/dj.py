@@ -1,4 +1,4 @@
-from sanetime import sanetime,SaneTime
+from sanetime import time,SaneTime
 try:
     from django.db import models
     from django import forms
@@ -23,7 +23,7 @@ class SaneTimeField(models.BigIntegerField):
 
     def pre_save(self, model_instance, add):
         if self.auto_now or (self.auto_now_add and add):
-            value = sanetime()
+            value = time()
             setattr(model_instance, self.attname, value)
             return value
         else:
@@ -32,7 +32,7 @@ class SaneTimeField(models.BigIntegerField):
     def to_python(self, value):
         if value is not None:
             if not isinstance(value, SaneTime):
-                value = sanetime(value)
+                value = time(value)
             return value
         return super(SaneTimeField,self).to_python(value)
 
