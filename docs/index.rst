@@ -6,14 +6,19 @@ sanetime
 ::
 
     >>> from sanetime import time
-    >>> time('2011-01-01 23:00','America/New_York').ms  # str to epoch millis
+
+    >>> time('2011-01-01 23:00','America/New_York').ms
     1335758969218
+
     >>> str(time(1335752844194691))  # epoch micros to str
     '2012-04-30 02:27:24.194691 UTC'
-    >>> (time('2012-05-01') - datetime(2012,6,1)).hours # hours in the month of may
+
+    >>> (time('2012-05-01') - datetime(2012,6,1)).hours
     38234
-    >>> time(s=1335758200,tz='Europe/London').datetime # epoch millis to tz-ed datetime
+
+    >>> time(s=1335758200,tz='Europe/London').datetime 
     datetime.datetime(2012, 4, 30, 4, 56, 40, tzinfo=<DstTzInfo 'Europe/London' BST+1:00:00 DST>)
+
     >>> time().ms  # epoch millis at this moment
     2909423432
     >>> -(time()-time()).us  # microseconds between construction moments
@@ -22,9 +27,21 @@ sanetime
     2
 
 
-**sanetime** was written to DRY up all the common date/time manipulations we do constantly in our code while offering the most simple and intuitive client possible.
-We've all learned that the only sane way to store and manipulate times is using epoch time. (You have, haven't you?)
-Unfortunately, manipulating epoch time and timezones with the standard python toolset can be very frustrating.
+**sanetime** was written to DRY up all the common date/time manipulations we all do constantly in our code while offering the most simple and intuitive client possible.
+
+
+**sanetime** excels at manipulating epoch times and abstracting all common date/time manipulations to minimize the burden on you.  There are many different modules in python that enable these t
+
+
+Principles
+----------
+Least Possible Learning Burden
+
+
+
+Unfortunately 
+We've all learned that the only sane way to store times is using epoch time. (You have, haven't you?)
+Unfortunately, manipulating epoch time and timezones with the standard python toolset involves learning a managerie of modules and toolshair pulling very frustrating.
 **sanetime** tries to bring a little more sanity to manipulation of timezones, epoch time, time deltas, and time generally.
 
 API Documentation

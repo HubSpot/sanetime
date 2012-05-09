@@ -9,6 +9,7 @@ from ..error import TimeConstructionError
 JAN_MICROS = 1325376000*1000**2
 JAN_MILLIS = JAN_MICROS/1000
 JAN_SECS = JAN_MILLIS/1000
+JAN_MINS = JAN_SECS/60
 JUL_MICROS = 1338508800*1000**2
 HOUR_MICROS = 60**2*1000**2
 
@@ -32,10 +33,16 @@ class SaneTimeTest(unittest.TestCase):
         self.assertEquals((JAN_MICROS,TZ_UTC), time(JAN_MICROS)._tuple)
         for kwarg in ('us','micros','microseconds','epoch_micros','epoch_microseconds'):
             self.assertEquals((JAN_MICROS,TZ_UTC), time(**{kwarg:JAN_MICROS})._tuple)
+            self.assertEquals(JAN_MICROS, getattr(time(**{kwarg:JAN_MICROS}),kwarg))
         for kwarg in ('ms','millis','milliseconds','epoch_millis','epoch_milliseconds'):
             self.assertEquals((JAN_MICROS,TZ_UTC), time(**{kwarg:JAN_MILLIS})._tuple)
+            self.assertEquals(JAN_MILLIS, getattr(time(**{kwarg:JAN_MILLIS}),kwarg))
         for kwarg in ('s','secs','seconds','epoch_secs','epoch_seconds'):
             self.assertEquals((JAN_MICROS,TZ_UTC), time(**{kwarg:JAN_SECS})._tuple)
+            self.assertEquals(JAN_SECS, getattr(time(**{kwarg:JAN_SECS}),kwarg))
+        for kwarg in ('m','mins','minutes','epoch_mins','epoch_minutes'):
+            self.assertEquals((JAN_MICROS,TZ_UTC), time(**{kwarg:JAN_MINS})._tuple)
+            self.assertEquals(JAN_MINS, getattr(time(**{kwarg:JAN_MINS}),kwarg))
 
     def test_timezone_construction(self):
         self.assertEquals((JAN_MICROS,TZ_NY), time(JAN_MICROS,'America/New_York')._tuple)

@@ -1,3 +1,4 @@
+from .constants import MILLI_MICROS,SECOND_MICROS,MINUTE_MICROS,HALF_MILLI_MICROS,HALF_SECOND_MICROS,HALF_MINUTE_MICROS
 import calendar as shit_calendar
 from datetime import datetime as fucked_datetime
 from dateutil import parser as crap_parser
@@ -8,26 +9,10 @@ import pytz
 
 #TODO: ensure that this is immutable, and that addiiton,etc always producesa  new object!!!
  
-"""
-Sane wrappers around the python's datetime / time / date / timetuple / pytz / timezone / calendar /
-timedelta / utc shitshow.  This takes care of most of the ridiculous shit so you don't have to
-flush precious brain cells down the toilet trying to figure all this out.  You owe me a beer.  At
-least.
-
-There are two classes that you mind find useful here, and you should understand the difference:
-
-* sanetime:  this class is only concerned with a particular moment in time, NOT where that moment
-        was experienced.
-* sanetztime:  this class is concerned with a particular moment in time AND in what timezone that
-        moment was experienced.
-"""
-
-MILLIS_PER_SECOND = 1000
-MICROS_PER_SECOND = MILLIS_PER_SECOND*1000
-
 MICROS_TRANSLATIONS = (
-        (('s','secs','seconds','epoch_secs','epoch_seconds'),MICROS_PER_SECOND),
-        (('ms','millis','milliseconds','epoch_millis','epoch_milliseconds'),MILLIS_PER_SECOND),
+        (('m','mins','minutes','epoch_mins','epoch_minutes'),MINUTE_MICROS),
+        (('s','secs','seconds','epoch_secs','epoch_seconds'),SECOND_MICROS),
+        (('ms','millis','milliseconds','epoch_millis','epoch_milliseconds'),MILLI_MICROS),
         (('us','micros','microseconds','epoch_micros','epoch_microseconds'),1) )
 MICROS_TRANSLATION_HASH = dict((alt,v) for k,v in MICROS_TRANSLATIONS for alt in k)
 
@@ -48,11 +33,6 @@ class SaneTime(object):
 
 
     """
-    sanetime is only concerned with a particular moment in time.  It does not concern itself with
-    timezones.  Its constructor will do its best to turn timezoned times into a utc time, and
-    operate forever more on this representation.  It stores microseconds since the epoch.  If you
-    need to convert to a timezoned representation there are a few methods to do that.
-    
     Why not store in millis or seconds?
     datetime stores things in micros, and since millis already crosses over the 32bit boundary, we
     might as well store everything we got in the 64 bit numbers.  This will force 32bit machines to
@@ -66,12 +46,6 @@ class SaneTime(object):
 
     When you do comparisons, all comparisons are happening at the microsecond level.  You are
     comparing microseconds in time.
-
-    On initialization, we use any hints available to determine what that moment in time is,
-    including timezone information.  You can include tz as a hint to declare what timezone a time
-    is in, but that information will not be kept around- it is only used to convert the given time
-    into utc, and then it is purposefully dropped.  If you need to maintain a relationship to the
-    timezones then look at sanetztime.
     """
 
     def __init__(self, *args, **kwargs):
@@ -89,7 +63,8 @@ class SaneTime(object):
           1) us = an int/long in epoch micros
           2) ms = an int/long in epoch millis
           3) s = an int/long in epoch seconds
-          4) tz = a timezone (either a pytz timezone object, a recognizeable pytz timezone string, or a dateutil tz object)
+          4) m = an int/long in epoch minutes
+          5) tz = a timezone (either a pytz timezone object, a recognizeable pytz timezone string, or a dateutil tz object)
         """
         super(SaneTime,self).__init__()
         uss = set()
@@ -165,12 +140,15 @@ class SaneTime(object):
             raise TimeConstructionError("Unexpected constructor arguments")
 
         
-    @property
-    def ms(self): return (self.us+500)/1000
+    @property  # rounded
+    def ms(self): return (self.us+HALF_MILLI_MICROS)/MILLI_MICROS 
     epoch_milliseconds = epoch_millis = milliseconds = millis = ms
-    @property
-    def s(self): return (self.us+500*1000)/10**6
+    @property  # rounded
+    def s(self): return (self.us+HALF_SECOND_MICROS)/SECOND_MICROS
     epoch_seconds = epoch_secs = seconds = secs = s
+    @property  # rounded
+    def m(self): return (self.us+HALF_MINUTE_MICROS)/MINUTE_MICROS
+    epoch_minutes = epoch_mins = minutes = mins = m
     @property
     def micros(self): return self.us
     epoch_microseconds = epoch_micros = microseconds = micros

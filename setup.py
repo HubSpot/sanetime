@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from distutils.core import setup
 
-VERSION = '4.0.3'
+VERSION = '4.0.4'
 
 setup(
     name='sanetime',
