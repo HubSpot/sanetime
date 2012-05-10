@@ -222,6 +222,16 @@ class SaneTimeTest(unittest.TestCase):
         self.assertEquals(datetime(2012,1,1),time(NY_JAN_MICROS,TZ_UTC).ny_naive_datetime)
         self.assertEquals(datetime(2012,1,1),time(NY_JAN_MICROS,TZ_NY).ny_naive_datetime)
 
-
-
+    def test_switching_timezones(self):
+        t1 = time(JAN_MICROS)
+        self.assertEquals(pytz.timezone('America/New_York'), t1.with_tz('America/New_York').tz)
+        self.assertEquals(t1, time(t1).set_tz('America/New_York'))
+        self.assertEquals(t1, t1.with_tz('America/New_York'))
+        self.assertNotEquals(t1.tz, time(t1).set_tz('America/New_York').tz)
+        self.assertNotEquals(t1.tz, t1.with_tz('America/New_York').tz)
+        self.assertEquals(pytz.timezone('America/New_York'), time(t1).set_tz('America/New_York').tz)
+        self.assertEquals(pytz.timezone('America/New_York'), t1.with_tz('America/New_York').tz)
+        t1_id = id(t1)
+        self.assertEquals(t1_id, id(t1.set_tz('America/New_York')))
+        self.assertNotEquals(t1_id, id(t1.with_tz('America/New_York')))
 

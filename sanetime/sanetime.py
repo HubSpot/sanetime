@@ -158,6 +158,12 @@ class SaneTime(object):
     @property
     def tz_abbr(self): return self.tz._tzname
 
+    def set_tz(self, tz): 
+        self.tz = self.__class__.to_timezone(tz); return self
+    def with_tz(self, tz):
+        return self.__class__(self.us,tz)
+
+
     @property
     def _tuple(self): return (self.us, self.tz)
 
