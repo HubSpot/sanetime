@@ -64,3 +64,12 @@ class SaneDeltaTest(unittest.TestCase):
         self.assertEquals(24*60**2*10**6, time(2012,1,2) - time(2012,1,1))
 
 
+    def test_sleep(self):
+        t1 = time()
+        t2 = time()
+        self.assertTrue(t2-t1 < delta(ms=10))
+        t1 = time()
+        delta(ms=10).sleep()
+        t2 = time()
+        self.assertTrue(t2-t1 >= delta(ms=10))
+

@@ -1,4 +1,5 @@
 from .constants import MILLI_MICROS,SECOND_MICROS,MINUTE_MICROS,HOUR_MICROS,MEAN_DAY_MICROS,MEAN_WEEK_MICROS,MEAN_MONTH_MICROS,MEAN_YEAR_MICROS,HALF_MILLI_MICROS,HALF_SECOND_MICROS,HALF_MINUTE_MICROS,HALF_HOUR_MICROS,HALF_MEAN_DAY_MICROS,HALF_MEAN_WEEK_MICROS,HALF_MEAN_MONTH_MICROS,HALF_MEAN_YEAR_MICROS
+import time
 
 TRANSLATIONS = (
         (('my','mean_years'),MEAN_YEAR_MICROS),
@@ -214,6 +215,9 @@ class SaneDelta(object):
                             parts.append((delta.pus,".%06ds"%delta.pus,True))
         while no_zero_positions and len(parts)>1 and not parts[-1][0]: parts.pop()
         return ("%s%s%s%s" % ('' if self>=0 else '-', separator.join([p[1] for p in parts[:-1]]), '' if len(parts[-1])==3 else separator, parts[-1][1])).strip()
+
+    def sleep(self): return time.sleep(self.float_seconds)
+
  
 
 
