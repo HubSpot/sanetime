@@ -1,0 +1,9 @@
+-e .
+
+Django>=1.3,<1.4
+sphinx>=1.1.3,<2
+
+nose>=1,<2
+rudolf
+bpython
+

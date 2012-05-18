@@ -1,5 +1,0 @@
-# tested against python 2.7
-nose==1.1.2
-pytz==2012b
-python-dateutil==1.5  #2.0 is for python3
-
