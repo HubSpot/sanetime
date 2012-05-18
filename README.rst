@@ -5,6 +5,5 @@ sanetime
 
 better epoch time, timezones, and deltas, django support as well
 
-main source and docs:
-https://github.com/prior/sanetime
+docs: http://readthedocs.org/docs/sanetime/en/latest/
  
