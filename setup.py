@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from setuptools import setup, find_packages
 
-VERSION = '4.0.8'
+VERSION = '4.0.9'
 
 setup(
     name='sanetime',

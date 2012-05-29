@@ -3,36 +3,6 @@ sanetime
 
 **a sane date/time python interface**
 
-::
-
-    >>> from sanetime import time
-
-    >>> time('2011-01-01 23:01','America/New_York').ms
-    1293940860000
-
-    >>> moment = time(ms=1335752844194,tz='Europe/London')
-    >>> str(t = time(ms=1335752844194,'Europe/London'))
-    '2012-04-30 03:27:24.194000 +Europe/London'
-
-    >>> str(time(ms=1335752844194,'Europe/London').set_tz('America/New_York'))
-    '2012-04-30 02:27:24.194691 UTC'
-
-    >>> (time('2012-05-01') - time(2012,6,1)).hours
-    38234
-
-    >>> time(s=1335758200,tz='UTC').datetime 
-    datetime.datetime(2012, 4, 30, 4, 56, 40, tzinfo=<DstTzInfo 'Europe/London' BST+1:00:00 DST>)
-
-    >>> time().ms  # now epoch millis
-    2909423432
-
-    >>> abs(time()-time()).us
-    84
-
-    >>> str(time(s=2039420392) - time(s=239402342))
-    2
-
-
 **sanetime** was written to DRY up all the common date/time manipulations we all do constantly in our code while offering the most simple and intuitive client possible.
 
 We've all learned that the only sane way to store times is using epoch time. (You have, haven't you?)
@@ -41,11 +11,27 @@ Unfortunately, manipulating epoch time and timezones with the standard python to
 
 **sanetime** seeks to bring a little more sanity ot the manipulations of epoch time, timezone, time delta, and time generally.
 
+::
+
+    >>> from sanetime import time,delta   # a tiny taste
+
+    >>> time('2012-05-01 22:31','America/New_York').millis  
+    1335925860000
+
+    >>> str(time(tz='Europe/London'))   # now in London
+    '2012-05-29 15:28:05.178741 +Europe/London'
+
+    >>> (time('2012-06-01') - time(2012,5,1)).hours
+    744
+
+    >>> (time() + delta(h=12)).s    # epoch seconds of 12 hours from now
+    1338344977
+
 
 time
 ====
 The ``time`` class represents a moment in time, internally stored as microseconds since epoch.  
-A ``time`` object also has a timezone (UTC by default), however the timezone will never be considered during hashing, comparison or equality checks.  
+A ``time`` object also has an associated timezone (UTC by default), however the timezone will never be considered during hashing, comparison or equality checks.  
 A moment in ``time`` experienced in America/New_York is equal to the same moment in ``time`` experienced in Europe/Dublin.
 
 tztime
@@ -84,34 +70,17 @@ this part of the documentation is for you.
 
 
 
-principles
-==========
+design principles
+=================
+* simple:  simplify usecases to single methods/properties
 * intuitive: easy to remember methods, with many reasonable aliases - be as verbose (and communicative) or as terse (and efficient) as you want to be.  for example  t = time();  t.ms == t.millis == t.milliseconds
-* simple: eas
 
 
 FAQ
 ===
 Why is everything stored internally as microseconds?
 
-Python's datetime gives us access to microseconds, and since milliseconds would already have us cross the 32bit integer boundary, we might as well capture everything we can and take on microseconds as well.  There are plenty of helpers on the time, tztime, and delta classes so you never have to see/manipulate the huge microsecond numbers yourself.
-
-
-
-
-
-Release v\ |version|. (:ref:`Installation <install>`)
-
-Requests is an :ref:`ISC Licensed <isc>` HTTP library, written in Python, for human beings.
-
-Python's standard **urllib2** module provides most of
-the HTTP capabilities you need, but the API is thoroughly **broken**.
-It was built for a different time — and a different web. It requires an *enormous* amount of work (even method overrides) to perform the simplest of tasks.
-
-
-See `the same code, without Requests <https://gist.github.com/973705>`_.
-
-Requests takes all of the work out of Python HTTP/1.1 — making your integration with web services seamless. There's no need to manually add query strings to your URLs, or to form-encode your POST data. Keep-alive and HTTP connection pooling are 100%  automatic, powered by `urllib3 <https://github.com/shazow/urllib3>`_, which is embedded within Requests.
+Python's datetime gives us access to microseconds, and since milliseconds would already have us cross the 32bit integer boundary, we might as well capture everything we can and take on microseconds as well.  There are plenty of helpers on the time, tztime, and delta classes so you never have to see/manipulate the huge microsecond numbers yourself unless you want to.
 
 
 Indices and tables
