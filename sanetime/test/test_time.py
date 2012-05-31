@@ -202,6 +202,8 @@ class SaneTimeTest(unittest.TestCase):
         self.assertEquals(1, t2 - t1)
         self.assertEquals(-1, t1 - t2)
 
+        self.assertEquals(t1.us,t1*1)
+        self.assertEquals(t1.us,t1/1)
 
     def test_datetime_properties(self):
         self.assertEquals(datetime(2012,1,1,tzinfo=TZ_UTC),time(JAN_MICROS,TZ_UTC).datetime)
@@ -234,4 +236,5 @@ class SaneTimeTest(unittest.TestCase):
         t1_id = id(t1)
         self.assertEquals(t1_id, id(t1.set_tz('America/New_York')))
         self.assertNotEquals(t1_id, id(t1.with_tz('America/New_York')))
+
 

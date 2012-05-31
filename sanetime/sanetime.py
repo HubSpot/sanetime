@@ -181,6 +181,11 @@ class SaneTime(object):
         if not hasattr(operand, '__int__'): operand = SaneTime(operand)
         if isinstance(operand, SaneTime): return SaneDelta(self.us - int(operand))
         return self.__add__(-int(operand))
+    def __mul__(self, operand):
+        return self.us * int(operand)
+    def __div__(self, operand):
+        return self.us / int(operand)
+    
     def __int__(self): return self.us
     def __long__(self): return long(self.us)
 

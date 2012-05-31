@@ -174,6 +174,8 @@ class SaneDelta(object):
     def __sub__(self, operand): return SaneDelta(self.us - int(operand))
     def __mul__(self, operand): return SaneDelta(self.us * int(operand))
     def __div__(self, operand): return SaneDelta(self.us / int(operand))
+    def __rmul__(self, operand): return int(operand) * self.us
+    def __rdiv__(self, operand): return int(operand) / self.us
 
     def __neg__(self): return SaneDelta(-self.us)
     def __pos__(self): return SaneDelta(+self.us)

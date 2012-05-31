@@ -49,8 +49,11 @@ class SaneDeltaTest(unittest.TestCase):
         self.assertEquals('4m0s', delta(m=4).construct_str(final_position='s',max_positions=2, separator='',no_zero_positions=False))
         self.assertEquals('4m', delta(m=4).construct_str(final_position='s',max_positions=2, separator='',no_zero_positions=True))
 
-    def test_multiply(self):
+    def test_arithmetic(self):
         self.assertEquals(delta(15), delta(3) * 5)
+        self.assertEquals(15, 5 * delta(3))
+        self.assertEquals(delta(3), delta(15)/5)
+        self.assertEquals(3, 15 / delta(5))
 
     def test_unaries(self):
         self.assertEquals(-1, delta(-1).us)
