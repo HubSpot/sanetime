@@ -18,6 +18,7 @@ setup(
         'pytz>=2010',
         'python-dateutil>=1.5,<2.0'  # we're not compatible with python 3.0 yet
     ],
+    test_suite='sanetime.test',
     platforms=['any']
 )
 
