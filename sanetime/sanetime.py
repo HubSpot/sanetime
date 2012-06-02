@@ -1,7 +1,8 @@
 from .constants import MILLI_MICROS,SECOND_MICROS,MINUTE_MICROS
-import calendar as shit_calendar
-from datetime import datetime as fucked_datetime
-from dateutil import parser as crap_parser
+import calendar
+from datetime import datetime
+from dateutil import parser
+from dateutil.tz import tzlocal
 from .error import TimeConstructionError
 from .sanedelta import SaneDelta
 import pytz
@@ -20,11 +21,11 @@ class SaneTime(object):
 
     @classmethod
     def utc_datetime_to_us(kls, dt):
-        return shit_calendar.timegm(dt.timetuple())*1000**2+dt.microsecond
+        return calendar.timegm(dt.timetuple())*1000**2+dt.microsecond
 
     @classmethod
     def us_to_utc_datetime(kls, us):
-        return pytz.utc.localize(fucked_datetime.utcfromtimestamp(us/10**6)).replace(microsecond = us%10**6)
+        return pytz.utc.localize(datetime.utcfromtimestamp(us/10**6)).replace(microsecond = us%10**6)
 
     @classmethod
     def to_timezone(kls, tz):
@@ -82,7 +83,7 @@ class SaneTime(object):
 
         args = list(args)
         if len(args)>2 and len(args)<=8:
-            args = [fucked_datetime(*args)]
+            args = [datetime(*args)]
         if len(args)==2:
             tzs.add(SaneTime.to_timezone(args.pop()))
         if len(args)==1:
@@ -99,16 +100,18 @@ class SaneTime(object):
                         arg = ' '.join(parts[:-1])
                     except: pass
                 utc = arg.endswith('Z') or arg.endswith('+00:00')  # to deal with strange gunicorn issue -- doesn't want to use UTC time in these cases
-                arg = crap_parser.parse(arg)
+                arg = parser.parse(arg)
                 if arg.tzinfo:  # parsed timezones are a special breed of retard
                     if utc:  # put this in place to guard against wierd gunicorn issue -- gunicorn will attempt to force local timezone when there's an explicit UTC timezone associated! not sure where that's coming from.
                         tzs.add(pytz.utc)
+                        arg = arg.replace(tzinfo=None)
+                    elif isinstance(arg.tzinfo, tzlocal):  # in case the parser decides to use tzlocal instead of a tzoffset
                         arg = arg.replace(tzinfo=None)
                     else:
                         # can't rely on the dateutil parser for timezone stuff-- so we go back to UTC and force tz to be set in other ways
                         avoid_localize = True # but we'll still convert back to UTC and allow timezone decoration
                         arg = arg.astimezone(pytz.utc).replace(tzinfo=None)
-            if type(arg) == fucked_datetime:
+            if type(arg) == datetime:
                 naive_dt = arg
                 if naive_dt.tzinfo:
                     tzs.add(SaneTime.to_timezone(str(naive_dt.tzinfo)))
@@ -129,7 +132,7 @@ class SaneTime(object):
 
         # if we got nothing yet for micros, then make it now
         if len(uss)==0:
-            uss.add(SaneTime.utc_datetime_to_us(fucked_datetime.utcnow()))
+            uss.add(SaneTime.utc_datetime_to_us(datetime.utcnow()))
 
         if len(uss)>1:
             raise TimeConstructionError("constructor arguments seem to specify more than one different time!  I can't possibly resolve that!  (micro times implied = %s)"%(uss))

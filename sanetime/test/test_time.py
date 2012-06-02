@@ -16,8 +16,12 @@ HOUR_MICROS = 60**2*1000**2
 NY_JAN_MICROS = JAN_MICROS + HOUR_MICROS * 5
 NY_JUL_MICROS = JUL_MICROS + HOUR_MICROS * 4
 
+LA_JAN_MICROS = JAN_MICROS + HOUR_MICROS * 8
+LA_JUL_MICROS = JUL_MICROS + HOUR_MICROS * 7
+
 TZ_UTC = pytz.utc
 TZ_NY = pytz.timezone('America/New_York')
+TZ_LA = pytz.timezone('America/Los_Angeles')
 TZ_AC = pytz.timezone('Africa/Cairo')
 
 class SaneTimeTest(unittest.TestCase):
@@ -69,9 +73,11 @@ class SaneTimeTest(unittest.TestCase):
         self.assertEquals((NY_JAN_MICROS,TZ_NY), time('2012-01-01 00:00:00-05:00','America/New_York')._tuple)
 
         # tz abbr -- parse can't handle these, so we have to rely on timezones entirely
-        self.assertEquals((NY_JUL_MICROS,TZ_UTC), time('2012-06-01 00:00:00 EDT')._tuple)
+        self.assertEquals((JUL_MICROS,TZ_UTC), time('2012-06-01 00:00:00 EDT')._tuple)
         self.assertEquals((NY_JUL_MICROS,TZ_NY), time('2012-06-01 00:00:00 EDT','America/New_York')._tuple)
-        self.assertEquals((NY_JAN_MICROS,TZ_UTC), time('2012-01-01 00:00:00 EST','UTC')._tuple)
+        self.assertEquals((JUL_MICROS,TZ_UTC), time('2012-06-01 00:00:00 PDT')._tuple)
+        self.assertEquals((LA_JUL_MICROS,TZ_LA), time('2012-06-01 00:00:00 PDT','America/Los_Angeles')._tuple)
+        self.assertEquals((JAN_MICROS,TZ_UTC), time('2012-01-01 00:00:00 EST','UTC')._tuple)
         self.assertEquals((NY_JAN_MICROS,TZ_NY), time('2012-01-01 00:00:00 EST','America/New_York')._tuple)
 
     def test_now_construction(self):
