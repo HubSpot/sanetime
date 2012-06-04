@@ -138,7 +138,7 @@ class SaneTimeTest(unittest.TestCase):
         self.assertEquals('2012-01-01 +UTC', unicode(time(JAN_MICROS)))
         self.assertEquals('2012-01-01 00:00:01 +UTC', unicode(time(JAN_MICROS+10**6)))
         self.assertEquals('2012-01-01 00:00:00.000001 +UTC', unicode(time(JAN_MICROS+1)))
-        self.assertEquals(JAN_MICROS, hash(time(JAN_MICROS)))
+        self.assertEquals(hash(JAN_MICROS), hash(time(JAN_MICROS)))
 
     def test_equality(self):
         t1 = time(JAN_MICROS, tz='UTC')
