@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from setuptools import setup, find_packages
 
-VERSION = '4.1.2'
+VERSION = '4.1.3'
 
 setup(
     name='sanetime',
@@ -16,7 +16,8 @@ setup(
     long_description=open('README.rst').read(),
     install_requires=[
         'pytz>=2010',
-        'python-dateutil>=1.5,<2.0'  # we're not compatible with python 3.0 yet
+        'python-dateutil>=1.5,<2.0',  # we're not compatible with python 3.0 yet
+        'unittest2'
     ],
     test_suite='sanetime.test',
     platforms=['any']

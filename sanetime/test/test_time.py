@@ -1,4 +1,4 @@
-import unittest
+import unittest2 as unittest
 from datetime import datetime
 import pytz
 from .. import time
