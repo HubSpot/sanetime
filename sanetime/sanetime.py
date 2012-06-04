@@ -189,7 +189,7 @@ class SaneTime(object):
     def __div__(self, operand):
         return self.us / int(operand)
     
-    def __int__(self): return self.us
+    def __int__(self): return int(self.us)
     def __long__(self): return long(self.us)
 
     def __repr__(self): return u"SaneTime(%s,%s)" % (self.us,repr(self.tz))
