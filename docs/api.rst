@@ -3,5 +3,8 @@
 API
 ===
 
-.. automodule:: sanetime
+.. module:: sanetime
+
+.. autoclass:: time
+   :inherited-members:
 

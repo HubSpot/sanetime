@@ -5,26 +5,24 @@ sanetime
 
 **sanetime** was written to DRY up all the common date/time manipulations we all do constantly in our code while offering the most simple and intuitive client possible.
 
-We've all learned that the only sane way to store times is using epoch time. (You have, haven't you?)
-
+We've all learned that the only sane way to store times is using epoch time. (You have, haven't you?) 
 Unfortunately, manipulating epoch time and timezones with the standard python toolset requires getting up to speed on a managerie of python modules and concepts: datetime, date, time, calendar, pytz, dateutils, timedelta, time tuples, localize, normalize.
-
 **sanetime** seeks to bring a little more sanity ot the manipulations of epoch time, timezone, time delta, and time generally.
 
 ::
 
     >>> from sanetime import time,delta   # a tiny taste
 
-    >>> time('2012-05-01 22:31','America/New_York').millis  
+    >>> time('2012-05-01 22:31',tz='America/New_York').millis  
     1335925860000
 
     >>> str(time(tz='Europe/London'))   # now in London
     '2012-05-29 15:28:05.178741 +Europe/London'
 
-    >>> (time('2012-06-01') - time(2012,5,1)).hours
+    >>> (time(2012,6,1) - time('2012-05-01')).hours
     744
 
-    >>> (time() + delta(h=12)).s    # epoch seconds of 12 hours from now
+    >>> (time() + delta(h=12)).s    # epoch seconds 12 hours from now
     1338344977
 
 
@@ -56,24 +54,26 @@ A django model field is also provided: SaneTimeField, that makes it super simple
 They honor the auto_add and auto_add_now features to easily turn your sanetimes into updated_at or created_at fields.
 And they even work with south out of the box.
 
+User Guide
+----------
 
-API Documentation
------------------
-
-If you are looking for information on a specific function, class or method,
-this part of the documentation is for you.
+Use these guides to quickly get up to speed on the classes and their methods.  They generally teach by example.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
-   api
-
+   user/time
+   user/tztime
+   user/delta
+   user/span
+   user/django
 
 
 design principles
 =================
 * simple:  simplify usecases to single methods/properties
-* intuitive: easy to remember methods, with many reasonable aliases - be as verbose (and communicative) or as terse (and efficient) as you want to be.  for example  t = time();  t.ms == t.millis == t.milliseconds
+* intuitive: easy to remember methods/properties, with guessable aliases - be as verbose (and communicative) or as terse (and efficient) as you want to be.  for example  t = time();  t.ms == t.millis == t.milliseconds
+* properties whenever sensible: properties are especially useful for django, cuz you can use them directly in templates without having to stage them first in the views.
 
 
 FAQ

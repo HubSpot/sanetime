@@ -1,6 +1,7 @@
 *.pyc
 .*.swp
 *.egg-info
+*.egg
 MANIFEST
 build
 dist

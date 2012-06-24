@@ -17,20 +17,13 @@ MICROS_TRANSLATIONS = (
         (('us','micros','microseconds','epoch_micros','epoch_microseconds'),1) )
 MICROS_TRANSLATION_HASH = dict((alt,v) for k,v in MICROS_TRANSLATIONS for alt in k)
 
-class SaneTime(object):
+class time(object):
+    """
+    A time stored in epoch microseconds, and optionally decorated with a timezone.
+    An object of this class represents a moment in time.
+    A moment in time experience in America/New_York is equal to the same moment in time experienced in Europe/Dublin
+    """
 
-    @classmethod
-    def utc_datetime_to_us(kls, dt):
-        return calendar.timegm(dt.timetuple())*1000**2+dt.microsecond
-
-    @classmethod
-    def us_to_utc_datetime(kls, us):
-        return pytz.utc.localize(datetime.utcfromtimestamp(us/10**6)).replace(microsecond = us%10**6)
-
-    @classmethod
-    def to_timezone(kls, tz):
-        if not isinstance(tz, basestring): return tz
-        return pytz.timezone(tz)
 
 
     """
@@ -67,7 +60,7 @@ class SaneTime(object):
           4) m = an int/long in epoch minutes
           5) tz = a timezone (either a pytz timezone object, a recognizeable pytz timezone string, or a dateutil tz object)
         """
-        super(SaneTime,self).__init__()
+        super(time,self).__init__()
         uss = set()
         tzs = set()
         naive_dt = None
@@ -200,10 +193,14 @@ class SaneTime(object):
         time = u" %02d:%02d:%02d%s"%(dt.hour,dt.minute,dt.second,micros) if dt.microsecond or dt.second or dt.minute or dt.hour else ''
         return u"%04d-%02d-%02d%s +%s" % (dt.year, dt.month, dt.day, time, dt.tzinfo.zone)
 
-    def clone(self): return self.__class__(self.us,self.tz)
+    def clone(self): 
+        """ cloning stuff """
+        return self.__class__(self.us,self.tz)
 
     @property
-    def ny_str(self): return self.ny_ndt.strftime('%I:%M:%S%p %m/%d/%Y')
+    def ny_str(self): 
+        """ a ny string """
+        return self.ny_ndt.strftime('%I:%M:%S%p %m/%d/%Y')
     
     @property
     def utc_datetime(self): return SaneTime.us_to_utc_datetime(self.us)
@@ -260,9 +257,22 @@ class SaneTime(object):
                 #day = 30
         #return SaneTime(fucked_datetime(year,month,day,dt.hour,dt.minute,dt.second,dt.microsecond,tz=pytz.utc))
 
+    @classmethod
+    def utc_datetime_to_us(kls, dt):
+        return calendar.timegm(dt.timetuple())*1000**2+dt.microsecond
+
+    @classmethod
+    def us_to_utc_datetime(kls, us):
+        return pytz.utc.localize(datetime.utcfromtimestamp(us/10**6)).replace(microsecond = us%10**6)
+
+    @classmethod
+    def to_timezone(kls, tz):
+        if not isinstance(tz, basestring): return tz
+        return pytz.timezone(tz)
+
 
 # null passthru utility
-def nsanetime(*args, **kwargs): 
+def ntime(*args, **kwargs): 
     if args:
         if args[0] is None: return None
     elif kwargs:
@@ -270,6 +280,6 @@ def nsanetime(*args, **kwargs):
     return SaneTime(*args, **kwargs)
 
 #primary aliases
-time = sanetime = SaneTime
-ntime = nsanetime
+sanetime = SaneTime = time
+nsanetime = ntime
 
