@@ -11,11 +11,9 @@ def call(args):
     print
 
 call(['git', 'checkout', 'master'])
-call(['cd', 'docs'])
-call(['make', 'html'])
+call(['make', '-C', 'docs', 'html'])
 call(['rm', '-rf', '/tmp/docs_html'])
-call(['cp', '-R', '_build/html', '/tmp/docs_html'])
-call(['cd', '$(git rev-parse --show-toplevel)'])
+call(['cp', '-R', 'docs/_build/html', '/tmp/docs_html'])
 call(['git', 'checkout', 'gh-pages'])
 call(['rm', '-rf', '*'])
 call(['cp', '-R', '/tmp/docs_html/*', '.'])
