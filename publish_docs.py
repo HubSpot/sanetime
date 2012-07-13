@@ -11,7 +11,10 @@ def call(args):
     print
 
 call(['git', 'checkout', 'master'])
-call(['cp', '-r', 'docs/_build/html', '/tmp/sanetime_docs_html'])
+call(['cd', 'docs'])
+call(['make', 'html'])
+call(['cp', '-R', '_build/html', '/tmp/sanetime_docs_html'])
+call(['cd', '..'])
 call(['git', 'checkout', 'gh-pages'])
 call(['cp', '-r', '/tmp/sanetime_docs_html', '.'])
 call(['git', 'add', '.'])
