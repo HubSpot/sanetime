@@ -14,27 +14,24 @@ construction
 epoch times
 ^^^^^^^^^^^
 
-Construct directly from epoch times (us,ms,s,m).  Microseconds are assumed when no keyword is given.
-Intuitive aliases exist if you want to be more verbose, for example: us = micros = epoch_micros = epoch_microseconds
+Construct directly from epoch times.  Microseconds are assumed when no keyword is given.
+Intuitive aliases exists for kwargs, be as terse or verbose as you want (us = micros = epoch_micros = epoch_microseconds)
 
 ::
 
     >>> time(1338508800000000)
     SaneTime(1338508800000000,<UTC>)
 
-    >>> time(us=1338508800000000)
+    >>> time(micros=1338508800000000)
     SaneTime(1338508800000000,<UTC>)
 
-    >>> time(ms=1338508800000)
+    >>> time(millis=1338508800000)
     SaneTime(1338508800000000,<UTC>)
 
-    >>> time(s=1338508800)
+    >>> time(seconds=1338508800)
     SaneTime(1338508800000000,<UTC>)
 
-    >>> time(epoch_seconds=1338508800)
-    SaneTime(1338508800000000,<UTC>)
-
-    >>> time(epoch_minutes=22308480, tz='America/New_York')
+    >>> time(minutes=22308480, tz='America/New_York')
     SaneTime(1338508800000000,<DstTzInfo 'America/New_York' EST-1 day, 19:00:00 STD>)
 
 datetime parts
@@ -46,12 +43,6 @@ If you have the calendar parameters, then construct just as you would a datetime
 
     >>> time(2012,1,1)
     SaneTime(1325376000000000,<UTC>)
-
-    >>> time(2012,1,1,12)
-    SaneTime(1325419200000000,<UTC>)
-
-    >>> time(2012,1,1,12,30)
-    SaneTime(1325421000000000,<UTC>)
 
     >>> time(2012,1,1,12,30,1)
     SaneTime(1325421001000000,<UTC>)
@@ -97,6 +88,10 @@ Adding any int/long assumes it to be in microseconds.  You can also add any delt
     >>> time(2012,1,1) + 5
     SaneTime(1325376000000005,<UTC>)
 
+    >>> time(2012,1,1) + delta(hours=5)
+    SaneTime(1325394000000000,<UTC>)
+
+There's much more you can do with link=>deltas.
 
 difference
 ^^^^^^^^^^
@@ -111,6 +106,7 @@ Subtracing two sanetimes produces a delta!
     >>> time() - time(2012,1,1)  # time since new year
     SaneDelta(15131339063956)
     
+There's much more you can do with link=>deltas.
 
 conversion
 ==========
@@ -120,7 +116,7 @@ The constructor can convert from a number of different formats.  Here we describ
 to datetime
 ^^^^^^^^^^^
 
-You can convert to a timezone-aware datetime or to a naive datetime.  They are accessed as properties.
+You can easily convert to a timezone-aware datetime or to a naive datetime.  They are accessed as properties.
 
 ::
 
@@ -130,7 +126,7 @@ You can convert to a timezone-aware datetime or to a naive datetime.  They are a
     >>> time(2012,1,1,tz='America/Los_Angeles').naive_datetime
     datetime.datetime(2012, 1, 1, 0, 0)
 
-There are convenience datetime timezone conversions as well.  These can
+There are other convenience datetime timezone conversions as well.
 
 ::
 
@@ -178,7 +174,7 @@ long and int conversion just bring back the epoch microseconds
 date/time parts
 ===============
 
-You can get at any of the date parts just as you might with datetime properties.  Be careful-- these properties are all singular.  Do not confuse with the plural epoch possiblities of the previous section.
+You can get at any of the date parts just as you might with datetime properties.  Be careful-- these properties are all singular.  Do not confuse with the plural epoch possiblities of the previous section.  (this ambiguity will be fixed in future versions)
 
 ::
 
@@ -194,7 +190,7 @@ You can get at any of the date parts just as you might with datetime properties.
     42
     >>> time().second
     12
-    >>> time().microsecond
+    >>> time().micro
     664819
 
 

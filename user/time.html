@@ -58,24 +58,21 @@
 <h2>construction<a class="headerlink" href="#construction" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="epoch-times">
 <h3>epoch times<a class="headerlink" href="#epoch-times" title="Permalink to this headline">¶</a></h3>
-<p>Construct directly from epoch times (us,ms,s,m).  Microseconds are assumed when no keyword is given.
-Intuitive aliases exist if you want to be more verbose, for example: us = micros = epoch_micros = epoch_microseconds</p>
+<p>Construct directly from epoch times.  Microseconds are assumed when no keyword is given.
+Intuitive aliases exists for kwargs, be as terse or verbose as you want (us = micros = epoch_micros = epoch_microseconds)</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">(</span><span class="mi">1338508800000000</span><span class="p">)</span>
 <span class="go">SaneTime(1338508800000000,&lt;UTC&gt;)</span>
 
-<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">(</span><span class="n">us</span><span class="o">=</span><span class="mi">1338508800000000</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">(</span><span class="n">micros</span><span class="o">=</span><span class="mi">1338508800000000</span><span class="p">)</span>
 <span class="go">SaneTime(1338508800000000,&lt;UTC&gt;)</span>
 
-<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">(</span><span class="n">ms</span><span class="o">=</span><span class="mi">1338508800000</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">(</span><span class="n">millis</span><span class="o">=</span><span class="mi">1338508800000</span><span class="p">)</span>
 <span class="go">SaneTime(1338508800000000,&lt;UTC&gt;)</span>
 
-<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">1338508800</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="mi">1338508800</span><span class="p">)</span>
 <span class="go">SaneTime(1338508800000000,&lt;UTC&gt;)</span>
 
-<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">(</span><span class="n">epoch_seconds</span><span class="o">=</span><span class="mi">1338508800</span><span class="p">)</span>
-<span class="go">SaneTime(1338508800000000,&lt;UTC&gt;)</span>
-
-<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">(</span><span class="n">epoch_minutes</span><span class="o">=</span><span class="mi">22308480</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="s">&#39;America/New_York&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">22308480</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="s">&#39;America/New_York&#39;</span><span class="p">)</span>
 <span class="go">SaneTime(1338508800000000,&lt;DstTzInfo &#39;America/New_York&#39; EST-1 day, 19:00:00 STD&gt;)</span>
 </pre></div>
 </div>
@@ -85,12 +82,6 @@ Intuitive aliases exist if you want to be more verbose, for example: us = micros
 <p>If you have the calendar parameters, then construct just as you would a datetime</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
 <span class="go">SaneTime(1325376000000000,&lt;UTC&gt;)</span>
-
-<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">12</span><span class="p">)</span>
-<span class="go">SaneTime(1325419200000000,&lt;UTC&gt;)</span>
-
-<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">30</span><span class="p">)</span>
-<span class="go">SaneTime(1325421000000000,&lt;UTC&gt;)</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
 <span class="go">SaneTime(1325421001000000,&lt;UTC&gt;)</span>
@@ -128,8 +119,12 @@ Intuitive aliases exist if you want to be more verbose, for example: us = micros
 <p>Adding any int/long assumes it to be in microseconds.  You can also add any delta.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">5</span>
 <span class="go">SaneTime(1325376000000005,&lt;UTC&gt;)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">delta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="go">SaneTime(1325394000000000,&lt;UTC&gt;)</span>
 </pre></div>
 </div>
+<p>There&#8217;s much more you can do with link=&gt;deltas.</p>
 </div>
 <div class="section" id="difference">
 <h3>difference<a class="headerlink" href="#difference" title="Permalink to this headline">¶</a></h3>
@@ -141,6 +136,7 @@ Intuitive aliases exist if you want to be more verbose, for example: us = micros
 <span class="go">SaneDelta(15131339063956)</span>
 </pre></div>
 </div>
+<p>There&#8217;s much more you can do with link=&gt;deltas.</p>
 </div>
 </div>
 <div class="section" id="conversion">
@@ -148,7 +144,7 @@ Intuitive aliases exist if you want to be more verbose, for example: us = micros
 <p>The constructor can convert from a number of different formats.  Here we describe all the different things you convert <strong>to</strong>.</p>
 <div class="section" id="to-datetime">
 <h3>to datetime<a class="headerlink" href="#to-datetime" title="Permalink to this headline">¶</a></h3>
-<p>You can convert to a timezone-aware datetime or to a naive datetime.  They are accessed as properties.</p>
+<p>You can easily convert to a timezone-aware datetime or to a naive datetime.  They are accessed as properties.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">tz</span><span class="o">=</span><span class="s">&#39;America/Los_Angeles&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">datetime</span>
 <span class="go">datetime.datetime(2012, 1, 1, 0, 0, tzinfo=&lt;DstTzInfo &#39;America/Los_Angeles&#39; PST-1 day, 16:00:00 STD&gt;)</span>
 
@@ -156,7 +152,7 @@ Intuitive aliases exist if you want to be more verbose, for example: us = micros
 <span class="go">datetime.datetime(2012, 1, 1, 0, 0)</span>
 </pre></div>
 </div>
-<p>There are convenience datetime timezone conversions as well.  These can</p>
+<p>There are other convenience datetime timezone conversions as well.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">tz</span><span class="o">=</span><span class="s">&#39;America/Los_Angeles&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">utc_datetime</span>
 <span class="go">datetime.datetime(2012, 1, 1, 8, 0, tzinfo=&lt;UTC&gt;)</span>
 
@@ -198,7 +194,7 @@ Intuitive aliases exist if you want to be more verbose, for example: us = micros
 </div>
 <div class="section" id="date-time-parts">
 <h2>date/time parts<a class="headerlink" href="#date-time-parts" title="Permalink to this headline">¶</a></h2>
-<p>You can get at any of the date parts just as you might with datetime properties.  Be careful&#8211; these properties are all singular.  Do not confuse with the plural epoch possiblities of the previous section.</p>
+<p>You can get at any of the date parts just as you might with datetime properties.  Be careful&#8211; these properties are all singular.  Do not confuse with the plural epoch possiblities of the previous section.  (this ambiguity will be fixed in future versions)</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">()</span><span class="o">.</span><span class="n">year</span>
 <span class="go">2012</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">()</span><span class="o">.</span><span class="n">month</span>
@@ -211,7 +207,7 @@ Intuitive aliases exist if you want to be more verbose, for example: us = micros
 <span class="go">42</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">()</span><span class="o">.</span><span class="n">second</span>
 <span class="go">12</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">()</span><span class="o">.</span><span class="n">microsecond</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">()</span><span class="o">.</span><span class="n">micro</span>
 <span class="go">664819</span>
 </pre></div>
 </div>
