@@ -15,7 +15,7 @@ call(['make', '-C', 'docs', 'html'])
 call(['rm', '-rf', '/tmp/docs_html'])
 call(['cp', '-R', 'docs/_build/html', '/tmp/docs_html'])
 call(['git', 'checkout', 'gh-pages'])
-call(['rm', '-rf', '*'], True)  # wtf!!  i can't do a rm -rf * for some reason
+call(['rm', '-rf', '/Users/prior/github/sanetime/*'], True)  # wtf!!  i can't do a rm -rf * for some reason
 call(['cp', '-R', '/tmp/docs_html/*', '.'])
 call(['git', 'add', '.'])
 #call(['git', 'commit', '-a', '-v'])
