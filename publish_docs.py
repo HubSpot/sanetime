@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 import subprocess
 
-def call(args):
+def call(args, shell=False):
     cmd = ' '.join(args)
     print("== attempting == %s =="%cmd)
-    if subprocess.call(args, shell=True):
+    if subprocess.call(args, shell=shell):
         print("== !problem!  == %s ==" % cmd)
         exit(1)
     print("== done       == %s ==" % cmd)
