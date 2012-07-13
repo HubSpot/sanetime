@@ -15,7 +15,8 @@ call(['make', '-C', 'docs', 'html'])
 call(['rm', '-rf', '/tmp/docs_html'])
 call(['cp', '-R', 'docs/_build/html', '/tmp/docs_html'])
 call(['git', 'checkout', 'gh-pages'])
-call(['mv', '*', '/tmp/trash'])
+call(['rm', '-rf', 'docs'])  # wtf!!  i can't do a rm -rf * for some reason
+call(['rm', '-rf', 'sanetime'])  # wtf!!  i can't do a rm -rf * for some reason
 call(['cp', '-R', '/tmp/docs_html/*', '.'])
 call(['git', 'add', '.'])
 #call(['git', 'commit', '-a', '-v'])
