@@ -2,12 +2,15 @@
 import subprocess
 
 def call(args, shell=False):
-    cmd = ' '.join(args)
-    print("== attempting == %s =="%cmd)
+    if isinstance(args, basestring):
+        pcmd = args
+    else:
+        pcmd = ' '.join(args)
+    print("== attempting == %s =="%pcmd)
     if subprocess.call(args, shell=shell):
-        print("== !problem!  == %s ==" % cmd)
+        print("== !problem!  == %s ==" % pcmd)
         exit(1)
-    print("== done       == %s ==" % cmd)
+    print("== done       == %s ==" % pcmd)
     print
 
 call(['git', 'checkout', 'master'])
