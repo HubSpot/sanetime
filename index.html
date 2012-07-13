@@ -1,0 +1,210 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>sanetime &mdash; sanetime 3.5.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/jinja.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '3.5.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="sanetime 3.5.0 documentation" href="#" />
+    <link rel="next" title="time" href="user/time.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="user/time.html" title="time"
+             accesskey="N">next</a> |</li>
+        <li><a href="#">sanetime 3.5.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="sanetime">
+<h1>sanetime<a class="headerlink" href="#sanetime" title="Permalink to this headline">¶</a></h1>
+<p><strong>a sane date/time python interface</strong></p>
+<p><strong>sanetime</strong> was written to DRY up all the common date/time manipulations we all do constantly in our code while offering the most simple and intuitive client possible.</p>
+<p>We&#8217;ve all learned that the only sane way to store times is using epoch time. (You have, haven&#8217;t you?)
+Unfortunately, manipulating epoch time and timezones with the standard python toolset requires getting up to speed on a managerie of python modules and concepts: datetime, date, time, calendar, pytz, dateutils, timedelta, time tuples, localize, normalize.
+<strong>sanetime</strong> seeks to bring a little more sanity ot the manipulations of epoch time, timezone, time delta, and time generally.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sanetime</span> <span class="kn">import</span> <span class="n">time</span><span class="p">,</span><span class="n">delta</span>   <span class="c"># a tiny taste</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">(</span><span class="s">&#39;2012-05-01 22:31&#39;</span><span class="p">,</span><span class="n">tz</span><span class="o">=</span><span class="s">&#39;America/New_York&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">millis</span>
+<span class="go">1335925860000</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="p">(</span><span class="n">tz</span><span class="o">=</span><span class="s">&#39;Europe/London&#39;</span><span class="p">))</span>   <span class="c"># now in London</span>
+<span class="go">&#39;2012-05-29 15:28:05.178741 +Europe/London&#39;</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">time</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">time</span><span class="p">(</span><span class="s">&#39;2012-05-01&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">hours</span>
+<span class="go">744</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">time</span><span class="p">()</span> <span class="o">+</span> <span class="n">delta</span><span class="p">(</span><span class="n">h</span><span class="o">=</span><span class="mi">12</span><span class="p">))</span><span class="o">.</span><span class="n">s</span>    <span class="c"># epoch seconds 12 hours from now</span>
+<span class="go">1338344977</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="time">
+<h1>time<a class="headerlink" href="#time" title="Permalink to this headline">¶</a></h1>
+<p>The <tt class="docutils literal"><span class="pre">time</span></tt> class represents a moment in time, internally stored as microseconds since epoch.
+A <tt class="docutils literal"><span class="pre">time</span></tt> object also has an associated timezone (UTC by default), however the timezone will never be considered during hashing, comparison or equality checks.
+A moment in <tt class="docutils literal"><span class="pre">time</span></tt> experienced in America/New_York is equal to the same moment in <tt class="docutils literal"><span class="pre">time</span></tt> experienced in Europe/Dublin.</p>
+</div>
+<div class="section" id="tztime">
+<h1>tztime<a class="headerlink" href="#tztime" title="Permalink to this headline">¶</a></h1>
+<p>The <tt class="docutils literal"><span class="pre">tztime</span></tt> class is exactly like the <tt class="docutils literal"><span class="pre">time</span></tt> object, except that timezone factors into equality.
+A moment in <tt class="docutils literal"><span class="pre">tztime</span></tt> experienced in America/New_York is <strong>not</strong> the same as the same <tt class="docutils literal"><span class="pre">tztime</span></tt> moment experienced in Europe/Dublin.</p>
+</div>
+<div class="section" id="delta">
+<h1>delta<a class="headerlink" href="#delta" title="Permalink to this headline">¶</a></h1>
+<p>The <tt class="docutils literal"><span class="pre">delta</span></tt> class represents a period of time, and provides easy access to all the different ways you might slice and dice this: micros, millis, seconds, minutes, hours, mean_days, mean_weeks, mean_months, mean_years.
+There are many aliases so you may be as terse or as explicit as you want to be, and there are many different flavors of these: rounded, floored, floated, positional, rounded_positional.
+There is no attempt made in delta yet to be calendar aware (hence the &#8216;mean&#8217; prefixes in some cases).</p>
+</div>
+<div class="section" id="span">
+<h1>span<a class="headerlink" href="#span" title="Permalink to this headline">¶</a></h1>
+<p>The <tt class="docutils literal"><span class="pre">span</span></tt> class represents a window of time ranging from one specific moment in time to another specific moment in time.
+You can think of it as a start <tt class="docutils literal"><span class="pre">time</span></tt> with a <tt class="docutils literal"><span class="pre">delta</span></tt>, or as a start <tt class="docutils literal"><span class="pre">time</span></tt> and a stop <tt class="docutils literal"><span class="pre">time</span></tt>.</p>
+</div>
+<div class="section" id="django">
+<h1>django<a class="headerlink" href="#django" title="Permalink to this headline">¶</a></h1>
+<p>A django model field is also provided: SaneTimeField, that makes it super simple to store a sanetime.
+They honor the auto_add and auto_add_now features to easily turn your sanetimes into updated_at or created_at fields.
+And they even work with south out of the box.</p>
+<div class="section" id="user-guide">
+<h2>User Guide<a class="headerlink" href="#user-guide" title="Permalink to this headline">¶</a></h2>
+<p>Use these guides to quickly get up to speed on the classes and their methods.  They generally teach by example.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="user/time.html">time</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="user/time.html#construction">construction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="user/time.html#epoch-times">epoch times</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user/time.html#datetime-parts">datetime parts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user/time.html#datetime">datetime</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user/time.html#string">string</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="user/time.html#arithmetic">arithmetic</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="user/time.html#addition">addition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user/time.html#difference">difference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="user/time.html#conversion">conversion</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="user/time.html#to-datetime">to datetime</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user/time.html#to-epoch-times">to epoch times</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="user/time.html#date-time-parts">date/time parts</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="design-principles">
+<h1>design principles<a class="headerlink" href="#design-principles" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li>simple:  simplify usecases to single methods/properties</li>
+<li>intuitive: easy to remember methods/properties, with guessable aliases - be as verbose (and communicative) or as terse (and efficient) as you want to be.  for example  t = time();  t.ms == t.millis == t.milliseconds</li>
+<li>properties whenever sensible: properties are especially useful for django, cuz you can use them directly in templates without having to stage them first in the views.</li>
+</ul>
+</div>
+<div class="section" id="faq">
+<h1>FAQ<a class="headerlink" href="#faq" title="Permalink to this headline">¶</a></h1>
+<p>Why is everything stored internally as microseconds?</p>
+<p>Python&#8217;s datetime gives us access to microseconds, and since milliseconds would already have us cross the 32bit integer boundary, we might as well capture everything we can and take on microseconds as well.  There are plenty of helpers on the time, tztime, and delta classes so you never have to see/manipulate the huge microsecond numbers yourself unless you want to.</p>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><em>Index</em></a></li>
+<li><a class="reference internal" href="py-modindex.html"><em>Module Index</em></a></li>
+<li><a class="reference internal" href="search.html"><em>Search Page</em></a></li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">sanetime</a></li>
+<li><a class="reference internal" href="#time">time</a></li>
+<li><a class="reference internal" href="#tztime">tztime</a></li>
+<li><a class="reference internal" href="#delta">delta</a></li>
+<li><a class="reference internal" href="#span">span</a></li>
+<li><a class="reference internal" href="#django">django</a><ul>
+<li><a class="reference internal" href="#user-guide">User Guide</a><ul>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#design-principles">design principles</a></li>
+<li><a class="reference internal" href="#faq">FAQ</a></li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="user/time.html" title="next chapter">time</a></li>
+  </ul></li>
+</ul>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2012, prior.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+    </div>
+  </body>
+</html>
