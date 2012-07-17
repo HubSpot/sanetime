@@ -7,15 +7,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>time &mdash; sanetime 3.5.0 documentation</title>
+    <title>time &mdash; sanetime 4.2.0 documentation</title>
     
-    <link rel="stylesheet" href="../_static/jinja.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/flasky.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '3.5.0',
+        VERSION:     '4.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,8 +24,13 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="sanetime 3.5.0 documentation" href="../index.html" />
-    <link rel="prev" title="sanetime" href="../index.html" /> 
+    <link rel="top" title="sanetime 4.2.0 documentation" href="../index.html" />
+    <link rel="next" title="API" href="../api.html" />
+    <link rel="prev" title="sanetime" href="../index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
   </head>
   <body>
     <div class="related">
@@ -38,9 +43,12 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
+          <a href="../api.html" title="API"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
           <a href="../index.html" title="sanetime"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">sanetime 3.5.0 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">sanetime 4.2.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -51,15 +59,17 @@
             
   <div class="section" id="time">
 <span id="id1"></span><h1>time<a class="headerlink" href="#time" title="Permalink to this headline">¶</a></h1>
+<p>The <tt class="docutils literal"><span class="pre">time</span></tt> class represents a moment in time, internally stored as microseconds since epoch.
+A <tt class="docutils literal"><span class="pre">time</span></tt> object also has an associated timezone (UTC by default), however the timezone will never be considered during hashing, comparison or equality checks, i.e.
+A moment in <tt class="docutils literal"><span class="pre">time</span></tt> experienced in America/New_York is equal to the same moment in <tt class="docutils literal"><span class="pre">time</span></tt> experienced in Europe/Dublin.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sanetime</span> <span class="kn">import</span> <span class="n">time</span>
 </pre></div>
 </div>
 <div class="section" id="construction">
 <h2>construction<a class="headerlink" href="#construction" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="epoch-times">
-<h3>epoch times<a class="headerlink" href="#epoch-times" title="Permalink to this headline">¶</a></h3>
-<p>Construct directly from epoch times.  Microseconds are assumed when no keyword is given.
-Intuitive aliases exists for kwargs, be as terse or verbose as you want (us = micros = epoch_micros = epoch_microseconds)</p>
+<p>You can construct a sanetime object from epoch times, datetimes, date/time parts, or from a parseable string.</p>
+<p>Epoch microseconds are assumed when no keyword is given.
+Intuitive aliases exists for kwargs, be as terse or verbose as you want (us = micros = epoch_micros = epoch_microseconds):</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">(</span><span class="mi">1338508800000000</span><span class="p">)</span>
 <span class="go">SaneTime(1338508800000000,&lt;UTC&gt;)</span>
 
@@ -76,10 +86,7 @@ Intuitive aliases exists for kwargs, be as terse or verbose as you want (us = mi
 <span class="go">SaneTime(1338508800000000,&lt;DstTzInfo &#39;America/New_York&#39; EST-1 day, 19:00:00 STD&gt;)</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="datetime-parts">
-<h3>datetime parts<a class="headerlink" href="#datetime-parts" title="Permalink to this headline">¶</a></h3>
-<p>If you have the calendar parameters, then construct just as you would a datetime</p>
+<p>If you have the calendar parameters, then construct just as you would a datetime:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
 <span class="go">SaneTime(1325376000000000,&lt;UTC&gt;)</span>
 
@@ -90,19 +97,13 @@ Intuitive aliases exists for kwargs, be as terse or verbose as you want (us = mi
 <span class="go">SaneTime(1325421001000001,&lt;DstTzInfo &#39;America/New_York&#39; EST-1 day, 19:00:00 STD&gt;)</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="datetime">
-<h3>datetime<a class="headerlink" href="#datetime" title="Permalink to this headline">¶</a></h3>
-<p>Or if you already have a datetime object, just construct from that</p>
+<p>If you already have a datetime object, just construct from that:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
 <span class="go">SaneTime(1325376000000000,&lt;UTC&gt;)</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="string">
-<h3>string<a class="headerlink" href="#string" title="Permalink to this headline">¶</a></h3>
-<p>Or construct from a parsable string</p>
+<p>Or construct from a parsable string:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">(</span><span class="s">&#39;January 1st, 2012 12:30:01pm&#39;</span><span class="p">)</span>
 <span class="go">SaneTime(1325421001000000,&lt;UTC&gt;)</span>
 
@@ -111,12 +112,9 @@ Intuitive aliases exists for kwargs, be as terse or verbose as you want (us = mi
 </pre></div>
 </div>
 </div>
-</div>
 <div class="section" id="arithmetic">
 <h2>arithmetic<a class="headerlink" href="#arithmetic" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="addition">
-<h3>addition<a class="headerlink" href="#addition" title="Permalink to this headline">¶</a></h3>
-<p>Adding any int/long assumes it to be in microseconds.  You can also add any delta.</p>
+<p>Adding any int/long assumes it to be in microseconds.  You can also add any <em class="xref std std-ref">delta</em>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">5</span>
 <span class="go">SaneTime(1325376000000005,&lt;UTC&gt;)</span>
 
@@ -124,26 +122,17 @@ Intuitive aliases exists for kwargs, be as terse or verbose as you want (us = mi
 <span class="go">SaneTime(1325394000000000,&lt;UTC&gt;)</span>
 </pre></div>
 </div>
-<p>There&#8217;s much more you can do with link=&gt;deltas.</p>
-</div>
-<div class="section" id="difference">
-<h3>difference<a class="headerlink" href="#difference" title="Permalink to this headline">¶</a></h3>
-<p>Subtracing two sanetimes produces a delta!</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">time</span><span class="p">()</span>  <span class="c"># benchmarking time construction</span>
-<span class="go">SaneDelta(-30)</span>
-
-<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">time</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>  <span class="c"># time since new year</span>
+<p>Subtracting two sanetimes produces a <em class="xref std std-ref">delta</em>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">time</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>  <span class="c"># time since new year</span>
 <span class="go">SaneDelta(15131339063956)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">abs</span><span class="p">(</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">time</span><span class="p">())</span><span class="o">.</span><span class="n">micros</span>  <span class="c"># microseconds to construct a time</span>
+<span class="go">30</span>
 </pre></div>
-</div>
-<p>There&#8217;s much more you can do with link=&gt;deltas.</p>
 </div>
 </div>
 <div class="section" id="conversion">
 <h2>conversion<a class="headerlink" href="#conversion" title="Permalink to this headline">¶</a></h2>
-<p>The constructor can convert from a number of different formats.  Here we describe all the different things you convert <strong>to</strong>.</p>
-<div class="section" id="to-datetime">
-<h3>to datetime<a class="headerlink" href="#to-datetime" title="Permalink to this headline">¶</a></h3>
 <p>You can easily convert to a timezone-aware datetime or to a naive datetime.  They are accessed as properties.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">tz</span><span class="o">=</span><span class="s">&#39;America/Los_Angeles&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">datetime</span>
 <span class="go">datetime.datetime(2012, 1, 1, 0, 0, tzinfo=&lt;DstTzInfo &#39;America/Los_Angeles&#39; PST-1 day, 16:00:00 STD&gt;)</span>
@@ -166,9 +155,7 @@ Intuitive aliases exists for kwargs, be as terse or verbose as you want (us = mi
 <span class="go">datetime.datetime(2012, 1, 1, 3, 0)</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="to-epoch-times">
-<h3>to epoch times<a class="headerlink" href="#to-epoch-times" title="Permalink to this headline">¶</a></h3>
+<p>To epoch times:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">minutes</span>
 <span class="go">22089600</span>
 
@@ -189,7 +176,6 @@ Intuitive aliases exists for kwargs, be as terse or verbose as you want (us = mi
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">long</span><span class="p">(</span><span class="n">time</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
 <span class="go">1325376000000000L</span>
 </pre></div>
-</div>
 </div>
 </div>
 <div class="section" id="date-time-parts">
@@ -219,27 +205,23 @@ Intuitive aliases exists for kwargs, be as terse or verbose as you want (us = mi
         </div>
       </div>
       <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper">
+        <div class="sphinxsidebarwrapper"><h2>sanetime</h2>
+<p>
+  <iframe src="http://markdotto.github.com/github-buttons/github-btn.html?user=HubSpot&repo=sanetime&type=watch&count=true&size=large"
+    allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+<p>
+  <strong>sanetime</strong> brings epoch sanity to dates and times in python.
+  You are currently looking at the documentation of the development release.
+</p>
+
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">time</a><ul>
-<li><a class="reference internal" href="#construction">construction</a><ul>
-<li><a class="reference internal" href="#epoch-times">epoch times</a></li>
-<li><a class="reference internal" href="#datetime-parts">datetime parts</a></li>
-<li><a class="reference internal" href="#datetime">datetime</a></li>
-<li><a class="reference internal" href="#string">string</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#arithmetic">arithmetic</a><ul>
-<li><a class="reference internal" href="#addition">addition</a></li>
-<li><a class="reference internal" href="#difference">difference</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#conversion">conversion</a><ul>
-<li><a class="reference internal" href="#to-datetime">to datetime</a></li>
-<li><a class="reference internal" href="#to-epoch-times">to epoch times</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#construction">construction</a></li>
+<li><a class="reference internal" href="#arithmetic">arithmetic</a></li>
+<li><a class="reference internal" href="#conversion">conversion</a></li>
 <li><a class="reference internal" href="#date-time-parts">date/time parts</a></li>
 </ul>
 </li>
@@ -248,13 +230,9 @@ Intuitive aliases exists for kwargs, be as terse or verbose as you want (us = mi
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
       <li>Previous: <a href="../index.html" title="previous chapter">sanetime</a></li>
+      <li>Next: <a href="../api.html" title="next chapter">API</a></li>
   </ul></li>
 </ul>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../_sources/user/time.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
@@ -273,8 +251,10 @@ Intuitive aliases exists for kwargs, be as terse or verbose as you want (us = mi
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy; Copyright 2012, prior.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a>.
+      &copy; Copyright 2012. A <a href="http://hubspot.github.com">HubSpot</a> Project.
     </div>
+    <a href="https://github.com/HubSpot/sanetime" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
   </body>
 </html>

@@ -1,0 +1,287 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Requests: HTTP for Humans &mdash; sanetime 4.2.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/flasky.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '4.2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="sanetime 4.2.0 documentation" href="index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">sanetime 4.2.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="requests-http-for-humans">
+<h1>Requests: HTTP for Humans<a class="headerlink" href="#requests-http-for-humans" title="Permalink to this headline">¶</a></h1>
+<p>Release v4.2.0. (<a class="reference internal" href="user/install.html#install"><em>Installation</em></a>)</p>
+<p>Requests is an <em class="xref std std-ref">ISC Licensed</em> HTTP library, written in Python, for human beings.</p>
+<p>Python&#8217;s standard <strong>urllib2</strong> module provides most of
+the HTTP capabilities you need, but the API is thoroughly <strong>broken</strong>.
+It was built for a different time —&nbsp;and a different web. It requires an <em>enormous</em> amount of work (even method overrides) to perform the simplest of tasks.</p>
+<p>Things shouldn’t be this way. Not in Python.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;https://api.github.com/user&#39;</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;user&#39;</span><span class="p">,</span> <span class="s">&#39;pass&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span>
+<span class="go">200</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s">&#39;content-type&#39;</span><span class="p">]</span>
+<span class="go">&#39;application/json; charset=utf8&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">encoding</span>
+<span class="go">&#39;utf-8&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">text</span>
+<span class="go">u&#39;{&quot;type&quot;:&quot;User&quot;...&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">json</span>
+<span class="go">{u&#39;private_gists&#39;: 419, u&#39;total_private_repos&#39;: 77, ...}</span>
+</pre></div>
+</div>
+<p>See <a class="reference external" href="https://gist.github.com/973705">similar code, without Requests</a>.</p>
+<p>Requests takes all of the work out of Python HTTP/1.1 —&nbsp;making your integration with web services seamless. There&#8217;s no need to manually add query strings to your URLs, or to form-encode your POST data. Keep-alive and HTTP connection pooling are 100%  automatic, powered by <a class="reference external" href="https://github.com/shazow/urllib3">urllib3</a>, which is embedded within Requests.</p>
+<div class="section" id="testimonials">
+<h2>Testimonials<a class="headerlink" href="#testimonials" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="http://kippt.com">Kippt</a>, <a class="reference external" href="http://heroku.com">Heroku</a>, <a class="reference external" href="https://www.paypal.com/">PayPal</a>,
+<a class="reference external" href="https://www.transifex.net/">Transifex</a>,
+<a class="reference external" href="http://www.native-instruments.com/">Native Instruments</a>, <a class="reference external" href="http://www.washingtonpost.com/">The Washington Post</a>,
+<a class="reference external" href="http://twitter.com">Twitter, Inc</a>,
+<a class="reference external" href="http://readability.com">Readability</a>, and
+Federal US Institutions
+use Requests internally. It has been installed over 100,000 times from PyPI.</p>
+<dl class="docutils">
+<dt><strong>Armin Ronacher</strong></dt>
+<dd>Requests is the perfect example how beautiful an API can be with the
+right level of abstraction.</dd>
+<dt><strong>Matt DeBoard</strong></dt>
+<dd>I&#8217;m going to get &#64;kennethreitz&#8217;s Python requests module tattooed
+on my body, somehow. The whole thing.</dd>
+<dt><strong>Daniel Greenfeld</strong></dt>
+<dd>Nuked a 1200 LOC spaghetti code library with 10 lines of code thanks to
+&#64;kennethreitz&#8217;s request library. Today has been AWESOME.</dd>
+<dt><strong>Kenny Meyers</strong></dt>
+<dd>Python HTTP: When in doubt, or when not in doubt, use Requests. Beautiful,
+simple, Pythonic.</dd>
+</dl>
+</div>
+<div class="section" id="feature-support">
+<h2>Feature Support<a class="headerlink" href="#feature-support" title="Permalink to this headline">¶</a></h2>
+<p>Requests is ready for today&#8217;s web.</p>
+<ul class="simple">
+<li>International Domains and URLs</li>
+<li>Keep-Alive &amp; Connection Pooling</li>
+<li>Sessions with Cookie Persistence</li>
+<li>Browser-style SSL Verification</li>
+<li>Basic/Digest Authentication</li>
+<li>Elegant Key/Value Cookies</li>
+<li>Automatic Decompression</li>
+<li>Unicode Response Bodies</li>
+<li>Multipart File Uploads</li>
+<li>Connection Timeouts</li>
+<li><tt class="docutils literal"><span class="pre">.netrc</span></tt> support</li>
+<li>Thread-safe.</li>
+</ul>
+</div>
+<div class="section" id="user-guide">
+<h2>User Guide<a class="headerlink" href="#user-guide" title="Permalink to this headline">¶</a></h2>
+<p>This part of the documentation, which is mostly prose, begins with some
+background information about Requests, then focuses on step-by-step
+instructions for getting the most out of Requests.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="user/intro.html">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="user/intro.html#philosophy">Philosophy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/intro.html#isc-license">ISC License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/intro.html#requests-license">Requests License</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="user/install.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="user/install.html#distribute-pip">Distribute &amp; Pip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/install.html#cheeseshop-mirror">Cheeseshop Mirror</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/install.html#get-the-code">Get the Code</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="user/quickstart.html">Quickstart</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="user/quickstart.html#make-a-request">Make a Request</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/quickstart.html#passing-parameters-in-urls">Passing Parameters In URLs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/quickstart.html#response-content">Response Content</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/quickstart.html#binary-response-content">Binary Response Content</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/quickstart.html#json-response-content">JSON Response Content</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/quickstart.html#raw-response-content">Raw Response Content</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/quickstart.html#custom-headers">Custom Headers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/quickstart.html#more-complicated-post-requests">More complicated POST requests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/quickstart.html#post-a-multipart-encoded-file">POST a Multipart-Encoded File</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/quickstart.html#response-status-codes">Response Status Codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/quickstart.html#response-headers">Response Headers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/quickstart.html#cookies">Cookies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/quickstart.html#basic-authentication">Basic Authentication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/quickstart.html#digest-authentication">Digest Authentication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/quickstart.html#oauth-authentication">OAuth Authentication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/quickstart.html#redirection-and-history">Redirection and History</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/quickstart.html#timeouts">Timeouts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/quickstart.html#errors-and-exceptions">Errors and Exceptions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="user/advanced.html">Advanced Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="user/advanced.html#session-objects">Session Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/advanced.html#request-and-response-objects">Request and Response Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/advanced.html#ssl-cert-verification">SSL Cert Verification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/advanced.html#body-content-workflow">Body Content Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/advanced.html#configuring-requests">Configuring Requests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/advanced.html#keep-alive">Keep-Alive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/advanced.html#asynchronous-requests">Asynchronous Requests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/advanced.html#event-hooks">Event Hooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/advanced.html#custom-authentication">Custom Authentication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/advanced.html#streaming-requests">Streaming Requests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/advanced.html#verbose-logging">Verbose Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/advanced.html#proxies">Proxies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/advanced.html#http-verbs">HTTP Verbs</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="community-guide">
+<h2>Community Guide<a class="headerlink" href="#community-guide" title="Permalink to this headline">¶</a></h2>
+<p>This part of the documentation, which is mostly prose, details the
+Requests ecosystem and community.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="community/faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community/out-there.html">Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community/out-there.html#articles-talks">Articles &amp; Talks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community/out-there.html#integrations">Integrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community/out-there.html#managed-packages">Managed Packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community/support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="community/updates.html">Updates</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="api-documentation">
+<h2>API Documentation<a class="headerlink" href="#api-documentation" title="Permalink to this headline">¶</a></h2>
+<p>If you are looking for information on a specific function, class or method,
+this part of the documentation is for you.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api.html#main-interface">Main Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#configurations">Configurations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#async">Async</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#utilities">Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#internals">Internals</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="developer-guide">
+<h2>Developer Guide<a class="headerlink" href="#developer-guide" title="Permalink to this headline">¶</a></h2>
+<p>If you want to contribute to the project, this part of the documentation is for
+you.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dev/todo.html">How to Help</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/authors.html">Authors</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper"><h2>sanetime</h2>
+<p>
+  <iframe src="http://markdotto.github.com/github-buttons/github-btn.html?user=HubSpot&repo=sanetime&type=watch&count=true&size=large"
+    allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+<p>
+  <strong>sanetime</strong> brings epoch sanity to dates and times in python.
+  You are currently looking at the documentation of the development release.
+</p>
+
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Requests: HTTP for Humans</a><ul>
+<li><a class="reference internal" href="#testimonials">Testimonials</a></li>
+<li><a class="reference internal" href="#feature-support">Feature Support</a></li>
+<li><a class="reference internal" href="#user-guide">User Guide</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#community-guide">Community Guide</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#api-documentation">API Documentation</a><ul>
+</ul>
+</li>
+<li><a class="reference internal" href="#developer-guide">Developer Guide</a><ul>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2012. A <a href="http://hubspot.github.com">HubSpot</a> Project.
+    </div>
+    <a href="https://github.com/HubSpot/sanetime" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+  </body>
+</html>

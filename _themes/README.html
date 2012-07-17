@@ -7,24 +7,24 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>construction &mdash; sanetime 4.2.0 documentation</title>
+    <title>krTheme Sphinx Style &mdash; sanetime 4.2.0 documentation</title>
     
-    <link rel="stylesheet" href="_static/flasky.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/flasky.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
+        URL_ROOT:    '../',
         VERSION:     '4.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="sanetime 4.2.0 documentation" href="index.html" />
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="sanetime 4.2.0 documentation" href="../index.html" />
    
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
@@ -35,12 +35,12 @@
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
+          <a href="../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
+          <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="index.html">sanetime 4.2.0 documentation</a> &raquo;</li> 
+        <li><a href="../index.html">sanetime 4.2.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -49,26 +49,31 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="construction">
-<span id="time"></span><h1>construction<a class="headerlink" href="#construction" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="krtheme-sphinx-style">
+<h1>krTheme Sphinx Style<a class="headerlink" href="#krtheme-sphinx-style" title="Permalink to this headline">¶</a></h1>
+<p>This repository contains sphinx styles lifted from Kenneth Reitz&#8217;s
+requests library.  It is a derivative of Mitsuhiko&#8217;s themes for Flask
+and Flask related projects.  To use this style in your Sphinx
+documentation, follow this guide:</p>
+<ol class="arabic">
+<li><p class="first">put this folder as _themes into your docs folder.  Alternatively
+you can also use git submodules to check out the contents there.</p>
+</li>
+<li><p class="first">add this to your conf.py:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s">&#39;_themes&#39;</span><span class="p">))</span>
+<span class="n">html_theme_path</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;_themes&#39;</span><span class="p">]</span>
+<span class="n">html_theme</span> <span class="o">=</span> <span class="s">&#39;flask&#39;</span>
+</pre></div>
 </div>
-<div class="section" id="conversion">
-<h1>conversion<a class="headerlink" href="#conversion" title="Permalink to this headline">¶</a></h1>
-</div>
-<div class="section" id="display">
-<h1>display<a class="headerlink" href="#display" title="Permalink to this headline">¶</a></h1>
-<p>The time class represents a moment in time, internally stored as microseconds since epoch.
-A time object also has an associated timezone (UTC by default), however the timezone will never be considered during hashing, comparison or equality checks.
-A moment in time experienced in America/New_York is equal to the same moment in time experienced in Europe/Dublin.</p>
-</div>
-<div class="section" id="module-sanetime">
-<span id="api"></span><h1>API<a class="headerlink" href="#module-sanetime" title="Permalink to this headline">¶</a></h1>
-<dl class="attribute">
-<dt id="sanetime.time">
-<tt class="descclassname">sanetime.</tt><tt class="descname">time</tt><a class="headerlink" href="#sanetime.time" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">SaneTime</span></tt></p>
-</dd></dl>
-
+</li>
+</ol>
+<p>The following themes exist:</p>
+<dl class="docutils">
+<dt><strong>kr</strong></dt>
+<dd>the standard flask documentation theme for large projects</dd>
+<dt><strong>kr_small</strong></dt>
+<dd>small one-page theme.  Intended to be used by very small addon libraries.</dd>
+</dl>
 </div>
 
 
@@ -86,22 +91,14 @@ A moment in time experienced in America/New_York is equal to the same moment in 
   <strong>sanetime</strong> brings epoch sanity to dates and times in python.
   You are currently looking at the documentation of the development release.
 </p>
-
-  <h3><a href="index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">construction</a></li>
-<li><a class="reference internal" href="#conversion">conversion</a></li>
-<li><a class="reference internal" href="#display">display</a></li>
-<li><a class="reference internal" href="#module-sanetime">API</a></li>
-</ul>
 <h3>Related Topics</h3>
 <ul>
-  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
   </ul></li>
 </ul>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
-    <form class="search" action="search.html" method="get">
+    <form class="search" action="../search.html" method="get">
       <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />

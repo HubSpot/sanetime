@@ -1,0 +1,562 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Advanced Usage &mdash; sanetime 4.2.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/flasky.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '4.2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="sanetime 4.2.0 documentation" href="../index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">sanetime 4.2.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="advanced-usage">
+<span id="advanced"></span><h1>Advanced Usage<a class="headerlink" href="#advanced-usage" title="Permalink to this headline">¶</a></h1>
+<p>This document covers some of Requests more advanced features.</p>
+<div class="section" id="session-objects">
+<h2>Session Objects<a class="headerlink" href="#session-objects" title="Permalink to this headline">¶</a></h2>
+<p>The Session object allows you to persist certain parameters across
+requests. It also persists cookies across all requests made from the
+Session instance.</p>
+<p>A session object has all the methods of the main Requests API.</p>
+<p>Let&#8217;s persist some cookies across requests:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">s</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">session</span><span class="p">()</span>
+
+<span class="n">s</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;http://httpbin.org/cookies/set/sessioncookie/123456789&#39;</span><span class="p">)</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;http://httpbin.org/cookies&quot;</span><span class="p">)</span>
+
+<span class="k">print</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span>
+<span class="c"># &#39;{&quot;cookies&quot;: {&quot;sessioncookie&quot;: &quot;123456789&quot;}}&#39;</span>
+</pre></div>
+</div>
+<p>Sessions can also be used to provide default data to the request methods:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;x-test&#39;</span><span class="p">:</span> <span class="s">&#39;true&#39;</span><span class="p">}</span>
+<span class="n">auth</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;user&#39;</span><span class="p">,</span> <span class="s">&#39;pass&#39;</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">requests</span><span class="o">.</span><span class="n">session</span><span class="p">(</span><span class="n">auth</span><span class="o">=</span><span class="n">auth</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span> <span class="k">as</span> <span class="n">c</span><span class="p">:</span>
+
+    <span class="c"># both &#39;x-test&#39; and &#39;x-test2&#39; are sent</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;http://httpbin.org/headers&#39;</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;x-test2&#39;</span><span class="p">:</span> <span class="s">&#39;true&#39;</span><span class="p">})</span>
+</pre></div>
+</div>
+<p>Any dictionaries that you pass to a request method will be merged with the session-level values that are set. The method-level parameters override session parameters.</p>
+<div class="admonition-remove-a-value-from-a-dict-parameter admonition">
+<p class="first admonition-title">Remove a Value From a Dict Parameter</p>
+<p class="last">Sometimes you&#8217;ll want to omit session-level keys from a dict parameter. To do this, you simply set that key&#8217;s value to <tt class="docutils literal"><span class="pre">None</span></tt> in the method-level parameter. It will automatically be omitted.</p>
+</div>
+<p>All values that are contained within a session are directly available to you. See the <a class="reference internal" href="../api.html#sessionapi"><em>Session API Docs</em></a> to learn more.</p>
+</div>
+<div class="section" id="request-and-response-objects">
+<h2>Request and Response Objects<a class="headerlink" href="#request-and-response-objects" title="Permalink to this headline">¶</a></h2>
+<p>Whenever a call is made to requests.*() you are doing two major things. First,
+you are constructing a <tt class="docutils literal"><span class="pre">Request</span></tt> object which will be sent of to a server
+to request or query some resource. Second, a <tt class="docutils literal"><span class="pre">Response</span></tt> object is generated
+once <tt class="docutils literal"><span class="pre">requests</span></tt> gets a response back from the server. The response object
+contains all of the information returned by the server and also contains the
+<tt class="docutils literal"><span class="pre">Request</span></tt> object you created originally. Here is a simple request to get some
+very important information from Wikipedia&#8217;s servers:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;http://en.wikipedia.org/wiki/Monty_Python&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If we want to access the headers the server sent back to us, we do this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">response</span><span class="o">.</span><span class="n">headers</span>
+<span class="go">{&#39;content-length&#39;: &#39;56170&#39;, &#39;x-content-type-options&#39;: &#39;nosniff&#39;, &#39;x-cache&#39;:</span>
+<span class="go">&#39;HIT from cp1006.eqiad.wmnet, MISS from cp1010.eqiad.wmnet&#39;, &#39;content-encoding&#39;:</span>
+<span class="go">&#39;gzip&#39;, &#39;age&#39;: &#39;3080&#39;, &#39;content-language&#39;: &#39;en&#39;, &#39;vary&#39;: &#39;Accept-Encoding,Cookie&#39;,</span>
+<span class="go">&#39;server&#39;: &#39;Apache&#39;, &#39;last-modified&#39;: &#39;Wed, 13 Jun 2012 01:33:50 GMT&#39;,</span>
+<span class="go">&#39;connection&#39;: &#39;close&#39;, &#39;cache-control&#39;: &#39;private, s-maxage=0, max-age=0,</span>
+<span class="go">must-revalidate&#39;, &#39;date&#39;: &#39;Thu, 14 Jun 2012 12:59:39 GMT&#39;, &#39;content-type&#39;:</span>
+<span class="go">&#39;text/html; charset=UTF-8&#39;, &#39;x-cache-lookup&#39;: &#39;HIT from cp1006.eqiad.wmnet:3128,</span>
+<span class="go">MISS from cp1010.eqiad.wmnet:80&#39;}</span>
+</pre></div>
+</div>
+<p>However, if we want to get the headers we sent the server, we simply access the
+request, and then the request&#8217;s headers:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">response</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">headers</span>
+<span class="go">{&#39;Accept-Encoding&#39;: &#39;identity, deflate, compress, gzip&#39;,</span>
+<span class="go">&#39;Accept&#39;: &#39;*/*&#39;, &#39;User-Agent&#39;: &#39;python-requests/0.13.1&#39;}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="ssl-cert-verification">
+<h2>SSL Cert Verification<a class="headerlink" href="#ssl-cert-verification" title="Permalink to this headline">¶</a></h2>
+<p>Requests can verify SSL certificates for HTTPS requests, just like a web browser. To check a host&#8217;s SSL certificate, you can use the <tt class="docutils literal"><span class="pre">verify</span></tt> argument:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;https://kennethreitz.com&#39;</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="go">requests.exceptions.SSLError: hostname &#39;kennethreitz.com&#39; doesn&#39;t match either of &#39;*.herokuapp.com&#39;, &#39;herokuapp.com&#39;</span>
+</pre></div>
+</div>
+<p>I don&#8217;t have SSL setup on this domain, so it fails. Excellent. Github does though:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;https://github.com&#39;</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="go">&lt;Response [200]&gt;</span>
+</pre></div>
+</div>
+<p>You can also pass <tt class="docutils literal"><span class="pre">verify</span></tt> the path to a CA_BUNDLE file for private certs. You can also set the <tt class="docutils literal"><span class="pre">REQUESTS_CA_BUNDLE</span></tt> environment variable.</p>
+<p>Requests can also ignore verifying the SSL certficate if you set <tt class="docutils literal"><span class="pre">verify</span></tt> to False.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;https://kennethreitz.com&#39;</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="go">&lt;Response [200]&gt;</span>
+</pre></div>
+</div>
+<p>By default, <tt class="docutils literal"><span class="pre">verify</span></tt> is set to True. Option <tt class="docutils literal"><span class="pre">verify</span></tt> only applies to host certs.</p>
+<p>You can also specify the local cert file either as a path or key value pair:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;https://kennethreitz.com&#39;</span><span class="p">,</span> <span class="n">cert</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;/path/server.crt&#39;</span><span class="p">,</span> <span class="s">&#39;/path/key&#39;</span><span class="p">))</span>
+<span class="go">&lt;Response [200]&gt;</span>
+</pre></div>
+</div>
+<p>If you specify a wrong path or an invalid cert:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;https://kennethreitz.com&#39;</span><span class="p">,</span> <span class="n">cert</span><span class="o">=</span><span class="s">&#39;/wrong_path/server.pem&#39;</span><span class="p">)</span>
+<span class="go">SSLError: [Errno 336265225] _ssl.c:347: error:140B0009:SSL routines:SSL_CTX_use_PrivateKey_file:PEM lib</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="body-content-workflow">
+<h2>Body Content Workflow<a class="headerlink" href="#body-content-workflow" title="Permalink to this headline">¶</a></h2>
+<p>By default, when you make a request, the body of the response isn&#8217;t downloaded immediately. The response headers are downloaded when you make a request, but the content isn&#8217;t downloaded until you access the <tt class="xref py py-class docutils literal"><span class="pre">Response.content</span></tt> attribute.</p>
+<p>Let&#8217;s walk through it:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">tarball_url</span> <span class="o">=</span> <span class="s">&#39;https://github.com/kennethreitz/requests/tarball/master&#39;</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">tarball_url</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The request has been made, but the connection is still open. The response body has not been downloaded yet.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">r</span><span class="o">.</span><span class="n">content</span>
+</pre></div>
+</div>
+<p>The content has been downloaded and cached.</p>
+<p>You can override this default behavior with the <tt class="docutils literal"><span class="pre">prefetch</span></tt> parameter:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">tarball_url</span><span class="p">,</span> <span class="n">prefetch</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="c"># Blocks until all of request body has been downloaded.</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="configuring-requests">
+<h2>Configuring Requests<a class="headerlink" href="#configuring-requests" title="Permalink to this headline">¶</a></h2>
+<p>Sometimes you may want to configure a request to customize its behavior. To do
+this, you can pass in a <tt class="docutils literal"><span class="pre">config</span></tt> dictionary to a request or session. See the <a class="reference internal" href="../api.html#configurations"><em>Configuration API Docs</em></a> to learn more.</p>
+</div>
+<div class="section" id="keep-alive">
+<h2>Keep-Alive<a class="headerlink" href="#keep-alive" title="Permalink to this headline">¶</a></h2>
+<p>Excellent news —&nbsp;thanks to urllib3, keep-alive is 100% automatic within a session! Any requests that you make within a session will automatically reuse the appropriate connection!</p>
+<p>Note that connections are only released back to the pool for reuse once all body data has been read; be sure to either set <tt class="docutils literal"><span class="pre">prefetch</span></tt> to <tt class="docutils literal"><span class="pre">True</span></tt> or read the <tt class="docutils literal"><span class="pre">content</span></tt> property of the <tt class="docutils literal"><span class="pre">Response</span></tt> object.</p>
+<p>If you&#8217;d like to disable keep-alive, you can simply set the <tt class="docutils literal"><span class="pre">keep_alive</span></tt> configuration to <tt class="docutils literal"><span class="pre">False</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">s</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">session</span><span class="p">()</span>
+<span class="n">s</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;keep_alive&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="asynchronous-requests">
+<h2>Asynchronous Requests<a class="headerlink" href="#asynchronous-requests" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">requests.async</span></tt> has been removed from requests and is now its own repository named <a class="reference external" href="https://github.com/kennethreitz/grequests">GRequests</a>.</p>
+</div>
+<div class="section" id="event-hooks">
+<h2>Event Hooks<a class="headerlink" href="#event-hooks" title="Permalink to this headline">¶</a></h2>
+<p>Requests has a hook system that you can use to manipulate portions of
+the request process, or signal event handling.</p>
+<p>Available hooks:</p>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">args</span></tt>:</dt>
+<dd>A dictionary of the arguments being sent to Request().</dd>
+<dt><tt class="docutils literal"><span class="pre">pre_request</span></tt>:</dt>
+<dd>The Request object, directly before being sent.</dd>
+<dt><tt class="docutils literal"><span class="pre">post_request</span></tt>:</dt>
+<dd>The Request object, directly after being sent.</dd>
+<dt><tt class="docutils literal"><span class="pre">response</span></tt>:</dt>
+<dd>The response generated from a Request.</dd>
+</dl>
+<p>You can assign a hook function on a per-request basis by passing a
+<tt class="docutils literal"><span class="pre">{hook_name:</span> <span class="pre">callback_function}</span></tt> dictionary to the <tt class="docutils literal"><span class="pre">hooks</span></tt> request
+parameter:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">hooks</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">print_url</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>That <tt class="docutils literal"><span class="pre">callback_function</span></tt> will receive a chunk of data as its first
+argument.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">print_url</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="k">print</span> <span class="n">args</span><span class="p">[</span><span class="s">&#39;url&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>If an error occurs while executing your callback, a warning is given.</p>
+<p>If the callback function returns a value, it is assumed that it is to
+replace the data that was passed in. If the function doesn&#8217;t return
+anything, nothing else is effected.</p>
+<p>Let&#8217;s print some request method arguments at runtime:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;http://httpbin.org&#39;</span><span class="p">,</span> <span class="n">hooks</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">print_url</span><span class="p">))</span>
+<span class="go">http://httpbin.org</span>
+<span class="go">&lt;Response [200]&gt;</span>
+</pre></div>
+</div>
+<p>Let&#8217;s hijack some arguments this time with a new callback:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">hack_headers</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;headers&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">args</span><span class="p">[</span><span class="s">&#39;headers&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+    <span class="n">args</span><span class="p">[</span><span class="s">&#39;headers&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s">&#39;X-Testing&#39;</span><span class="p">:</span> <span class="s">&#39;True&#39;</span><span class="p">})</span>
+
+    <span class="k">return</span> <span class="n">args</span>
+
+<span class="n">hooks</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">hack_headers</span><span class="p">)</span>
+<span class="n">headers</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">yo</span><span class="o">=</span><span class="n">dawg</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>And give it a try:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;http://httpbin.org/headers&#39;</span><span class="p">,</span> <span class="n">hooks</span><span class="o">=</span><span class="n">hooks</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    &quot;headers&quot;: {</span>
+<span class="go">        &quot;Content-Length&quot;: &quot;&quot;,</span>
+<span class="go">        &quot;Accept-Encoding&quot;: &quot;gzip&quot;,</span>
+<span class="go">        &quot;Yo&quot;: &quot;dawg&quot;,</span>
+<span class="go">        &quot;X-Forwarded-For&quot;: &quot;::ffff:24.127.96.129&quot;,</span>
+<span class="go">        &quot;Connection&quot;: &quot;close&quot;,</span>
+<span class="go">        &quot;User-Agent&quot;: &quot;python-requests.org&quot;,</span>
+<span class="go">        &quot;Host&quot;: &quot;httpbin.org&quot;,</span>
+<span class="go">        &quot;X-Testing&quot;: &quot;True&quot;,</span>
+<span class="go">        &quot;X-Forwarded-Protocol&quot;: &quot;&quot;,</span>
+<span class="go">        &quot;Content-Type&quot;: &quot;&quot;</span>
+<span class="go">    }</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="custom-authentication">
+<h2>Custom Authentication<a class="headerlink" href="#custom-authentication" title="Permalink to this headline">¶</a></h2>
+<p>Requests allows you to use specify your own authentication mechanism.</p>
+<p>Any callable which is passed as the <tt class="docutils literal"><span class="pre">auth</span></tt> argument to a request method will
+have the opportunity to modify the request before it is dispatched.</p>
+<p>Authentication implementations are subclasses of <tt class="docutils literal"><span class="pre">requests.auth.AuthBase</span></tt>,
+and are easy to define. Requests provides two common authentication scheme
+implementations in <tt class="docutils literal"><span class="pre">requests.auth</span></tt>: <tt class="docutils literal"><span class="pre">HTTPBasicAuth</span></tt> and <tt class="docutils literal"><span class="pre">HTTPDigestAuth</span></tt>.</p>
+<p>Let&#8217;s pretend that we have a web service that will only respond if the
+<tt class="docutils literal"><span class="pre">X-Pizza</span></tt> header is set to a password value. Unlikely, but just go with it.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">requests.auth</span> <span class="kn">import</span> <span class="n">AuthBase</span>
+<span class="k">class</span> <span class="nc">PizzaAuth</span><span class="p">(</span><span class="n">AuthBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Attaches HTTP Pizza Authentication to the given Request object.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">):</span>
+        <span class="c"># setup any auth-related data here</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">username</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+        <span class="c"># modify and return the request</span>
+        <span class="n">r</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s">&#39;X-Pizza&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">username</span>
+        <span class="k">return</span> <span class="n">r</span>
+</pre></div>
+</div>
+<p>Then, we can make a request using our Pizza Auth:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;http://pizzabin.org/admin&#39;</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="n">PizzaAuth</span><span class="p">(</span><span class="s">&#39;kenneth&#39;</span><span class="p">))</span>
+<span class="go">&lt;Response [200]&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="streaming-requests">
+<h2>Streaming Requests<a class="headerlink" href="#streaming-requests" title="Permalink to this headline">¶</a></h2>
+<p>With <tt class="docutils literal"><span class="pre">requests.Response.iter_lines()</span></tt> you can easily iterate over streaming
+APIs such as the <a class="reference external" href="https://dev.twitter.com/docs/streaming-api">Twitter Streaming API</a>.</p>
+<p>To use the Twitter Streaming API to track the keyword &#8220;requests&#8221;:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s">&#39;https://stream.twitter.com/1/statuses/filter.json&#39;</span><span class="p">,</span>
+    <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;track&#39;</span><span class="p">:</span> <span class="s">&#39;requests&#39;</span><span class="p">},</span> <span class="n">auth</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;username&#39;</span><span class="p">,</span> <span class="s">&#39;password&#39;</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">iter_lines</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">line</span><span class="p">:</span> <span class="c"># filter out keep-alive new lines</span>
+        <span class="k">print</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="verbose-logging">
+<h2>Verbose Logging<a class="headerlink" href="#verbose-logging" title="Permalink to this headline">¶</a></h2>
+<p>If you want to get a good look at what HTTP requests are being sent
+by your application, you can turn on verbose logging.</p>
+<p>To do so, just configure Requests with a stream to write to:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">my_config</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;verbose&#39;</span><span class="p">:</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;http://httpbin.org/headers&#39;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">my_config</span><span class="p">)</span>
+<span class="go">2011-08-17T03:04:23.380175   GET   http://httpbin.org/headers</span>
+<span class="go">&lt;Response [200]&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="proxies">
+<h2>Proxies<a class="headerlink" href="#proxies" title="Permalink to this headline">¶</a></h2>
+<p>If you need to use a proxy, you can configure individual requests with the
+<tt class="docutils literal"><span class="pre">proxies</span></tt> argument to any request method:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="n">proxies</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="s">&quot;http&quot;</span><span class="p">:</span> <span class="s">&quot;10.10.1.10:3128&quot;</span><span class="p">,</span>
+  <span class="s">&quot;https&quot;</span><span class="p">:</span> <span class="s">&quot;10.10.1.10:1080&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;http://example.org&quot;</span><span class="p">,</span> <span class="n">proxies</span><span class="o">=</span><span class="n">proxies</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can also configure proxies by environment variables <tt class="docutils literal"><span class="pre">HTTP_PROXY</span></tt> and <tt class="docutils literal"><span class="pre">HTTPS_PROXY</span></tt>.</p>
+<div class="highlight-python"><pre>$ export HTTP_PROXY="10.10.1.10:3128"
+$ export HTTPS_PROXY="10.10.1.10:1080"
+$ python
+&gt;&gt;&gt; import requests
+&gt;&gt;&gt; requests.get("http://example.org")</pre>
+</div>
+<p>To use HTTP Basic Auth with your proxy, use the <cite>http://user:password&#64;host/</cite> syntax:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">proxies</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&quot;http&quot;</span><span class="p">:</span> <span class="s">&quot;http://user:pass@10.10.1.10:3128/&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="http-verbs">
+<h2>HTTP Verbs<a class="headerlink" href="#http-verbs" title="Permalink to this headline">¶</a></h2>
+<p>Requests provides access to almost the full range of HTTP verbs: GET, OPTIONS,
+HEAD, POST, PUT, PATCH and DELETE. The following provides detailed examples of
+using these various verbs in Requests, using the GitHub API.</p>
+<p>We will begin with the verb most commonly used: GET. HTTP GET is an idempotent
+method that returns a resource from a given URL. As a result, it is the verb
+you ought to use when attempting to retrieve data from a web location. An
+example usage would be attempting to get information about a specific commit
+from GitHub. Suppose we wanted commit <tt class="docutils literal"><span class="pre">a050faf</span></tt> on Requests. We would get it
+like so:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">requests</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;https://api.github.com/repos/kennethreitz/requests/git/commits/a050faf084662f3a352dd1a941f2c7c9f886d4ad&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We should confirm that GitHub responded correctly. If it has, we want to work
+out what type of content it is. Do this like so:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">requests</span><span class="o">.</span><span class="n">codes</span><span class="o">.</span><span class="n">ok</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">print</span> <span class="n">r</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s">&#39;content-type&#39;</span><span class="p">]</span>
+<span class="gp">...</span>
+<span class="go">application/json; charset=utf-8</span>
+</pre></div>
+</div>
+<p>So, GitHub returns JSON. That&#8217;s great, we can use the JSON module to turn it
+into Python objects. Because GitHub returned UTF-8, we should use the
+<tt class="docutils literal"><span class="pre">r.text</span></tt> method, not the <tt class="docutils literal"><span class="pre">r.content</span></tt> method. <tt class="docutils literal"><span class="pre">r.content</span></tt> returns a
+bytestring, while <tt class="docutils literal"><span class="pre">r.text</span></tt> returns a Unicode-encoded string. I have no plans
+to perform byte-manipulation on this response, so I want any Unicode code
+points encoded.:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">json</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">commit_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">commit_data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+<span class="go">[u&#39;committer&#39;, u&#39;author&#39;, u&#39;url&#39;, u&#39;tree&#39;, u&#39;sha&#39;, u&#39;parents&#39;, u&#39;message&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">commit_data</span><span class="p">[</span><span class="s">u&#39;committer&#39;</span><span class="p">]</span>
+<span class="go">{u&#39;date&#39;: u&#39;2012-05-10T11:10:50-07:00&#39;, u&#39;email&#39;: u&#39;me@kennethreitz.com&#39;, u&#39;name&#39;: u&#39;Kenneth Reitz&#39;}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">commit_data</span><span class="p">[</span><span class="s">u&#39;message&#39;</span><span class="p">]</span>
+<span class="go">makin&#39; history</span>
+</pre></div>
+</div>
+<p>So far, so simple. Well, let&#8217;s investigate the GitHub API a little bit. Now,
+we could look at the documentation, but we might have a little more fun if we
+use Requests instead. We can take advantage of the Requests OPTIONS verb to
+see what kinds of HTTP methods are supported on the url we just used.:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">verbs</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">verbs</span><span class="o">.</span><span class="n">status_code</span>
+<span class="go">500</span>
+</pre></div>
+</div>
+<p>Uh, what? That&#8217;s unhelpful! Turns out GitHub, like many API providers, don&#8217;t
+actually implement the OPTIONS method. This is an annoying oversight, but it&#8217;s
+OK, we can just use the boring documentation. If GitHub had correctly
+implemented OPTIONS, however, they should return the allowed methods in the
+headers, e.g.:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">verbs</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="s">&#39;http://a-good-website.com/api/cats&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">verbs</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s">&#39;allow&#39;</span><span class="p">]</span>
+<span class="go">GET,HEAD,POST,OPTIONS</span>
+</pre></div>
+</div>
+<p>Turning to the documentation, we see that the only other method allowed for
+commits is POST, which creates a new commit. As we&#8217;re using the Requests repo,
+we should probably avoid making ham-handed POSTS to it. Instead, let&#8217;s play
+with the Issues feature of GitHub.</p>
+<p>This documentation was added in response to Issue #482. Given that this issue
+already exists, we will use it as an example. Let&#8217;s start by getting it.:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;https://api.github.com/repos/kennethreitz/requests/issues/482&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span>
+<span class="go">200</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">issue</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">issue</span><span class="p">[</span><span class="s">u&#39;title&#39;</span><span class="p">]</span>
+<span class="go">Feature any http verb in docs</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">issue</span><span class="p">[</span><span class="s">u&#39;comments&#39;</span><span class="p">]</span>
+<span class="go">3</span>
+</pre></div>
+</div>
+<p>Cool, we have three comments. Let&#8217;s take a look at the last of them.:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">url</span> <span class="o">+</span> <span class="s">u&#39;/comments&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span>
+<span class="go">200</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">comments</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">comments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+<span class="go">[u&#39;body&#39;, u&#39;url&#39;, u&#39;created_at&#39;, u&#39;updated_at&#39;, u&#39;user&#39;, u&#39;id&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">comments</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="s">u&#39;body&#39;</span><span class="p">]</span>
+<span class="go">Probably in the &quot;advanced&quot; section</span>
+</pre></div>
+</div>
+<p>Well, that seems like a silly place. Let&#8217;s post a comment telling the poster
+that he&#8217;s silly. Who is the poster, anyway?:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">comments</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="s">u&#39;user&#39;</span><span class="p">][</span><span class="s">u&#39;login&#39;</span><span class="p">]</span>
+<span class="go">kennethreitz</span>
+</pre></div>
+</div>
+<p>OK, so let&#8217;s tell this Kenneth guy that we think this example should go in the
+quickstart guide instead. According to the GitHub API doc, the way to do this
+is to POST to the thread. Let&#8217;s do it.:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s">u&quot;body&quot;</span><span class="p">:</span> <span class="s">u&quot;Sounds great! I&#39;ll get right on it!&quot;</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">url</span> <span class="o">=</span> <span class="s">u&quot;https://api.github.com/repos/kennethreitz/requests/issues/482/comments&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">body</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span>
+<span class="go">404</span>
+</pre></div>
+</div>
+<p>Huh, that&#8217;s weird. We probably need to authenticate. That&#8217;ll be a pain, right?
+Wrong. Requests makes it easy to use many forms of authentication, including
+the very common Basic Auth.:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">requests.auth</span> <span class="kn">import</span> <span class="n">HTTPBasicAuth</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">auth</span> <span class="o">=</span> <span class="n">HTTPBasicAuth</span><span class="p">(</span><span class="s">&#39;fake@example.com&#39;</span><span class="p">,</span> <span class="s">&#39;not_a_real_password&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">body</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="n">auth</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span>
+<span class="go">201</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">content</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">content</span><span class="p">[</span><span class="s">u&#39;body&#39;</span><span class="p">]</span>
+<span class="go">Sounds great! I&#39;ll get right on it.</span>
+</pre></div>
+</div>
+<p>Brilliant. Oh, wait, no! I meant to add that it would take me a while, because
+I had to go feed my cat. If only I could edit this comment! Happily, GitHub
+allows us to use another HTTP verb, PATCH, to edit this comment. Let&#8217;s do
+that.:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">content</span><span class="p">[</span><span class="s">u&quot;id&quot;</span><span class="p">]</span>
+<span class="go">5804413</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s">u&quot;body&quot;</span><span class="p">:</span> <span class="s">u&quot;Sounds great! I&#39;ll get right on it once I feed my cat.&quot;</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">url</span> <span class="o">=</span> <span class="s">u&quot;https://api.github.com/repos/kennethreitz/requests/issues/comments/5804413&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">body</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="n">auth</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span>
+<span class="go">200</span>
+</pre></div>
+</div>
+<p>Excellent. Now, just to torture this Kenneth guy, I&#8217;ve decided to let him
+sweat and not tell him that I&#8217;m working on this. That means I want to delete
+this comment. GitHub lets us delete comments using the incredibly aptly named
+DELETE method. Let&#8217;s get rid of it.:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="n">auth</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span>
+<span class="go">204</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">r</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s">&#39;status&#39;</span><span class="p">]</span>
+<span class="go">&#39;204 No Content&#39;</span>
+</pre></div>
+</div>
+<p>Excellent. All gone. The last thing I want to know is how much of my ratelimit
+I&#8217;ve used. Let&#8217;s find out. GitHub sends that information in the headers, so
+rather than download the whole page I&#8217;ll send a HEAD request to get the
+headers.:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="n">auth</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">r</span><span class="o">.</span><span class="n">headers</span>
+<span class="go">// ...snip... //</span>
+<span class="go">&#39;x-ratelimit-remaining&#39;: &#39;4995&#39;</span>
+<span class="go">&#39;x-ratelimit-limit&#39;: &#39;5000&#39;</span>
+<span class="go">// ...snip... //</span>
+</pre></div>
+</div>
+<p>Excellent. Time to write a Python program that abuses the GitHub API in all
+kinds of exciting ways, 4995 more times.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper"><h2>sanetime</h2>
+<p>
+  <iframe src="http://markdotto.github.com/github-buttons/github-btn.html?user=HubSpot&repo=sanetime&type=watch&count=true&size=large"
+    allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+<p>
+  <strong>sanetime</strong> brings epoch sanity to dates and times in python.
+  You are currently looking at the documentation of the development release.
+</p>
+
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Advanced Usage</a><ul>
+<li><a class="reference internal" href="#session-objects">Session Objects</a></li>
+<li><a class="reference internal" href="#request-and-response-objects">Request and Response Objects</a></li>
+<li><a class="reference internal" href="#ssl-cert-verification">SSL Cert Verification</a></li>
+<li><a class="reference internal" href="#body-content-workflow">Body Content Workflow</a></li>
+<li><a class="reference internal" href="#configuring-requests">Configuring Requests</a></li>
+<li><a class="reference internal" href="#keep-alive">Keep-Alive</a></li>
+<li><a class="reference internal" href="#asynchronous-requests">Asynchronous Requests</a></li>
+<li><a class="reference internal" href="#event-hooks">Event Hooks</a></li>
+<li><a class="reference internal" href="#custom-authentication">Custom Authentication</a></li>
+<li><a class="reference internal" href="#streaming-requests">Streaming Requests</a></li>
+<li><a class="reference internal" href="#verbose-logging">Verbose Logging</a></li>
+<li><a class="reference internal" href="#proxies">Proxies</a></li>
+<li><a class="reference internal" href="#http-verbs">HTTP Verbs</a></li>
+</ul>
+</li>
+</ul>
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2012. A <a href="http://hubspot.github.com">HubSpot</a> Project.
+    </div>
+    <a href="https://github.com/HubSpot/sanetime" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+  </body>
+</html>
