@@ -1,24 +1,20 @@
 /*
- * jinja.css_t
- * ~~~~~~~~~~~
+ * flasky.css_t
+ * ~~~~~~~~~~~~
  *
- * :copyright: Copyright 2011 by Armin Ronacher.
+ * :copyright: Copyright 2010 by Armin Ronacher. Modifications by Kenneth Reitz.
  * :license: Flask Design License, see LICENSE for details.
  */
 
-@import url(http://fonts.googleapis.com/css?family=Crimson+Text);
-
 {% set page_width = '940px' %}
 {% set sidebar_width = '220px' %}
-{% set font_family = 'Georgia, serif' %}
-{% set header_font_family = 'Crimson Text, ' ~ font_family %}
- 
+
 @import url("basic.css");
- 
+
 /* -- page layout ----------------------------------------------------------- */
- 
+
 body {
-    font-family: {{ font_family }};
+    font-family: 'goudy old style', 'minion pro', 'bell mt', Georgia, 'Hiragino Mincho Pro';
     font-size: 17px;
     background-color: white;
     color: #000;
@@ -47,7 +43,7 @@ div.sphinxsidebar {
 hr {
     border: 1px solid #B1B4B6;
 }
- 
+
 div.body {
     background-color: #ffffff;
     color: #3E4349;
@@ -58,7 +54,7 @@ img.floatingflask {
     padding: 0 0 10px 10px;
     float: right;
 }
- 
+
 div.footer {
     width: {{ page_width }};
     margin: 20px auto 30px auto;
@@ -74,7 +70,7 @@ div.footer a {
 div.related {
     display: none;
 }
- 
+
 div.sphinxsidebar a {
     color: #444;
     text-decoration: none;
@@ -84,9 +80,9 @@ div.sphinxsidebar a {
 div.sphinxsidebar a:hover {
     border-bottom: 1px solid #999;
 }
- 
+
 div.sphinxsidebar {
-    font-size: 15px;
+    font-size: 14px;
     line-height: 1.5;
 }
 
@@ -95,14 +91,14 @@ div.sphinxsidebarwrapper {
 }
 
 div.sphinxsidebarwrapper p.logo {
-    padding: 0 0 20px 0;
-    margin: 0;
+    padding: 0;
+    margin: -10px 0 0 -20px;
     text-align: center;
 }
- 
+
 div.sphinxsidebar h3,
 div.sphinxsidebar h4 {
-    font-family: {{ font_family }};
+    font-family: 'Garamond', 'Georgia', serif;
     color: #444;
     font-size: 24px;
     font-weight: normal;
@@ -113,7 +109,7 @@ div.sphinxsidebar h4 {
 div.sphinxsidebar h4 {
     font-size: 20px;
 }
- 
+
 div.sphinxsidebar h3 a {
     color: #444;
 }
@@ -124,7 +120,7 @@ div.sphinxsidebar p.logo a:hover,
 div.sphinxsidebar h3 a:hover {
     border: none;
 }
- 
+
 div.sphinxsidebar p {
     color: #555;
     margin: 10px 0;
@@ -135,60 +131,55 @@ div.sphinxsidebar ul {
     padding: 0;
     color: #000;
 }
- 
+
 div.sphinxsidebar input {
     border: 1px solid #ccc;
-    font-family: {{ font_family }};
-    font-size: 14px;
+    font-family: 'Georgia', serif;
+    font-size: 1em;
 }
 
-div.sphinxsidebar form.search input[name="q"] {
-    width: 130px;
-}
- 
 /* -- body styles ----------------------------------------------------------- */
- 
+
 a {
-    color: #aa0000;
+    color: #004B6B;
     text-decoration: underline;
 }
- 
+
 a:hover {
-    color: #dd0000;
+    color: #6D4100;
     text-decoration: underline;
 }
- 
+
 div.body h1,
 div.body h2,
 div.body h3,
 div.body h4,
 div.body h5,
 div.body h6 {
-    font-family: {{ header_font_family }};
+    font-family: 'Garamond', 'Georgia', serif;
     font-weight: normal;
     margin: 30px 0px 10px 0px;
     padding: 0;
-    color: black;
 }
- 
+
 div.body h1 { margin-top: 0; padding-top: 0; font-size: 240%; }
 div.body h2 { font-size: 180%; }
 div.body h3 { font-size: 150%; }
 div.body h4 { font-size: 130%; }
 div.body h5 { font-size: 100%; }
 div.body h6 { font-size: 100%; }
- 
+
 a.headerlink {
     color: #ddd;
     padding: 0 4px;
     text-decoration: none;
 }
- 
+
 a.headerlink:hover {
     color: #444;
     background: #eaeaea;
 }
- 
+
 div.body p, div.body dd, div.body li {
     line-height: 1.4em;
 }
@@ -211,7 +202,7 @@ dd div.admonition {
 }
 
 div.admonition p.admonition-title {
-    font-family: {{ font_family }};
+    font-family: 'Garamond', 'Georgia', serif;
     font-weight: normal;
     font-size: 24px;
     margin: 0 0 10px 0;
@@ -235,27 +226,27 @@ div.note {
     background-color: #eee;
     border: 1px solid #ccc;
 }
- 
+
 div.seealso {
     background-color: #ffc;
     border: 1px solid #ff6;
 }
- 
+
 div.topic {
     background-color: #eee;
 }
- 
+
 p.admonition-title {
     display: inline;
 }
- 
+
 p.admonition-title:after {
     content: ":";
 }
 
 pre, tt {
     font-family: 'Consolas', 'Menlo', 'Deja Vu Sans Mono', 'Bitstream Vera Sans Mono', monospace;
-    font-size: 0.85em;
+    font-size: 0.9em;
 }
 
 img.screenshot {
@@ -342,7 +333,7 @@ ul, ol {
     margin: 10px 0 10px 30px;
     padding: 0;
 }
- 
+
 pre {
     background: #eee;
     padding: 7px 30px;
@@ -359,38 +350,187 @@ dl dl pre {
     margin-left: -90px;
     padding-left: 90px;
 }
- 
+
 tt {
-    background-color: #E8EFF0;
+    background-color: #ecf0f3;
     color: #222;
     /* padding: 1px 2px; */
 }
 
 tt.xref, a tt {
-    background-color: #E8EFF0;
+    background-color: #FBFBFB;
     border-bottom: 1px solid white;
 }
 
 a.reference {
     text-decoration: none;
-    border-bottom: 1px dotted #bb0000;
+    border-bottom: 1px dotted #004B6B;
 }
 
 a.reference:hover {
-    border-bottom: 1px solid #dd0000;
+    border-bottom: 1px solid #6D4100;
 }
 
 a.footnote-reference {
     text-decoration: none;
     font-size: 0.7em;
     vertical-align: top;
-    border-bottom: 1px dotted #bb0000;
+    border-bottom: 1px dotted #004B6B;
 }
 
 a.footnote-reference:hover {
-    border-bottom: 1px solid #dd0000;
+    border-bottom: 1px solid #6D4100;
 }
 
 a:hover tt {
     background: #EEE;
+}
+
+
+@media screen and (max-width: 870px) {
+
+    div.sphinxsidebar {
+    	display: none;
+    }
+
+    div.document {
+       width: 100%;
+
+    }
+
+    div.documentwrapper {
+    	margin-left: 0;
+    	margin-top: 0;
+    	margin-right: 0;
+    	margin-bottom: 0;
+    }
+
+    div.bodywrapper {
+    	margin-top: 0;
+    	margin-right: 0;
+    	margin-bottom: 0;
+    	margin-left: 0;
+    }
+
+    ul {
+    	margin-left: 0;
+    }
+
+    .document {
+    	width: auto;
+    }
+
+    .footer {
+    	width: auto;
+    }
+
+    .bodywrapper {
+    	margin: 0;
+    }
+
+    .footer {
+    	width: auto;
+    }
+
+    .github {
+        display: none;
+    }
+
+
+
+}
+
+
+
+@media screen and (max-width: 875px) {
+
+    body {
+        margin: 0;
+        padding: 20px 30px;
+    }
+
+    div.documentwrapper {
+        float: none;
+        background: white;
+    }
+
+    div.sphinxsidebar {
+        display: block;
+        float: none;
+        width: 102.5%;
+        margin: 50px -30px -20px -30px;
+        padding: 10px 20px;
+        background: #333;
+        color: white;
+    }
+
+    div.sphinxsidebar h3, div.sphinxsidebar h4, div.sphinxsidebar p,
+    div.sphinxsidebar h3 a {
+        color: white;
+    }
+
+    div.sphinxsidebar a {
+        color: #aaa;
+    }
+
+    div.sphinxsidebar p.logo {
+        display: none;
+    }
+
+    div.document {
+        width: 100%;
+        margin: 0;
+    }
+
+    div.related {
+        display: block;
+        margin: 0;
+        padding: 10px 0 20px 0;
+    }
+
+    div.related ul,
+    div.related ul li {
+        margin: 0;
+        padding: 0;
+    }
+
+    div.footer {
+        display: none;
+    }
+
+    div.bodywrapper {
+        margin: 0;
+    }
+
+    div.body {
+        min-height: 0;
+        padding: 0;
+    }
+
+    .rtd_doc_footer {
+        display: none;
+    }
+
+    .document {
+        width: auto;
+    }
+
+    .footer {
+        width: auto;
+    }
+
+    .footer {
+        width: auto;
+    }
+
+    .github {
+        display: none;
+    }
+}
+
+
+/* misc. */
+
+.revsys-inline {
+    display: none!important;
 }

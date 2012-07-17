@@ -1,18 +1,17 @@
 #!/usr/bin/env python
 from setuptools import setup, find_packages
-
-VERSION = '4.1.9'
+import sanetime
 
 setup(
     name='sanetime',
-    version=VERSION,
+    version=sanetime.__version__,
     author='prior',
     author_email='mprior@hubspot.com',
     maintainer='prior',
     maintainer_email='mprior@hubspot.com',
     packages=find_packages(),
     url='http://hubspot.github.com/sanetime/',
-    download_url='https://github.com/HubSpot/sanetime/tarball/v%s'%VERSION,
+    download_url='https://github.com/HubSpot/sanetime/tarball/v%s'%sanetime.__version__,
     license=open('LICENSE').read(),
     description='A sane date/time python interface:  better epoch time, timezones, and deltas -- django support as well',
     long_description=open('README.rst').read(),

@@ -17,7 +17,7 @@ MICROS_TRANSLATIONS = (
         (('us','micros','microseconds','epoch_micros','epoch_microseconds'),1) )
 MICROS_TRANSLATION_HASH = dict((alt,v) for k,v in MICROS_TRANSLATIONS for alt in k)
 
-class time(object):
+class SaneTime(object):
     """
     A time stored in epoch microseconds, and optionally decorated with a timezone.
     An object of this class represents a moment in time.
@@ -280,6 +280,6 @@ def ntime(*args, **kwargs):
     return SaneTime(*args, **kwargs)
 
 #primary aliases
-sanetime = SaneTime = time
+time = sanetime = SaneTime
 nsanetime = ntime
 
