@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import subprocess
-import sanetime
 
 def call(args):
     cmd = ' '.join(args)
@@ -11,9 +10,11 @@ def call(args):
     print("== done       == %s ==" % cmd)
     print
 
+version = [line for line in open('setup.py').read().split('\n') if line.startswith('__VERSION__ = ')][0].split(' ')[-1].strip('"').strip("'")
+
 call(['git', 'commit', '-v'])
 call(['git', 'push'])
-call(['git', 'tag', '-a', 'v%s'%sanetime.__version__, '-m="version bump"'])
+call(['git', 'tag', '-a', 'v%s'%version, '-m="version bump"'])
 call(['git', 'push', '--tags'])
 call(['python', 'setup.py', 'sdist', 'upload'])
 
