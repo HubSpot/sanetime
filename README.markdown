@@ -17,7 +17,7 @@ Unfortunately, manipulating epoch time and timezones with the standard python to
 
 **sanetime** seeks to bring a more sanity to the manipulations of epoch time, timezone, time delta, and time generally.
 
-~~~ python
+``` python
 >>> from sanetime import time,delta   # a tiny taste
 
 >>> time('2012-05-01 22:31',tz='America/New_York').millis
@@ -31,7 +31,7 @@ Unfortunately, manipulating epoch time and timezones with the standard python to
 
 >>> (time() + delta(h=12)).s    # epoch seconds 12 hours from now
 1338344977
-~~~
+```
 
 
 ##time
