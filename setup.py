@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from setuptools import setup, find_packages
 
-__VERSION__ = '4.2.0'
+__VERSION__ = '4.2.1'
 
 setup(
     name='sanetime',
@@ -15,7 +15,7 @@ setup(
     download_url='https://github.com/HubSpot/sanetime/tarball/v%s'%__VERSION__,
     license=open('LICENSE').read(),
     description='A sane date/time python interface:  better epoch time, timezones, and deltas -- django support as well',
-    long_description=open('README.rst').read(),
+    long_description=open('README.markdown').read(),
     install_requires=[
         'pytz>=2010',
         'python-dateutil>=1.5,<2.0',  # we're not compatible with python 3.0 yet
