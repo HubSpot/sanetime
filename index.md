@@ -17,19 +17,21 @@ Unfortunately, manipulating epoch time and timezones with the standard python to
 
 **sanetime** seeks to bring a more sanity to the manipulations of epoch time, timezone, time delta, and time generally.
 
-    >>> from sanetime import time,delta   # a tiny taste
+~~~ python
+>>> from sanetime import time,delta   # a tiny taste
 
-    >>> time('2012-05-01 22:31',tz='America/New_York').millis
-    1335925860000
+>>> time('2012-05-01 22:31',tz='America/New_York').millis
+1335925860000
 
-    >>> str(time(tz='Europe/London'))   # now in London
-    '2012-05-29 15:28:05.178741 +Europe/London'
+>>> str(time(tz='Europe/London'))   # now in London
+'2012-05-29 15:28:05.178741 +Europe/London'
 
-    >>> (time(2012,6,1) - time('2012-05-01')).hours
-    744
+>>> (time(2012,6,1) - time('2012-05-01')).hours
+744
 
-    >>> (time() + delta(h=12)).s    # epoch seconds 12 hours from now
-    1338344977
+>>> (time() + delta(h=12)).s    # epoch seconds 12 hours from now
+1338344977
+~~~
 
 
 ##time
