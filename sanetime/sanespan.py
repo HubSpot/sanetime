@@ -17,6 +17,10 @@ class SaneSpan(object):
     def overlaps(self, other):
         return self.start < other.end and self.end > other.start
 
+    def __repr__(self): return 'SaneSpan(start=%s,delta=%s)'%(repr(self.start),repr(self.delta))
+    def __str__(self): return unicode(self).encode('utf-8')
+    def __unicode__(self): u"%s +%s" % (unicode(self.start), unicode(self.delta))
+
 def nsanespan(*args, **kwargs): 
     if args and (args[0] is None or args[-1] is None): return None
     return SaneSpan(*args, **kwargs)
