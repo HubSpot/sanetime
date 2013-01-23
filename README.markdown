@@ -243,5 +243,10 @@ Why is everything stored internally as microseconds?
 Python's datetime gives us access to microseconds, and since milliseconds would already have us cross the 32bit integer boundary, we might as well capture everything we can and take on microseconds as well.
 There are plenty of helpers on the time, tztime, and delta that make using epoch seconds or milis just as easy as using micros.
 
+###other
+relevant links:
 
+[sanetime in github](https://github.com/HubSpot/sanetime)
+[sanetime in travis](https://travis-ci.org/HubSpot/sanetime)
+[sanetime in pypi](http://pypi.python.org/pypi/sanetime)
 
