@@ -1,218 +1,71 @@
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>sanetime &mdash; sanetime 4.2.0 documentation</title>
-    
-    <link rel="stylesheet" href="_static/flasky.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
-        VERSION:     '4.2.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="sanetime 4.2.0 documentation" href="#" />
-    <link rel="next" title="time" href="user/time.html" />
-   
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
-
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>Sanetime by HubSpot</title>
   </head>
+
   <body>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="user/time.html" title="time"
-             accesskey="N">next</a> |</li>
-        <li><a href="#">sanetime 4.2.0 documentation</a> &raquo;</li> 
-      </ul>
-    </div>  
+    <div id="container">
+      <div class="inner">
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body">
-            
-  <div class="section" id="sanetime">
-<h1>sanetime<a class="headerlink" href="#sanetime" title="Permalink to this headline">¶</a></h1>
-<p><strong>a sane date/time python interface</strong></p>
-<p><strong>sanetime</strong> was written to DRY up all the common date/time manipulations we all do constantly in our code while offering the most simple, versatile, and intuitive client possible.</p>
-<p>We&#8217;ve all learned that the only sane way to store times is using epoch time. (You have, haven&#8217;t you?)
-Unfortunately, manipulating epoch time and timezones with the standard python toolset requires getting up to speed on a managerie of python modules and concepts: datetime, date, time, calendar, pytz, dateutils, timedelta, time tuples, localize, normalize.</p>
-<p><strong>sanetime</strong> seeks to bring a more sanity to the manipulations of epoch time, timezone, time delta, and time generally.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sanetime</span> <span class="kn">import</span> <span class="n">time</span><span class="p">,</span><span class="n">delta</span>   <span class="c"># a tiny taste</span>
+        <header>
+          <h1>Sanetime</h1>
+          <h2>a sane date/time python interface</h2>
+        </header>
 
-<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span><span class="p">(</span><span class="s">&#39;2012-05-01 22:31&#39;</span><span class="p">,</span><span class="n">tz</span><span class="o">=</span><span class="s">&#39;America/New_York&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">millis</span>
-<span class="go">1335925860000</span>
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/HubSpot/sanetime/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
+          <a href="https://github.com/HubSpot/sanetime/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+          <a href="https://github.com/HubSpot/sanetime" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        </section>
 
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="p">(</span><span class="n">tz</span><span class="o">=</span><span class="s">&#39;Europe/London&#39;</span><span class="p">))</span>   <span class="c"># now in London</span>
-<span class="go">&#39;2012-05-29 15:28:05.178741 +Europe/London&#39;</span>
+        <hr>
 
-<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">time</span><span class="p">(</span><span class="mi">2012</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">time</span><span class="p">(</span><span class="s">&#39;2012-05-01&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">hours</span>
-<span class="go">744</span>
+        <section id="main_content">
+          <h3>Welcome to GitHub Pages.</h3>
 
-<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">time</span><span class="p">()</span> <span class="o">+</span> <span class="n">delta</span><span class="p">(</span><span class="n">h</span><span class="o">=</span><span class="mi">12</span><span class="p">))</span><span class="o">.</span><span class="n">s</span>    <span class="c"># epoch seconds 12 hours from now</span>
-<span class="go">1338344977</span>
-</pre></div>
-</div>
-<div class="section" id="overview">
-<h2>overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="time">
-<h3>time<a class="headerlink" href="#time" title="Permalink to this headline">¶</a></h3>
-<p>The <a class="reference internal" href="user/time.html#time"><em>time</em></a> class represents a moment in time, internally stored as microseconds since epoch.
-A <a class="reference internal" href="user/time.html#time"><em>time</em></a> object also has an associated timezone (UTC by default), however the timezone will never be considered during hashing, comparison or equality checks, i.e.
-A moment in <a class="reference internal" href="user/time.html#time"><em>time</em></a> experienced in America/New_York is equal to the same moment in <a class="reference internal" href="user/time.html#time"><em>time</em></a> experienced in Europe/Dublin.</p>
-</div>
-<div class="section" id="tztime">
-<h3>tztime<a class="headerlink" href="#tztime" title="Permalink to this headline">¶</a></h3>
-<p>The <em class="xref std std-ref">tztime</em> class is exactly like the <a class="reference internal" href="user/time.html#time"><em>time</em></a> object, except that timezone <strong>does</strong> factor into equality.
-A moment in <cite>tztime</cite> experienced in America/New_York is <strong>not</strong> the same as the same <cite>tztime</cite> moment experienced in Europe/Dublin.</p>
-</div>
-<div class="section" id="delta">
-<h3>delta<a class="headerlink" href="#delta" title="Permalink to this headline">¶</a></h3>
-<p>The <em class="xref std std-ref">delta</em> class represents a period of time, and provides easy access to all the different ways you might slice and dice this: micros, millis, seconds, minutes, hours, mean_days, mean_weeks, mean_months, mean_years.
-There are also many different flavors of these: rounded, floored, floated, positional, rounded_positional.
-There is no attempt made in delta yet to be calendar aware (hence the &#8216;mean&#8217; prefixes in some cases).</p>
-</div>
-<div class="section" id="span">
-<h3>span<a class="headerlink" href="#span" title="Permalink to this headline">¶</a></h3>
-<p>The <em class="xref std std-ref">span</em> class represents a window of time ranging from one specific moment in time to another specific moment in time.
-You can think of it as a start <a class="reference internal" href="user/time.html#time"><em>time</em></a> with a <em class="xref std std-ref">delta</em>, or as a start <a class="reference internal" href="user/time.html#time"><em>time</em></a> and a stop <a class="reference internal" href="user/time.html#time"><em>time</em></a>.</p>
-</div>
-<div class="section" id="django">
-<h3>django<a class="headerlink" href="#django" title="Permalink to this headline">¶</a></h3>
-<p>A django model field is also provided: <em class="xref std std-ref">SaneTimeField</em>, that makes it super simple to store a sanetime.
-They honor the auto_add and auto_add_now features to easily turn your sanetimes into updated_at or created_at fields.
-And they even work with south out of the box.</p>
-</div>
-</div>
-<div class="section" id="user-guide">
-<h2>user guide<a class="headerlink" href="#user-guide" title="Permalink to this headline">¶</a></h2>
-<p>Use these guides to quickly get up to speed on the classes, modules, and their methods.  They generally teach by example.</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="user/time.html">time</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="user/time.html#construction">construction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="user/time.html#arithmetic">arithmetic</a></li>
-<li class="toctree-l2"><a class="reference internal" href="user/time.html#conversion">conversion</a></li>
-<li class="toctree-l2"><a class="reference internal" href="user/time.html#date-time-parts">date/time parts</a></li>
-</ul>
-</li>
-</ul>
-</div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This documentation is still a work in progress.
-Lots of good docs are now in place here, but there are still features lying in the code waiting documentation.
-As always, the code should be treated as the ultimate source of truth.
-If you haven&#8217;t found what you&#8217;re looking for you, you may very well find it implemented in the code.
-Please feel free to help us bring it to the surface in the docs.</p>
-</div>
-</div>
-<div class="section" id="design-principles">
-<h2>design principles<a class="headerlink" href="#design-principles" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li>simple:  simplify usecases to single method/property</li>
-<li>intuitive: easy to remember methods/properties, with guessable aliases - be as verbose (and communicative) or as terse (and efficient) as you want to be.  for example  t = time();  t.ms == t.millis == t.milliseconds</li>
-<li>properties whenever sensible: properties are especially useful for django, cuz you can use them directly in templates without having to stage them first in the views.</li>
-</ul>
-</div>
-<div class="section" id="faq">
-<h2>faq<a class="headerlink" href="#faq" title="Permalink to this headline">¶</a></h2>
-<p>Why is everything stored internally as microseconds?</p>
-<p>Python&#8217;s datetime gives us access to microseconds, and since milliseconds would already have us cross the 32bit integer boundary, we might as well capture everything we can and take on microseconds as well.
-There are plenty of helpers on the time, tztime, and delta that make using epoch seconds or milis just as easy as using micros.</p>
-</div>
-<div class="section" id="api-documentation">
-<h2>api documentation<a class="headerlink" href="#api-documentation" title="Permalink to this headline">¶</a></h2>
-<p>If you are looking for information on a specific function, class or method,
-this part of the documentation is for you.</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="api.html">API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api.html#main-interface">Main Interface</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#configurations">Configurations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#async">Async</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#utilities">Utilities</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api.html#internals">Internals</a></li>
-</ul>
-</li>
-</ul>
-</div>
-</div>
-</div>
+<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
 
+<pre><code>$ cd your_repo_root/repo_name
+$ git fetch origin
+$ git checkout gh-pages
+</code></pre>
 
-          </div>
-        </div>
+<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+
+<h3>Designer Templates</h3>
+
+<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+
+<h3>Rather Drive Stick?</h3>
+
+<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+
+<h3>Authors and Contributors</h3>
+
+<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+
+<h3>Support or Contact</h3>
+
+<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
+        </section>
+
+        <footer>
+          Sanetime is maintained by <a href="https://github.com/HubSpot">HubSpot</a><br>
+          This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.
+        </footer>
+
+        
       </div>
-      <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper"><h2>sanetime</h2>
-
-<p>
-  <iframe src="http://ghbtns.com/github-btn.html?user=HubSpot&repo=sanetime&type=watch&count=true&size=large"
-    allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
-</p>
-
-<p>
-  <strong>sanetime</strong> brings epoch sanity to dates and times in python.
-  You are currently looking at the documentation of the development release.
-</p>
-
-<h4>feedback</h4>
-<p>
-  Feedback is greatly appreciated.
-  Feel free to get in touch with us in github or create an issue as necessary.
-</p>
-
-<h4>useful links</h4>
-<ul>
-  <li><a href="http://pypi.python.org/pypi/sanetime">sanetime @ PyPI</a></li>
-  <li><a href="http://github.com/HubSpot/sanetime">sanetime @ GitHub</a></li>
-  <li><a href="http://github.com/HubSpot/sanetime/issues">Issue Tracker</a></li>
-</ul>
-<div id="searchbox" style="display: none">
-  <h3>Quick search</h3>
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
     </div>
-    <div class="footer">
-      &copy; Copyright 2012. A <a href="http://hubspot.github.com">HubSpot</a> Project.
-    </div>
-    <a href="https://github.com/HubSpot/sanetime" class="github">
-        <img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
-    </a>
   </body>
 </html>
