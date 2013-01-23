@@ -1,7 +1,3 @@
----
-title: "sanetime:  a sane date/time python interface"
----
-
 #sanetime
 
 **A sane date/time python interface**
