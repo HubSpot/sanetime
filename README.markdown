@@ -346,7 +346,7 @@ True
 ### django
 TODO: write docs (functionality is solid and used without issue in production systems -- just no time for docs yet -- please feel free to help out here)
 
-## notes
+## other
 
 ### docs
 Many nice little features are not documented in these pages, and are lying in the code awaiting your discovery.  One day we'll get everything documented...
@@ -364,7 +364,7 @@ There are plenty of helpers on the time, tztime, and delta that make using epoch
 
 ### links
 
-[sanetime in github](https://github.com/HubSpot/sanetime)
-[sanetime in travis](https://travis-ci.org/HubSpot/sanetime)
-[sanetime in pypi](http://pypi.python.org/pypi/sanetime)
+[sanetime in github](https://github.com/HubSpot/sanetime)  
+[sanetime in travis](https://travis-ci.org/HubSpot/sanetime)  
+[sanetime in pypi](http://pypi.python.org/pypi/sanetime)  
 
