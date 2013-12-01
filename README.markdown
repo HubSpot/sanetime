@@ -7,7 +7,7 @@
 **sanetime** was written to DRY up all the common date/time manipulations we all do constantly in our code while offering the most simple, versatile, and intuitive client possible.
 
 We've all learned that the only sane way to store times is using epoch time. (You have, haven't you?) 
-Unfortunately, manipulating epoch time and timezones with the standard python toolset requires getting up to speed on a managerie of python modules and concepts: datetime, date, time, calendar, pytz, dateutils, timedelta, time tuples, localize, normalize.
+Unfortunately, manipulating epoch time and timezones with the standard python toolset requires getting up to speed on a menagerie of python modules and concepts: datetime, date, time, calendar, pytz, dateutils, timedelta, time tuples, localize, normalize.
 
 **sanetime** seeks to bring more sanity to the manipulations of epoch time, timezone, time delta, and time generally.
 
@@ -220,7 +220,7 @@ You can get at any of the date parts just as you might with datetime properties.
 664819
 ```
 
-### tztime  `from sanetime import time`
+### tztime  `from sanetime import tztime`
 
 #### construction
 
@@ -355,7 +355,7 @@ Many nice little features are not documented in these pages, and are lying in th
 Why is everything stored internally as microseconds?
 
 Python's datetime gives us access to microseconds, and since milliseconds would already have us cross the 32bit integer boundary, we might as well capture everything we can and take on microseconds as well.
-There are plenty of helpers on the time, tztime, and delta that make using epoch seconds or milis just as easy as using micros.
+There are plenty of helpers on the time, tztime, and delta that make using epoch seconds or millis just as easy as using micros.
 
 ### design principles
 * simple: simplify usecases to single method/property
