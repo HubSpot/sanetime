@@ -42,7 +42,8 @@ class SaneTimeField(models.BigIntegerField):
         return super(SaneTimeField,self).get_prep_value(value)
 
 
-from south.modelsinspector import add_introspection_rules
-add_introspection_rules([], ["^sanetime\.dj\.SaneTimeField"])
-    
-
+try:
+  from south.modelsinspector import add_introspection_rules
+  add_introspection_rules([], ["^sanetime\.dj\.SaneTimeField"])
+except ImportError:
+  pass
